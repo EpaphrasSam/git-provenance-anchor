@@ -1,5 +1,5 @@
 {
-  "collectedAt": "2026-07-29T17:48:08.835Z",
+  "collectedAt": "2026-07-29T19:05:10.553Z",
   "results": [
     {
       "network": "arbitrumSepolia",
@@ -53,6 +53,33 @@
         "transactionHash": "0xefdcdb7acd5c2f885cd7b30e4560bb92e9e4604b54807b128633b3047a9f4256",
         "status": 0,
         "gasUsed": "28111"
+      }
+    },
+    {
+      "network": "zkSyncSepolia",
+      "chainId": 300,
+      "registry": "0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB",
+      "projectId": "0xd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e",
+      "ref": "v0.3.0-m3",
+      "unauthorizedAddress": "0x9ef6D81959b302dB7Ed79389Ef4899d4da3F80c9",
+      "allowlistedBeforeAttempt": false,
+      "anchorUnchanged": true,
+      "simulated": {
+        "attempted": true,
+        "reverted": true,
+        "errorName": "NotAllowlisted",
+        "errorArgs": {
+          "projectId": "0xd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e",
+          "caller": "0x9ef6D81959b302dB7Ed79389Ef4899d4da3F80c9"
+        },
+        "rawData": "0x46a087dcd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e0000000000000000000000009ef6d81959b302db7ed79389ef4899d4da3f80c9"
+      },
+      "sent": {
+        "attempted": true,
+        "reverted": true,
+        "transactionHash": "0x6071c58858ace47a5191942127a56bb12269f490ff6c2516be8f1c511608c80c",
+        "status": 0,
+        "gasUsed": "97752"
       }
     }
   ]

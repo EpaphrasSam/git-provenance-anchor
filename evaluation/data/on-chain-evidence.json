@@ -1,6 +1,6 @@
 {
-  "collectedAt": "2026-07-29T17:49:14.810Z",
-  "commit": "91835dc9026e67a7165c72802de367435221e2e2",
+  "collectedAt": "2026-07-29T19:02:33.822Z",
+  "commit": "ae0ba8dcf1b14526cea6edc7730fc3d471426d9c",
   "projectId": "0xd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e",
   "networks": [
     {
@@ -14,7 +14,7 @@
         "runs": 200
       },
       "deploymentGasUsed": "879549",
-      "currentGasPriceWei": "22642000",
+      "currentGasPriceWei": "22236000",
       "transactions": [
         {
           "label": "deployment",
@@ -146,6 +146,57 @@
         {
           "operation": "allowlistAdd",
           "gasUnits": "49066"
+        }
+      ]
+    },
+    {
+      "network": "zkSyncSepolia",
+      "chainId": 300,
+      "registry": "0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB",
+      "deployedAt": "2026-07-29T19:01:13.257Z",
+      "solcVersion": "0.8.28",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "deploymentGasUsed": "1845217",
+      "currentGasPriceWei": "25000000",
+      "transactions": [
+        {
+          "label": "deployment",
+          "transactionHash": "0xd22c5054b7857177d2fd125c8d73d1025005b7e2cf39cb1b40bcbff57c08687b",
+          "blockNumber": 7992057,
+          "status": 1,
+          "gasUsed": "1845217",
+          "effectiveGasPrice": "25000000",
+          "feeWei": "46130425000000",
+          "feeEth": "0.000046130425",
+          "calldataBytes": 132
+        },
+        {
+          "label": "anchor v0.3.0-m3 rev1",
+          "transactionHash": "0x29b8eab8a43fb07fbda8ec95ee4729d33386be5db50ca2db163298962fb67f97",
+          "blockNumber": 7992069,
+          "status": 1,
+          "gasUsed": "114173",
+          "effectiveGasPrice": "25000000",
+          "feeWei": "2854325000000",
+          "feeEth": "0.000002854325",
+          "calldataBytes": 228
+        }
+      ],
+      "gasEstimates": [
+        {
+          "operation": "anchor (re-anchor existing tag)",
+          "gasUnits": "312128"
+        },
+        {
+          "operation": "anchor (new tag, first revision)",
+          "gasUnits": "312128"
+        },
+        {
+          "operation": "allowlistAdd",
+          "gasUnits": "253900"
         }
       ]
     }

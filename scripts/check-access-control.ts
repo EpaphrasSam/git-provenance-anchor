@@ -194,9 +194,23 @@ async function main(): Promise<void> {
   // a broadcast one, whose transaction hashes cannot be regenerated for free.
   const defaultName = send ? "access-control.json" : "access-control-simulated.json";
   const outFile = argValue("--out") ?? path.join(outDir, defaultName);
+
+  // Merge by network so `--network zkSyncSepolia` does not erase other chains.
+  let merged = results;
+  if (fs.existsSync(outFile)) {
+    try {
+      const prev = JSON.parse(fs.readFileSync(outFile, "utf8")) as { results?: NetworkResult[] };
+      const byNet = new Map((prev.results ?? []).map((r) => [r.network, r]));
+      for (const r of results) byNet.set(r.network, r);
+      merged = [...byNet.values()];
+    } catch {
+      merged = results;
+    }
+  }
+
   fs.writeFileSync(
     outFile,
-    `${JSON.stringify({ collectedAt: new Date().toISOString(), results }, null, 2)}\n`,
+    `${JSON.stringify({ collectedAt: new Date().toISOString(), results: merged }, null, 2)}\n`,
     "utf8"
   );
   console.log(`\nwrote ${path.relative(root, outFile)}`);

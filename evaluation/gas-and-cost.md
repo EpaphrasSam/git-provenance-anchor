@@ -1,20 +1,19 @@
 # Gas and cost
 
-Collected 2026-07-29 at commit `91835dc`.
-Raw data: `data/on-chain-evidence.json`.
+Collected 2026-07-29. Raw data: `data/on-chain-evidence.json`.
 Re-run with `npm run evidence` — read-only, broadcasts nothing, needs no funded account.
 
-## Gas units are identical on both chains
+## EVM chains: gas units are identical
 
 | Operation | Gas units | Source |
 | --- | --- | --- |
-| Deploy `AnchorRegistry` | 879,549 | observed receipt, both chains |
-| Anchor a new tag, no SBOM hash | 79,276 | observed receipt, both chains |
-| Anchor a new tag with SBOM hash | 99,548 | observed receipt, both chains |
-| Anchor a new tag (estimate, 15-char ref) | 100,755 | `estimateGas`, both chains |
-| Re-anchor an existing tag | 48,791 | `estimateGas`, both chains |
-| `allowlistAdd` | 49,066 | `estimateGas`, both chains |
-| Anchor rejected as unauthorised | 28,111 | observed failed receipt, both chains |
+| Deploy `AnchorRegistry` | 879,549 | observed receipt, Arb + OP |
+| Anchor a new tag, no SBOM hash | 79,276 | observed receipt, Arb + OP |
+| Anchor a new tag with SBOM hash | 99,548 | observed receipt, Arb + OP |
+| Anchor a new tag (estimate, 15-char ref) | 100,755 | `estimateGas`, Arb + OP |
+| Re-anchor an existing tag | 48,791 | `estimateGas`, Arb + OP |
+| `allowlistAdd` | 49,066 | `estimateGas`, Arb + OP |
+| Anchor rejected as unauthorised | 28,111 | observed failed receipt, Arb + OP |
 
 Every figure matched to the digit across Arbitrum Sepolia and OP Sepolia. That is
 the expected result for two EVM-equivalent rollups running identical bytecode over
@@ -22,7 +21,19 @@ identical calldata, but having observed it is what licenses measuring gas on a
 testnet and pricing it elsewhere: units are a property of the code, prices are a
 property of the moment.
 
-Calldata for an anchor is 228 bytes. The deployment transaction carries 3,856.
+Calldata for an anchor is 228 bytes. The EVM deployment transaction carries 3,856.
+
+## zkSync Era: a separate column
+
+| Operation | EraVM gas units | Source |
+| --- | --- | --- |
+| Deploy `AnchorRegistry` | 1,845,217 | observed receipt |
+| Anchor a new tag, no SBOM hash | 114,173 | observed receipt (`v0.3.0-m3`) |
+| Anchor rejected as unauthorised | 97,752 | observed failed receipt |
+
+These are not comparable to the EVM table. EraVM gas accounting and the fee market
+(execution plus published data) are different instruments. Report them side by
+side; do not form ratios. Detail of the deployment is in `zksync-sepolia.md`.
 
 ## Why the two anchor figures differ
 
@@ -81,8 +92,6 @@ blob base fee from a mainnet RPC without transacting, applies them to the gas
 units and the 228-byte calldata figure, and reports a range across observed fee
 conditions. Not implemented.
 
-**zkSync Era.** Cannot be derived from the table above. zkSync Era runs a
-different virtual machine with its own gas accounting, charges separately for
-published data, and compiles through `zksolc` rather than `solc`, so both the units
-and the fee model differ. These must be measured against a zkSync Era deployment
-directly, and none exists yet.
+**zkSync fee pricing.** EraVM gas units are measured above; converting them to
+currency needs zkSync's live fee model (L2 gas price plus published-data cost),
+which is not yet implemented.

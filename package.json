@@ -11,16 +11,18 @@
     "gpa": "./cli/bin/gpa.js"
   },
   "scripts": {
-    "build": "hardhat compile",
-    "test": "hardhat test",
-    "test:cli": "hardhat test test/cli/**/*.ts",
-    "test:gas": "cross-env REPORT_GAS=true hardhat test",
-    "coverage": "hardhat coverage",
+    "build": "hardhat compile --network hardhat --force",
+    "build:zk": "hardhat compile --network zkSyncSepolia --force --no-typechain",
+    "test": "hardhat compile --network hardhat --force && hardhat test",
+    "test:cli": "hardhat compile --network hardhat --force && hardhat test test/cli/**/*.ts",
+    "test:gas": "hardhat compile --network hardhat --force && cross-env REPORT_GAS=true hardhat test",
+    "coverage": "hardhat compile --network hardhat --force && hardhat coverage",
     "clean": "hardhat clean",
     "gpa": "ts-node --transpile-only cli/src/index.ts",
     "deploy:local": "hardhat run scripts/deploy.ts",
     "deploy:arbitrum-sepolia": "hardhat run scripts/deploy.ts --network arbitrumSepolia",
     "deploy:op-sepolia": "hardhat run scripts/deploy.ts --network opSepolia",
+    "deploy:zksync-sepolia": "ts-node --transpile-only scripts/deploy-zksync.ts",
     "balances": "ts-node --transpile-only scripts/balances.ts",
     "evidence": "ts-node --transpile-only scripts/collect-evidence.ts",
     "check:access-control": "ts-node --transpile-only scripts/check-access-control.ts",
@@ -35,6 +37,8 @@
     "tar": "7.5.22"
   },
   "devDependencies": {
+    "@matterlabs/hardhat-zksync-deploy": "1.8.0",
+    "@matterlabs/hardhat-zksync-solc": "1.5.1",
     "@nomicfoundation/hardhat-toolbox": "5.0.0",
     "@types/chai": "4.3.20",
     "@types/micromatch": "4.0.10",
@@ -44,6 +48,7 @@
     "cross-env": "7.0.3",
     "hardhat": "2.29.0",
     "ts-node": "10.9.2",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "zksync-ethers": "6.21.2"
   }
 }

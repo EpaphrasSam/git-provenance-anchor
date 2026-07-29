@@ -14,6 +14,7 @@ operator tooling, not just documentation of this deployment.
 | --- | --- | --- |
 | `access-control.md` | A live deployment refuses anchors from accounts outside the project allowlist | `npm run check:access-control -- --send` |
 | `deployed-bytecode.md` | The code at each recorded address is the compiled output of a named commit | `npm run verify:bytecode` |
+| `zksync-sepolia.md` | EraVM deployment, toolchain pins, and why its gas is a separate column | `npm run deploy:zksync-sepolia` |
 | `cross-platform-determinism.md` | The anchored tree hash is identical on Windows, Linux, a CI runner, and an independent reimplementation | `scripts/tree-hashes.sh` on each platform |
 | `ci-end-to-end.md` | A tag push anchors on-chain with no human in the loop | push a `v*` tag; run URL recorded |
 | `gas-and-cost.md` | Gas per operation, why anchoring with an SBOM costs ~20k more, and how these differ from the test-suite figures | `npm run evidence` |
@@ -37,13 +38,14 @@ cannot be regenerated without spending again.
 
 ## Deployments measured
 
-| Network | Chain ID | Registry |
-| --- | --- | --- |
-| Arbitrum Sepolia | 421614 | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
-| OP Sepolia | 11155420 | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
+| Network | Chain ID | Registry | VM |
+| --- | --- | --- | --- |
+| Arbitrum Sepolia | 421614 | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` | EVM |
+| OP Sepolia | 11155420 | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` | EVM |
+| zkSync Sepolia | 300 | `0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB` | EraVM |
 
-Both compiled with solc 0.8.28, optimizer enabled at 200 runs. Full deployment
-records, including gas and block numbers, are under `deployments/`.
+EVM deployments compiled with solc 0.8.28; zkSync with zksolc 1.5.15 / zkvm-solc
+0.8.28-1.0.2. Optimizer enabled at 200 runs. Full records under `deployments/`.
 
 ## Two kinds of claim
 
@@ -62,12 +64,9 @@ capability of this system would overstate what the design achieves.
 
 Listed so the gaps are visible rather than discovered late.
 
-- **zkSync Era.** No deployment. Needs the `@matterlabs/hardhat-zksync` toolchain
-  with `zksolc` pinned to a compatible version, which is why Hardhat is held at
-  2.x. Its gas figures cannot be extrapolated from the two EVM rollups.
-- **Mainnet cost.** Gas units are measured; converting them to currency needs live
-  mainnet base fee and blob base fee applied to the units and the 228-byte
-  calldata size. No mainnet transactions required.
+- **Mainnet / fee pricing.** Gas units are measured on all three testnets;
+  converting them to currency needs live fee markets (EVM rollup blob fees;
+  zkSync published-data fees). No mainnet transactions required.
 - **Verification latency.** Wall-clock time to verify a release, and how tree
   hashing scales with repository size, are both unrecorded.
 - **Scale.** Every measurement comes from this repository, which is small.

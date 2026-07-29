@@ -1,6 +1,8 @@
 node_modules/
 artifacts/
+artifacts-zk/
 cache/
+cache-zk/
 typechain-types/
 coverage/
 coverage.json

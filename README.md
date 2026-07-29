@@ -32,8 +32,8 @@ bounded by per-repository keys and on-chain revocation rather than prevented.
 |---------|--------|
 | Arbitrum Sepolia | Live at `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
 | OP Sepolia | Live at `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
+| zkSync Era Sepolia | Live at `0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB` |
 | Any EVM chain | Deployable with `scripts/deploy.ts` and a network entry in `hardhat.config.ts` |
-| zkSync Era | Not yet supported — needs the `zksolc` toolchain, see [Toolchain](#toolchain) |
 
 Anchoring to several chains at once is the intended configuration, so that no
 single chain's availability determines whether a release can be verified.
@@ -52,6 +52,8 @@ to reproduce it. Full index in [`evaluation/README.md`](evaluation/README.md).
 - Gas per operation, measured on live deployments — `evaluation/gas-and-cost.md`
 - The code at each recorded address is the compiled output of a named commit —
   `evaluation/deployed-bytecode.md`
+- zkSync Era Sepolia runs the same contract under EraVM with its own gas column —
+  `evaluation/zksync-sepolia.md`
 
 If you deploy your own registry, run `npm run check:access-control` against it.
 A failure means the deployment is not what you think it is.
@@ -138,6 +140,7 @@ Deploying to a testnet needs a funded key. Copy `.env.example` to `.env`, set
 ```bash
 npm run deploy:arbitrum-sepolia
 npm run deploy:op-sepolia
+npm run deploy:zksync-sepolia   # requires npm run build:zk and funded zkSync ETH
 ```
 
 Use a dedicated key, never a personal wallet. Deployment records are written to
@@ -262,10 +265,22 @@ Versions are pinned exactly, and `package-lock.json` freezes transitive dependen
 build requires `npm ci` rather than `npm install`.
 
 Hardhat is pinned to 2.x because the zkSync Era plugins do not yet support Hardhat 3. Solidity is
-0.8.28, within the range `zksolc` supports and not at its ceiling. When the zkSync toolchain is added,
-the plugin version and the `zksolc` version must be pinned together: the plugin validates `zksolc`
-against an allowed range it refreshes remotely, so pinning the compiler alone leaves the check itself
-free to move.
+0.8.28. The zkSync stack is pinned together — `@matterlabs/hardhat-zksync-solc` 1.5.1 with
+`zksolc` 1.5.15 — because the plugin validates `zksolc` against a remote allow-list; bumping one
+without the other can break compile with no source change.
+
+EVM and EraVM compile into separate artifact trees. Always build EVM for tests, and use
+`--no-typechain` for zkSync so TypeChain factories stay EVM-compatible:
+
+```bash
+npm run build       # EVM → artifacts/ + typechain-types/
+npm run build:zk    # EraVM → artifacts-zk/
+npm run deploy:zksync-sepolia
+```
+
+Fund zkSync Sepolia with `npx ts-node --transpile-only scripts/bridge-zksync.ts` before deploying.
+Details, including a Windows path-space caveat in the linker, are in
+`evaluation/zksync-sepolia.md`.
 
 The optimizer runs setting affects gas figures, so it is reported alongside them and recorded in every
 deployment file.

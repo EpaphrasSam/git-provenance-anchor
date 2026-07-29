@@ -45,16 +45,19 @@ to afterwards.
 
 ## Observed
 
-| | Arbitrum Sepolia | OP Sepolia |
-| --- | --- | --- |
-| Registry | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
-| Unauthorised account | `0x9F6C3cF3633b6d13F32B1d8f35267A81E4492b9E` | `0xF41E78803452A454Dc14A6a48a940b26Ead5cB48` |
-| `isAllowlisted` before attempt | `false` | `false` |
-| Simulated call | reverted `NotAllowlisted` | reverted `NotAllowlisted` |
-| Broadcast transaction | `0xb2f9c47dd4b89da6c50b35c2f2bc89eb52631e447304abe3bb5fbd19114329f2` | `0xefdcdb7acd5c2f885cd7b30e4560bb92e9e4604b54807b128633b3047a9f4256` |
-| Receipt status | `0` (reverted) | `0` (reverted) |
-| Gas burned on the failed attempt | 28,111 | 28,111 |
-| Stored anchor afterwards | unchanged | unchanged |
+| | Arbitrum Sepolia | OP Sepolia | zkSync Sepolia |
+| --- | --- | --- | --- |
+| Registry | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` | `0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB` |
+| Unauthorised account | `0x9F6C3cF3633b6d13F32B1d8f35267A81E4492b9E` | `0xF41E78803452A454Dc14A6a48a940b26Ead5cB48` | `0x9ef6D81959b302dB7Ed79389Ef4899d4da3F80c9` |
+| `isAllowlisted` before attempt | `false` | `false` | `false` |
+| Simulated call | reverted `NotAllowlisted` | reverted `NotAllowlisted` | reverted `NotAllowlisted` |
+| Broadcast transaction | `0xb2f9c47d…` | `0xefdcdb7a…` | `0x6071c588…` |
+| Receipt status | `0` (reverted) | `0` (reverted) | `0` (reverted) |
+| Gas burned on the failed attempt | 28,111 | 28,111 | 97,752 |
+| Stored anchor afterwards | unchanged | unchanged | unchanged |
+
+Full transaction hashes are in `data/access-control.json`. The zkSync gas figure is
+an EraVM unit and is not comparable to the EVM figure of 28,111.
 
 The revert decoded with both arguments, naming the project identifier and the
 rejected caller:
@@ -68,10 +71,11 @@ NotAllowlisted(
 
 ## Result
 
-The deployed bytecode enforces the allowlist on both chains. The attempt failed at
-the access-control check rather than partway through, so no storage was touched
-and the existing anchor kept its original value and revision number. The failed
-attempt still cost the caller gas, so rejection is not free to spam.
+The deployed bytecode enforces the allowlist on all three chains, including the
+EraVM deployment. The attempt failed at the access-control check rather than
+partway through, so no storage was touched and the existing anchor kept its
+original value and revision number. The failed attempt still cost the caller gas,
+so rejection is not free to spam.
 
 Decoding the reason required the contract's `error` fragments in
 `ANCHOR_REGISTRY_ABI` (`cli/src/lib/chain.ts`). Without them ethers returns raw

@@ -42,6 +42,14 @@ async function main(): Promise<void> {
 
   let unexpected = false;
   for (const [network, deployment] of loadDeployments(root)) {
+    if (deployment.vm === "eraVM") {
+      console.log(network);
+      console.log(`  address       ${deployment.address}`);
+      console.log("  skipped       EraVM bytecode is not comparable to an EVM solc artifact");
+      console.log(`  source        ${deployment.sourceCommit ?? "unknown"}  zksolc=${deployment.zksolcVersion ?? "?"}`);
+      continue;
+    }
+
     const provider = new ethers.JsonRpcProvider(rpcFor(network), deployment.chainId);
     const onChain = (await provider.getCode(deployment.address)).toLowerCase();
     const match = onChain === local;

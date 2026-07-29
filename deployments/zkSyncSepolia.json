@@ -1,0 +1,20 @@
+{
+  "contract": "AnchorRegistry",
+  "address": "0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB",
+  "network": "zkSyncSepolia",
+  "chainId": 300,
+  "deployer": "0x52eaE29937b149B7a0f3D7516C81aD561B96c043",
+  "transactionHash": "0xd22c5054b7857177d2fd125c8d73d1025005b7e2cf39cb1b40bcbff57c08687b",
+  "blockNumber": 7992057,
+  "gasUsed": "1845217",
+  "solcVersion": "0.8.28",
+  "zksolcVersion": "1.5.15",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200
+  },
+  "deployedAt": "2026-07-29T19:01:13.257Z",
+  "sourceCommit": "ae0ba8dcf1b14526cea6edc7730fc3d471426d9c",
+  "sourceClean": true,
+  "vm": "eraVM"
+}

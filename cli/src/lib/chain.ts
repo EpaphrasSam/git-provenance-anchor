@@ -12,10 +12,12 @@ export interface DeploymentRecord {
   blockNumber: number;
   gasUsed: string;
   solcVersion: string;
+  zksolcVersion?: string;
   optimizer: { enabled: boolean; runs: number };
   deployedAt: string;
   sourceCommit?: string;
   sourceClean?: boolean;
+  vm?: "evm" | "eraVM";
 }
 
 export interface NetworkEndpoints {
@@ -30,6 +32,10 @@ const DEFAULT_RPC: NetworkEndpoints = {
   opSepolia: {
     chainId: 11155420,
     rpcUrl: process.env.OP_SEPOLIA_RPC_URL || "https://sepolia.optimism.io",
+  },
+  zkSyncSepolia: {
+    chainId: 300,
+    rpcUrl: process.env.ZKSYNC_SEPOLIA_RPC_URL || "https://sepolia.era.zksync.dev",
   },
 };
 
@@ -94,6 +100,9 @@ export function rpcFor(network: string): string {
   }
   if (network === "opSepolia" && process.env.OP_SEPOLIA_RPC_URL) {
     return process.env.OP_SEPOLIA_RPC_URL;
+  }
+  if (network === "zkSyncSepolia" && process.env.ZKSYNC_SEPOLIA_RPC_URL) {
+    return process.env.ZKSYNC_SEPOLIA_RPC_URL;
   }
   if (process.env[envKey]) return process.env[envKey]!;
   const fallback = DEFAULT_RPC[network];
