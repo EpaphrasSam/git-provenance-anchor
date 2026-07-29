@@ -23,7 +23,7 @@
     "deploy:op-sepolia": "hardhat run scripts/deploy.ts --network opSepolia",
     "balances": "ts-node --transpile-only scripts/balances.ts",
     "evidence": "ts-node --transpile-only scripts/collect-evidence.ts",
-    "validate:3a": "ts-node --transpile-only scripts/validate-unauthorized-submitter.ts"
+    "check:access-control": "ts-node --transpile-only scripts/check-access-control.ts"
   },
   "dependencies": {
     "ajv": "8.20.0",

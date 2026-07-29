@@ -5,7 +5,7 @@ pragma solidity 0.8.28;
 /// @notice Records Git tree hashes and SBOM hashes for software releases, keyed by a self-chosen
 ///         project identifier and a reference name. Submission is restricted to accounts a project
 ///         owner has allowlisted; reading is unrestricted.
-/// @dev No upgradeability proxy and no administrative role. See docs/learning/07 for design notes.
+/// @dev No upgradeability proxy and no administrative role. See "Contract design" in README.md.
 contract AnchorRegistry {
     uint8 public constant KIND_TAG = 0;
     uint8 public constant KIND_SNAPSHOT = 1;

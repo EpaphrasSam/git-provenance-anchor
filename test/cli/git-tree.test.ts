@@ -45,7 +45,7 @@ describe("git-tree hasher", function () {
     expect(ours).to.equal(result.stdout.trim().toLowerCase());
   });
 
-  it("1a: matches git write-tree for a nested fixture (Windows git)", async () => {
+  it("matches git write-tree for a nested fixture (Windows git)", async () => {
     const repo = await mkTempRepo();
     writeFile(repo, "README.md", "# fixture\n");
     writeFile(repo, "src/main.ts", "export const x = 1;\n");
@@ -59,7 +59,7 @@ describe("git-tree hasher", function () {
     expect(treeHashToBytes32(got.treeHashHex)).to.match(/^0x0{24}[0-9a-f]{40}$/);
   });
 
-  it("1a-wsl: matches Ubuntu git write-tree for the same fixture layout", async function () {
+  it("matches Ubuntu git write-tree for the same fixture layout", async function () {
     const probe = runGit(["--version"], { cwd: process.cwd(), host: "wsl" });
     if (probe.status !== 0) {
       this.skip();
@@ -80,7 +80,7 @@ describe("git-tree hasher", function () {
     expect(got.treeHashHex).to.equal(expected);
   });
 
-  it("1b: same-name different-content produces a different tree hash", async () => {
+  it("same-name different-content produces a different tree hash", async () => {
     const a = await mkTempRepo();
     const b = await mkTempRepo();
     writeFile(a, "payload.bin", Buffer.from("aaaaaaaa"));

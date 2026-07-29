@@ -26,20 +26,33 @@ The system is a **detective** control, not a preventive one: it converts silent 
 detectable mismatch. It does not detect an attacker who has stolen a project's anchoring key, which is
 bounded by per-repository keys and on-chain revocation rather than prevented.
 
-## Status
+## Supported networks
 
-| Component | State |
-|-----------|-------|
-| `AnchorRegistry` contract | Complete |
-| Test suite | 42 tests passing (contract, CLI, local-chain verify) |
-| Deploy script | Complete, verified locally and on testnets |
-| Testnet deployments | Arbitrum Sepolia and OP Sepolia live at `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
-| zkSync Era support | Not done; requires separate compiler toolchain |
-| Verifier CLI (`gpa`) | Tree-hash, verify, reverify, init, register, allowlist, anchor |
-| CI workflow templates | GitHub Actions and GitLab CI templates under `workflows/` |
-| Manifest schema | `manifest-schema/provenance-manifest.schema.json` |
-| Live CI anchoring | This repository anchors its own tags via `.github/workflows/` |
-| Evaluation evidence | Records and regeneration scripts under `evaluation/`; see `evaluation/README.md` for gaps |
+| Network | Status |
+|---------|--------|
+| Arbitrum Sepolia | Live at `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
+| OP Sepolia | Live at `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
+| Any EVM chain | Deployable with `scripts/deploy.ts` and a network entry in `hardhat.config.ts` |
+| zkSync Era | Not yet supported — needs the `zksolc` toolchain, see [Toolchain](#toolchain) |
+
+Anchoring to several chains at once is the intended configuration, so that no
+single chain's availability determines whether a release can be verified.
+
+## Verified properties
+
+Each claim below has a record under `evaluation/` with the evidence and a command
+to reproduce it. Full index in [`evaluation/README.md`](evaluation/README.md).
+
+- A live deployment refuses anchors from accounts outside the project allowlist —
+  `evaluation/access-control.md`
+- The anchored tree hash is identical on Windows, Linux, a CI runner, and an
+  independent reimplementation — `evaluation/cross-platform-determinism.md`
+- A tag push anchors on-chain with no human in the loop —
+  `evaluation/ci-end-to-end.md`
+- Gas per operation, measured on live deployments — `evaluation/gas-and-cost.md`
+
+If you deploy your own registry, run `npm run check:access-control` against it.
+A failure means the deployment is not what you think it is.
 
 ## Adopting this in your own repository
 
@@ -49,10 +62,42 @@ bounded by per-repository keys and on-chain revocation rather than prevented.
    `gpa allowlist add <address>`. Never reuse a personal wallet.
 4. Store that key as the `ANCHOR_DEPLOYER_KEY` repository secret, and optionally set a
    `GPA_NETWORKS` variable to restrict which networks are anchored.
-5. Copy `workflows/provenance-anchor.yml` to `.github/workflows/` and protect it with a branch
-   protection rule plus a CODEOWNERS entry, so the anchoring step cannot be silently edited.
+5. Copy `workflows/provenance-anchor.yml` to `.github/workflows/`, add a CODEOWNERS entry for it,
+   and protect the branch — **including `enforce_admins`**, see below.
 
 Pushing a `v*` tag then anchors that tag with no manual step.
+
+### Protect the workflow properly
+
+The anchoring job is the only thing that writes to the chain, so disabling it is the cheapest
+attack available to anyone with write access. Requiring pull requests and code-owner review is
+**not sufficient on its own**: GitHub exempts repository admins from branch protection by default,
+so an admin — the account a compromised maintainer holds — can push directly to the protected
+branch and GitHub will merely log that it happened.
+
+```bash
+gh api -X PUT repos/<owner>/<repo>/branches/main/protection --input - <<'JSON'
+{
+  "required_status_checks": null,
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "require_code_owner_reviews": true,
+    "required_approving_review_count": 1,
+    "dismiss_stale_reviews": true
+  },
+  "restrictions": null
+}
+JSON
+```
+
+`enforce_admins` is the field that matters. Note that a solo maintainer cannot merge under one
+required approval, since an author cannot approve their own pull request; use zero required
+approvals in that case, which still blocks direct pushes.
+
+The observed behaviour of both configurations is recorded in
+`evaluation/workflow-tamper-protection.md`. Even without any protection, editing the workflow
+changes the repository's tree hash, so the edit is detectable — but detection after a release is
+worse than refusal before one.
 
 ## Requirements
 
@@ -100,13 +145,14 @@ Use a dedicated key, never a personal wallet. Deployment records are written to
 
 ```
 contracts/          AnchorRegistry.sol
-test/               contract test suite
-scripts/            deployment and operational scripts
+test/               contract and CLI test suites
+scripts/            deployment, operational and measurement scripts
 deployments/        per-network deployment records
 cli/                verifier CLI (`gpa`)
 workflows/          CI templates for adopting projects
+.github/workflows/  this repository's own anchoring workflow
 manifest-schema/    JSON Schema for .provenance-manifest.json
-evaluation/         measurement scripts and archived data
+evaluation/         measured properties, evidence, and raw collected data
 ```
 
 `workflows/` holds templates that **adopting projects copy into their own repositories**. It is not CI
@@ -166,7 +212,8 @@ the log.
 
 ## Measured gas
 
-Solidity 0.8.28, optimizer enabled, 200 runs.
+Solidity 0.8.28, optimizer enabled, 200 runs. Figures from the local test suite
+(`npm run test:gas`), using short fixture reference names.
 
 | Operation | Gas |
 |-----------|-----|
@@ -178,12 +225,17 @@ Solidity 0.8.28, optimizer enabled, 200 runs.
 | `allowlistRemove` | 26,819 |
 | `transferOwnership` | 53,775 |
 
-These are units of work, fixed by the contract, and independent of network conditions. Currency cost
+These are units of work, fixed by the contract and independent of network conditions. Currency cost
 is gas multiplied by a live gas price, which no local or test network can meaningfully supply.
 
 A first anchor decomposes as 21,000 for the base transaction, 66,300 for three previously empty
 storage slots, and the remainder in calldata and the event. Supersession is cheaper than half a first
-anchor because those slots already hold values.
+anchor because those slots already hold values. Anchoring without an SBOM digest leaves one of those
+slots at zero and costs about 20,000 less, since writing zero over zero is free.
+
+The reference name is part of the calldata, so real tag names cost slightly more than the short
+fixtures used above. Figures measured against the live deployments, with real tag names, are in
+`evaluation/gas-and-cost.md`; run `npm run evidence` to reproduce them against any deployment.
 
 ## Testing
 

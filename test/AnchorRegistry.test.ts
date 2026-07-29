@@ -171,7 +171,6 @@ describe("AnchorRegistry", () => {
   });
 
   describe("allowlist enforcement", () => {
-    // Chapter 3 functional validation test 3a.
     it("rejects a submission from an account not allowlisted for the project", async () => {
       const { registry, attacker } = await loadFixture(registeredFixture);
 

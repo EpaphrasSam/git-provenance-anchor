@@ -1,7 +1,7 @@
 /**
  * Gathers the measurable facts about every live deployment into
- * evaluation/data/on-chain-evidence.json so the evaluation chapter can cite
- * figures that are re-derivable rather than copied from terminal output.
+ * evaluation/data/on-chain-evidence.json, so published figures are re-derivable
+ * rather than copied out of terminal output.
  *
  * Collects, per network: the deployment receipt, a receipt for every historical
  * anchor transaction, and gas estimates for each contract operation. Estimates

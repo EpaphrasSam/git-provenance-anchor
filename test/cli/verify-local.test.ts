@@ -58,12 +58,12 @@ describe("verify against local chain", function () {
     expect(bytes32ToTreeHashHex(onchain.treeHash)).to.equal(treeHex);
   });
 
-  it("tree hash of fixture matches the anchored value (validation 1a path)", async () => {
+  it("tree hash of fixture matches the anchored value", async () => {
     const got = await hashDirectory(fixture);
     expect(got.treeHashHex).to.equal(treeHex);
   });
 
-  it("content swap is visible as a hash mismatch (validation 1b)", async () => {
+  it("content swap is visible as a hash mismatch", async () => {
     const swapped = fs.mkdtempSync(path.join(os.tmpdir(), "gpa-swap-"));
     fs.writeFileSync(path.join(swapped, "hello.txt"), "HELLO VERIFY\n");
     fs.mkdirSync(path.join(swapped, "pkg"));

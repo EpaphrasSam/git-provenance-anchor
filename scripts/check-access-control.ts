@@ -1,15 +1,15 @@
 /**
- * Validation 3a: an address the project owner never allowlisted cannot write an
- * anchor to a live deployment.
+ * Confirms a live deployment refuses anchors from an account the project owner
+ * never allowlisted. Run this against your own registry after deploying it.
  *
  * Two observations per network. The simulated call decodes the custom error and
- * costs nothing; the sent transaction produces a failed receipt an examiner can
- * look up on a block explorer.
+ * costs nothing; --send additionally broadcasts, leaving a failed receipt that
+ * anyone can look up on a block explorer.
  *
  * Usage:
- *   npx ts-node --transpile-only scripts/validate-unauthorized-submitter.ts
- *   npx ts-node --transpile-only scripts/validate-unauthorized-submitter.ts --send
- *   npx ts-node --transpile-only scripts/validate-unauthorized-submitter.ts --network arbitrumSepolia
+ *   npm run check:access-control
+ *   npm run check:access-control -- --send
+ *   npm run check:access-control -- --network arbitrumSepolia
  */
 import * as fs from "fs";
 import * as path from "path";
@@ -190,7 +190,10 @@ async function main(): Promise<void> {
 
   const outDir = path.join(root, "evaluation", "data");
   fs.mkdirSync(outDir, { recursive: true });
-  const outFile = argValue("--out") ?? path.join(outDir, "validation-3a-unauthorized-submitter.json");
+  // Separate filenames per mode: a simulated run must not overwrite the record of
+  // a broadcast one, whose transaction hashes cannot be regenerated for free.
+  const defaultName = send ? "access-control.json" : "access-control-simulated.json";
+  const outFile = argValue("--out") ?? path.join(outDir, defaultName);
   fs.writeFileSync(
     outFile,
     `${JSON.stringify({ collectedAt: new Date().toISOString(), results }, null, 2)}\n`,

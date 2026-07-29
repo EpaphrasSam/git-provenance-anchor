@@ -1,32 +1,40 @@
-# Evaluation evidence
+# Measured properties
 
-Every figure the evaluation chapter cites should be traceable to a file here, and
-every file here should be regenerable by a command. Where a number came from a
-one-off observation that cannot be re-run — a transaction already mined, a CI run
-already finished — the transaction hash or run URL is recorded so a reader can
-check it independently.
+Claims this project makes about itself, with the evidence behind them and a
+command to reproduce each one. Where a figure came from an event that cannot be
+re-run — a transaction already mined, a CI run already finished — the transaction
+hash or run URL is recorded so it can be checked independently.
+
+If you deploy your own registry, the scripts here work against it too. They are
+operator tooling, not just documentation of this deployment.
 
 ## Records
 
-| File | Covers | Regenerate |
+| File | Claim | Reproduce |
 | --- | --- | --- |
-| `validation-3a-unauthorized-submitter.md` | An account outside the allowlist cannot write an anchor to either live deployment | `scripts/validate-unauthorized-submitter.ts --send` |
-| `validation-3b-branch-protection.md` | Branch protection on the anchoring workflow, and the default that silently permits admin bypass | manual, `gh api` calls recorded in the file |
-| `cross-platform-determinism.md` | The anchored tree hash is identical on Windows, WSL Linux, a CI runner, and an independent reimplementation | `scripts/tree-hashes.sh` per platform |
-| `ci-end-to-end.md` | Tag push to on-chain anchor with no human in the loop | push a tag; run URL recorded |
-| `gas-and-cost.md` | Gas units per operation, fees paid, and why the two anchor figures differ | `scripts/collect-evidence.ts` |
+| `access-control.md` | A live deployment refuses anchors from accounts outside the project allowlist | `npm run check:access-control -- --send` |
+| `cross-platform-determinism.md` | The anchored tree hash is identical on Windows, Linux, a CI runner, and an independent reimplementation | `scripts/tree-hashes.sh` on each platform |
+| `ci-end-to-end.md` | A tag push anchors on-chain with no human in the loop | push a `v*` tag; run URL recorded |
+| `gas-and-cost.md` | Gas per operation, why anchoring with an SBOM costs ~20k more, and how these differ from the test-suite figures | `npm run evidence` |
+| `workflow-tamper-protection.md` | Which GitHub branch protection configuration actually prevents the anchoring workflow being edited, and which only appears to | manual `gh api` calls, recorded in the file |
 
 ## Raw data
 
 | File | Produced by |
 | --- | --- |
-| `data/on-chain-evidence.json` | `scripts/collect-evidence.ts` |
-| `data/validation-3a-unauthorized-submitter.json` | `scripts/validate-unauthorized-submitter.ts` |
+| `data/on-chain-evidence.json` | `npm run evidence` |
+| `data/access-control.json` | `npm run check:access-control -- --send` |
 
-Both record the commit they were collected at, so a figure can be tied to a
-specific state of the source.
+Both stamp the commit they were collected at, so a figure can be tied to a
+specific state of the source. Neither requires a funded account, except for
+`--send`, which broadcasts and therefore needs gas.
 
-## Deployments under test
+A simulated access-control run writes to `data/access-control-simulated.json`,
+which is git-ignored. The two modes use separate filenames deliberately: a free
+simulated run must not overwrite a broadcast record, whose transaction hashes
+cannot be regenerated without spending again.
+
+## Deployments measured
 
 | Network | Chain ID | Registry |
 | --- | --- | --- |
@@ -36,30 +44,32 @@ specific state of the source.
 Both compiled with solc 0.8.28, optimizer enabled at 200 runs. Full deployment
 records, including gas and block numbers, are under `deployments/`.
 
-## Still missing
+## Two kinds of claim
+
+Most of what is recorded here is a property of this software: the allowlist check
+and the determinism of the tree hash are things the code does, and anyone can
+verify them from the chain and the repository.
+
+`workflow-tamper-protection.md` is different. It documents a property of GitHub,
+and exists to justify a configuration recommendation rather than to evidence a
+feature. The registry cannot prevent a workflow file being edited — that is a
+hosting-platform capability. What it can do is make the edit visible, because the
+workflow file sits inside the anchored tree. Presenting the platform setting as a
+capability of this system would overstate what the design achieves.
+
+## Not yet measured
 
 Listed so the gaps are visible rather than discovered late.
 
-- **zkSync Era.** No deployment. Requires the `@matterlabs/hardhat-zksync`
-  toolchain with `zksolc` pinned to a compatible version, which is why Hardhat is
-  held at 2.x. Its gas figures cannot be extrapolated from the two EVM rollups.
-- **Mainnet cost model.** Gas units are measured; converting them to currency
-  needs live mainnet base fee and blob base fee applied to the units and the
-  228-byte calldata size. No mainnet transactions are needed for this.
-- **Verification latency.** Never measured. Wall-clock time to verify a release,
-  and how tree hashing scales with repository size, are both unrecorded.
-- **Scale.** All measurements come from this repository, which is small. Behaviour
-  on a large history, or on a repository using Git LFS substantially, is unknown.
+- **zkSync Era.** No deployment. Needs the `@matterlabs/hardhat-zksync` toolchain
+  with `zksolc` pinned to a compatible version, which is why Hardhat is held at
+  2.x. Its gas figures cannot be extrapolated from the two EVM rollups.
+- **Mainnet cost.** Gas units are measured; converting them to currency needs live
+  mainnet base fee and blob base fee applied to the units and the 228-byte
+  calldata size. No mainnet transactions required.
+- **Verification latency.** Wall-clock time to verify a release, and how tree
+  hashing scales with repository size, are both unrecorded.
+- **Scale.** Every measurement comes from this repository, which is small.
+  Behaviour on a large history, or one using Git LFS substantially, is unknown.
 - **GitLab CI.** The twin workflow under `workflows/` has never run against a live
   GitLab instance.
-- **Comparison.** No side-by-side against Sigstore or in-toto.
-
-## A note on what these records can and cannot support
-
-Two of the items here are properties of the artifact: the allowlist check and the
-determinism of the tree hash are things this code does, and they are verifiable by
-anyone from the chain and the repository. Branch protection is not — it is a
-property of the hosting platform, and the record exists to justify a
-recommendation to adopters rather than to evidence a feature. Keeping that
-distinction visible matters, because presenting a platform setting as a system
-capability would overstate what the design achieves.

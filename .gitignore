@@ -13,6 +13,7 @@ deployer-address.txt
 .ci-key
 
 evaluation/data/tmp/
+evaluation/data/*-simulated.json
 
 deployments/hardhat.json
 deployments/localhost.json
