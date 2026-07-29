@@ -1,0 +1,2 @@
+# Keep object-store and archive bytes identical across Windows and Linux.
+* text=auto eol=lf

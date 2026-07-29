@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/EpaphrasSam/git-provenance-anchor/manifest-schema/provenance-manifest.schema.json",
+  "title": "ProvenanceManifest",
+  "description": "Repository-tracked declaration of on-chain project identity and expected artifact extras for git-provenance-anchor verification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "projectId"],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1,
+      "description": "Manifest format version. Currently only 1 is accepted."
+    },
+    "projectId": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{64}$",
+      "description": "Self-chosen on-chain project identifier (bytes32 hex)."
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Human-readable project label stored on registration. Not used for authorisation."
+    },
+    "networks": {
+      "type": "array",
+      "description": "Deployment network keys under deployments/ to query during verify (default: all known testnets).",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "extras": {
+      "type": "array",
+      "description": "Paths expected in release artifacts but absent from the anchored Git tree.",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "reason", "source"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Relative path or glob (forward slashes) of an expected extra file or directory tree."
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Why this path is allowed to appear outside the anchored tree."
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What generates the path (tool, script, or process)."
+          }
+        }
+      }
+    }
+  }
+}

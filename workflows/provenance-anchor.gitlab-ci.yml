@@ -1,0 +1,23 @@
+# GitLab CI twin of workflows/provenance-anchor.yml.
+# Copy into an adopting repository and adjust the image/cache to local conventions.
+# Requires CI variable ANCHOR_DEPLOYER_KEY (masked, protected).
+
+stages:
+  - anchor
+
+provenance-anchor:
+  stage: anchor
+  image: node:20-bookworm
+  rules:
+    - if: $CI_COMMIT_TAG
+  before_script:
+    - apt-get update && apt-get install -y curl ca-certificates git
+    - curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+  script:
+    - TAG="$CI_COMMIT_TAG"
+    - TREE=$(git rev-parse "${TAG}^{tree}")
+    - echo "Tree hash for ${TAG}: ${TREE}"
+    - syft dir:. -o cyclonedx-json=sbom.cdx.json
+    - SBOM_HASH=$(sha256sum sbom.cdx.json | awk '{print $1}')
+    - npm install --no-save ethers dotenv ts-node typescript
+    - npx ts-node scripts/submit-anchor.ts --tag "$TAG" --tree-hash "$TREE" --sbom-hash "$SBOM_HASH"

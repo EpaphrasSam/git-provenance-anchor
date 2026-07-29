@@ -7,24 +7,37 @@
   "engines": {
     "node": ">=20"
   },
+  "bin": {
+    "gpa": "./cli/bin/gpa.js"
+  },
   "scripts": {
     "build": "hardhat compile",
     "test": "hardhat test",
+    "test:cli": "hardhat test test/cli/**/*.ts",
     "test:gas": "cross-env REPORT_GAS=true hardhat test",
     "coverage": "hardhat coverage",
     "clean": "hardhat clean",
+    "gpa": "ts-node --transpile-only cli/src/index.ts",
     "deploy:local": "hardhat run scripts/deploy.ts",
     "deploy:arbitrum-sepolia": "hardhat run scripts/deploy.ts --network arbitrumSepolia",
     "deploy:op-sepolia": "hardhat run scripts/deploy.ts --network opSepolia"
   },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "commander": "15.0.0",
+    "dotenv": "16.6.1",
+    "ethers": "6.17.0",
+    "micromatch": "4.0.8",
+    "tar": "7.5.22"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "5.0.0",
     "@types/chai": "4.3.20",
+    "@types/micromatch": "4.0.10",
     "@types/mocha": "10.0.10",
     "@types/node": "20.19.43",
+    "@types/tar": "6.1.13",
     "cross-env": "7.0.3",
-    "dotenv": "16.6.1",
-    "ethers": "6.17.0",
     "hardhat": "2.29.0",
     "ts-node": "10.9.2",
     "typescript": "5.9.3"

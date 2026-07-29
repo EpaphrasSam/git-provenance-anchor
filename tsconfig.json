@@ -9,5 +9,9 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["./hardhat.config.ts", "./test", "./scripts", "./cli"]
+  "include": ["./hardhat.config.ts", "./test", "./scripts", "./cli"],
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true
+  }
 }

@@ -8,6 +8,8 @@ coverage.json
 .env
 .env.*
 !.env.example
+deployer-address.txt
+.deployer-address.txt
 
 evaluation/data/tmp/
 

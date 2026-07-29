@@ -14,12 +14,12 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {},
     arbitrumSepolia: {
-      url: process.env.ARBITRUM_SEPOLIA_RPC_URL ?? "https://sepolia-rollup.arbitrum.io/rpc",
+      url: process.env.ARBITRUM_SEPOLIA_RPC_URL || "https://sepolia-rollup.arbitrum.io/rpc",
       accounts: process.env.ANCHOR_DEPLOYER_KEY ? [process.env.ANCHOR_DEPLOYER_KEY] : [],
       chainId: 421614,
     },
     opSepolia: {
-      url: process.env.OP_SEPOLIA_RPC_URL ?? "https://sepolia.optimism.io",
+      url: process.env.OP_SEPOLIA_RPC_URL || "https://sepolia.optimism.io",
       accounts: process.env.ANCHOR_DEPLOYER_KEY ? [process.env.ANCHOR_DEPLOYER_KEY] : [],
       chainId: 11155420,
     },

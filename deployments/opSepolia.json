@@ -1,0 +1,16 @@
+{
+  "contract": "AnchorRegistry",
+  "address": "0x253F20c2b74dc44B4ea908bE6674EEC8deA72622",
+  "network": "opSepolia",
+  "chainId": 11155420,
+  "deployer": "0x52eaE29937b149B7a0f3D7516C81aD561B96c043",
+  "transactionHash": "0x17c6b17dec5b86a77f1984ae6f77487ad5cd7fa3b94e38e421b17cba4f90182b",
+  "blockNumber": 46765372,
+  "gasUsed": "879549",
+  "solcVersion": "0.8.28",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200
+  },
+  "deployedAt": "2026-07-29T13:54:45.408Z"
+}

@@ -32,12 +32,12 @@ bounded by per-repository keys and on-chain revocation rather than prevented.
 |-----------|-------|
 | `AnchorRegistry` contract | Complete |
 | Contract test suite | 26 tests passing |
-| Deploy script | Complete, verified locally |
-| Testnet deployments | Not done |
+| Deploy script | Complete, verified locally and on testnets |
+| Testnet deployments | Arbitrum Sepolia and OP Sepolia live at `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
 | zkSync Era support | Not done; requires separate compiler toolchain |
-| Verifier CLI | Not started |
-| CI workflow templates | Not started |
-| Manifest schema | Not started |
+| Verifier CLI (`gpa`) | Tree-hash, verify, reverify, init, register, allowlist, anchor |
+| CI workflow templates | GitHub Actions and GitLab CI templates under `workflows/` |
+| Manifest schema | `manifest-schema/provenance-manifest.schema.json` |
 
 ## Requirements
 
@@ -48,10 +48,27 @@ Node.js 20 or later. No wallet or funded account is needed to compile, test, or 
 ```bash
 npm install
 npm run build          # compile contracts
-npm test               # run the test suite
+npm test               # contract + CLI tests (includes Windows and WSL Git oracles)
 npm run test:gas       # run tests with a gas report
 npm run deploy:local   # deploy to an ephemeral in-process chain
+npm run gpa -- --help  # verifier / maintainer CLI
 ```
+
+### CLI quick path
+
+```bash
+npm run gpa -- init
+npm run gpa -- register
+npm run gpa -- anchor --tag v1.0.0
+# Prefer --ref on Windows so core.autocrlf cannot rewrite archive bytes:
+npm run gpa -- verify --ref v1.0.0 --tag v1.0.0
+npm run gpa -- reverify
+```
+
+`verify` against a directory hashes the files on disk. Release tarballs and `verify --ref`
+read object-store bytes, which is what CI anchors. On Windows, a plain `git archive` with
+`core.autocrlf=true` can inject CRLF and fail verification even when the tag is honest —
+`--ref` forces `core.autocrlf=false` for the temporary export.
 
 Deploying to a testnet needs a funded key. Copy `.env.example` to `.env`, set
 `ANCHOR_DEPLOYER_KEY`, then:
@@ -71,9 +88,9 @@ contracts/          AnchorRegistry.sol
 test/               contract test suite
 scripts/            deployment and operational scripts
 deployments/        per-network deployment records
-cli/                verifier (not yet implemented)
-workflows/          CI templates for adopting projects (not yet implemented)
-manifest-schema/    JSON Schema for .provenance-manifest.json (not yet implemented)
+cli/                verifier CLI (`gpa`)
+workflows/          CI templates for adopting projects
+manifest-schema/    JSON Schema for .provenance-manifest.json
 evaluation/         measurement scripts and archived data
 ```
 
