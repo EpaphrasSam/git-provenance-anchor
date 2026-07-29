@@ -1,0 +1,153 @@
+{
+  "collectedAt": "2026-07-29T17:49:14.810Z",
+  "commit": "91835dc9026e67a7165c72802de367435221e2e2",
+  "projectId": "0xd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e",
+  "networks": [
+    {
+      "network": "arbitrumSepolia",
+      "chainId": 421614,
+      "registry": "0x253F20c2b74dc44B4ea908bE6674EEC8deA72622",
+      "deployedAt": "2026-07-29T13:54:55.961Z",
+      "solcVersion": "0.8.28",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "deploymentGasUsed": "879549",
+      "currentGasPriceWei": "22642000",
+      "transactions": [
+        {
+          "label": "deployment",
+          "transactionHash": "0x22e20deb4fd5d3df3e83858d18afbdffe58d536dfd42eae4b4c50d4194f2471b",
+          "blockNumber": 292594214,
+          "status": 1,
+          "gasUsed": "879549",
+          "effectiveGasPrice": "151046000",
+          "feeWei": "132852358254000",
+          "feeEth": "0.000132852358254",
+          "calldataBytes": 3856
+        },
+        {
+          "label": "anchor v0.1.0-m1 rev1",
+          "transactionHash": "0x55a36483d3839946ccb03036a91e86f513b9aa10318c173872948f81e8288ee9",
+          "blockNumber": 292606693,
+          "status": 1,
+          "gasUsed": "79276",
+          "effectiveGasPrice": "25334000",
+          "feeWei": "2008378184000",
+          "feeEth": "0.000002008378184",
+          "calldataBytes": 228
+        },
+        {
+          "label": "anchor v0.2.0-m2 rev1",
+          "transactionHash": "0x09c0b237f7912be8038e8c14b3edbdedc9e014357e0ed033412b46292c2d564b",
+          "blockNumber": 292611039,
+          "status": 1,
+          "gasUsed": "79276",
+          "effectiveGasPrice": "71236000",
+          "feeWei": "5647305136000",
+          "feeEth": "0.000005647305136",
+          "calldataBytes": 228
+        },
+        {
+          "label": "anchor v0.3.0-m3 rev1",
+          "transactionHash": "0xa6746211c2850f772e1588ea8fd7144f69cb52b4e063b2ac89aa2038a9e5119c",
+          "blockNumber": 292628622,
+          "status": 1,
+          "gasUsed": "99548",
+          "effectiveGasPrice": "24710000",
+          "feeWei": "2459831080000",
+          "feeEth": "0.00000245983108",
+          "calldataBytes": 228
+        }
+      ],
+      "gasEstimates": [
+        {
+          "operation": "anchor (re-anchor existing tag)",
+          "gasUnits": "48791"
+        },
+        {
+          "operation": "anchor (new tag, first revision)",
+          "gasUnits": "100755"
+        },
+        {
+          "operation": "allowlistAdd",
+          "gasUnits": "49066"
+        }
+      ]
+    },
+    {
+      "network": "opSepolia",
+      "chainId": 11155420,
+      "registry": "0x253F20c2b74dc44B4ea908bE6674EEC8deA72622",
+      "deployedAt": "2026-07-29T13:54:45.408Z",
+      "solcVersion": "0.8.28",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "deploymentGasUsed": "879549",
+      "currentGasPriceWei": "1000250",
+      "transactions": [
+        {
+          "label": "deployment",
+          "transactionHash": "0x17c6b17dec5b86a77f1984ae6f77487ad5cd7fa3b94e38e421b17cba4f90182b",
+          "blockNumber": 46765372,
+          "status": 1,
+          "gasUsed": "879549",
+          "effectiveGasPrice": "1000250",
+          "feeWei": "879768887250",
+          "feeEth": "0.00000087976888725",
+          "calldataBytes": 3856
+        },
+        {
+          "label": "anchor v0.1.0-m1 rev1",
+          "transactionHash": "0x8bc8ef2a68afd20ca5b8922597baa4897de08c2a3e7dbcd295c60ab83cc4d2ad",
+          "blockNumber": 46766905,
+          "status": 1,
+          "gasUsed": "79276",
+          "effectiveGasPrice": "1000250",
+          "feeWei": "79295819000",
+          "feeEth": "0.000000079295819",
+          "calldataBytes": 228
+        },
+        {
+          "label": "anchor v0.2.0-m2 rev1",
+          "transactionHash": "0x1cd43371ef83b001d0a33736d0bc5ee087dcb7087f32a863e62312f17641d684",
+          "blockNumber": 46767453,
+          "status": 1,
+          "gasUsed": "79276",
+          "effectiveGasPrice": "1000250",
+          "feeWei": "79295819000",
+          "feeEth": "0.000000079295819",
+          "calldataBytes": 228
+        },
+        {
+          "label": "anchor v0.3.0-m3 rev1",
+          "transactionHash": "0xb4b718d291afe83de1dfa2176d509696edc815cf6705624a8a840631b2361997",
+          "blockNumber": 46769618,
+          "status": 1,
+          "gasUsed": "99548",
+          "effectiveGasPrice": "1000250",
+          "feeWei": "99572887000",
+          "feeEth": "0.000000099572887",
+          "calldataBytes": 228
+        }
+      ],
+      "gasEstimates": [
+        {
+          "operation": "anchor (re-anchor existing tag)",
+          "gasUnits": "48791"
+        },
+        {
+          "operation": "anchor (new tag, first revision)",
+          "gasUnits": "100755"
+        },
+        {
+          "operation": "allowlistAdd",
+          "gasUnits": "49066"
+        }
+      ]
+    }
+  ]
+}

@@ -31,7 +31,7 @@ bounded by per-repository keys and on-chain revocation rather than prevented.
 | Component | State |
 |-----------|-------|
 | `AnchorRegistry` contract | Complete |
-| Contract test suite | 26 tests passing |
+| Test suite | 42 tests passing (contract, CLI, local-chain verify) |
 | Deploy script | Complete, verified locally and on testnets |
 | Testnet deployments | Arbitrum Sepolia and OP Sepolia live at `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
 | zkSync Era support | Not done; requires separate compiler toolchain |
@@ -39,6 +39,7 @@ bounded by per-repository keys and on-chain revocation rather than prevented.
 | CI workflow templates | GitHub Actions and GitLab CI templates under `workflows/` |
 | Manifest schema | `manifest-schema/provenance-manifest.schema.json` |
 | Live CI anchoring | This repository anchors its own tags via `.github/workflows/` |
+| Evaluation evidence | Records and regeneration scripts under `evaluation/`; see `evaluation/README.md` for gaps |
 
 ## Adopting this in your own repository
 

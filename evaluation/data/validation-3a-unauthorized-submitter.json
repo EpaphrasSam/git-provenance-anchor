@@ -1,0 +1,59 @@
+{
+  "collectedAt": "2026-07-29T17:48:08.835Z",
+  "results": [
+    {
+      "network": "arbitrumSepolia",
+      "chainId": 421614,
+      "registry": "0x253F20c2b74dc44B4ea908bE6674EEC8deA72622",
+      "projectId": "0xd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e",
+      "ref": "v0.3.0-m3",
+      "unauthorizedAddress": "0x9F6C3cF3633b6d13F32B1d8f35267A81E4492b9E",
+      "allowlistedBeforeAttempt": false,
+      "anchorUnchanged": true,
+      "simulated": {
+        "attempted": true,
+        "reverted": true,
+        "errorName": "NotAllowlisted",
+        "errorArgs": {
+          "projectId": "0xd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e",
+          "caller": "0x9F6C3cF3633b6d13F32B1d8f35267A81E4492b9E"
+        },
+        "rawData": "0x46a087dcd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e0000000000000000000000009f6c3cf3633b6d13f32b1d8f35267a81e4492b9e"
+      },
+      "sent": {
+        "attempted": true,
+        "reverted": true,
+        "transactionHash": "0xb2f9c47dd4b89da6c50b35c2f2bc89eb52631e447304abe3bb5fbd19114329f2",
+        "status": 0,
+        "gasUsed": "28111"
+      }
+    },
+    {
+      "network": "opSepolia",
+      "chainId": 11155420,
+      "registry": "0x253F20c2b74dc44B4ea908bE6674EEC8deA72622",
+      "projectId": "0xd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e",
+      "ref": "v0.3.0-m3",
+      "unauthorizedAddress": "0xF41E78803452A454Dc14A6a48a940b26Ead5cB48",
+      "allowlistedBeforeAttempt": false,
+      "anchorUnchanged": true,
+      "simulated": {
+        "attempted": true,
+        "reverted": true,
+        "errorName": "NotAllowlisted",
+        "errorArgs": {
+          "projectId": "0xd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e",
+          "caller": "0xF41E78803452A454Dc14A6a48a940b26Ead5cB48"
+        },
+        "rawData": "0x46a087dcd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e000000000000000000000000f41e78803452a454dc14a6a48a940b26ead5cb48"
+      },
+      "sent": {
+        "attempted": true,
+        "reverted": true,
+        "transactionHash": "0xefdcdb7acd5c2f885cd7b30e4560bb92e9e4604b54807b128633b3047a9f4256",
+        "status": 0,
+        "gasUsed": "28111"
+      }
+    }
+  ]
+}

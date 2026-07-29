@@ -46,6 +46,15 @@ export const ANCHOR_REGISTRY_ABI = [
   "function anchorKey(bytes32 projectId, uint8 kind, string ref) pure returns (bytes32)",
   "event AnchorSubmitted(bytes32 indexed projectId, uint8 indexed kind, string ref, bytes32 treeHash, bytes32 sbomHash, address submitter, uint32 revision)",
   "event ProjectRegistered(bytes32 indexed projectId, address indexed owner, string label)",
+  "error ProjectIdZero()",
+  "error ProjectAlreadyRegistered(bytes32 projectId)",
+  "error ProjectNotRegistered(bytes32 projectId)",
+  "error NotProjectOwner(bytes32 projectId, address caller)",
+  "error NotAllowlisted(bytes32 projectId, address caller)",
+  "error UnknownKind(uint8 kind)",
+  "error TreeHashZero()",
+  "error EmptyRef()",
+  "error ZeroAddress()",
 ] as const;
 
 export function findRepoRoot(start: string = process.cwd()): string {
