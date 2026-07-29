@@ -16,7 +16,7 @@ name: provenance-anchor
 on:
   push:
     tags:
-      - "v*"
+      - "zzz-never-matches-*"
 
 permissions:
   contents: read
