@@ -19,5 +19,8 @@ provenance-anchor:
     - echo "Tree hash for ${TAG}: ${TREE}"
     - syft dir:. -o cyclonedx-json=sbom.cdx.json
     - SBOM_HASH=$(sha256sum sbom.cdx.json | awk '{print $1}')
-    - npm install --no-save ethers dotenv ts-node typescript
-    - npx ts-node scripts/submit-anchor.ts --tag "$TAG" --tree-hash "$TREE" --sbom-hash "$SBOM_HASH"
+    - npm ci
+    - npx ts-node --transpile-only scripts/submit-anchor.ts --tag "$TAG" --tree-hash "$TREE" --sbom-hash "$SBOM_HASH"
+  artifacts:
+    paths:
+      - sbom.cdx.json

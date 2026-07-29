@@ -4,6 +4,7 @@
  *
  * Usage:
  *   npx ts-node scripts/submit-anchor.ts --tag v1.0.0 --tree-hash <40hex> [--sbom-hash <64hex>]
+ *   npx ts-node scripts/submit-anchor.ts --tag v1.0.0 --tree-hash <40hex> --dry-run
  */
 import * as path from "path";
 import * as dotenv from "dotenv";
@@ -23,6 +24,10 @@ function argValue(flag: string): string | undefined {
   const idx = process.argv.indexOf(flag);
   if (idx === -1 || idx + 1 >= process.argv.length) return undefined;
   return process.argv[idx + 1];
+}
+
+function hasFlag(flag: string): boolean {
+  return process.argv.includes(flag);
 }
 
 async function main(): Promise<void> {
@@ -52,11 +57,38 @@ async function main(): Promise<void> {
     ? fromEnv.split(/[\s,]+/).filter(Boolean)
     : [...loadDeployments(root).keys()];
 
+  const dryRun = hasFlag("--dry-run");
+  console.log(`project   ${projectId}`);
+  console.log(`tag       ${tag}`);
+  console.log(`treeHash  ${treeBytes32}`);
+  console.log(`sbomHash  ${sbomBytes32}`);
+  console.log(`networks  ${networks.join(", ")}`);
+
   for (const network of networks) {
     const { contract, deployment, wallet } = getWriteContract(root, network);
     console.log(
       `anchor ${tag} on ${network} @ ${deployment.address} from ${wallet.address}`
     );
+
+    const allowed = await contract.isAllowlisted(projectId, wallet.address);
+    if (!allowed) {
+      throw new Error(
+        `${wallet.address} is not allowlisted for ${projectId} on ${network}`
+      );
+    }
+
+    if (dryRun) {
+      const gas = await contract.anchor.estimateGas(
+        projectId,
+        KIND_TAG,
+        tag,
+        treeBytes32,
+        sbomBytes32
+      );
+      console.log(`  dry run ok, estimated gas ${gas}`);
+      continue;
+    }
+
     const tx = await contract.anchor(projectId, KIND_TAG, tag, treeBytes32, sbomBytes32);
     const receipt = await tx.wait();
     console.log(`  tx=${receipt.hash}`);

@@ -1,22 +1,14 @@
-# GitHub Actions template — copy into an adopting repository as
-# `.github/workflows/provenance-anchor.yml`.
-#
-# Triggered only by tag pushes. Never runs the project's own build scripts.
-#
-# Requires a repository secret:
-#   ANCHOR_DEPLOYER_KEY  — a dedicated key allowlisted for the project's on-chain id
-# Optional repository variable:
-#   GPA_NETWORKS         — space-separated deployment names (default: every deployments/ record)
-#
-# Assumes the repository has a `.provenance-manifest.json` and a `deployments/` directory,
-# both produced by `gpa init` and the deploy script.
-
 name: provenance-anchor
 
 on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to anchor
+        required: true
 
 permissions:
   contents: read
@@ -25,10 +17,19 @@ jobs:
   anchor:
     runs-on: ubuntu-latest
     steps:
+      - name: Resolve target tag
+        id: target
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout tagged state
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ steps.target.outputs.tag }}
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -43,9 +44,8 @@ jobs:
       - name: Compute tree hash
         id: tree
         run: |
-          TAG="${GITHUB_REF_NAME}"
+          TAG="${{ steps.target.outputs.tag }}"
           TREE=$(git rev-parse "${TAG}^{tree}")
-          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "tree=${TREE}" >> "$GITHUB_OUTPUT"
           echo "Tree hash for ${TAG}: ${TREE}"
 
@@ -58,11 +58,12 @@ jobs:
           syft dir:. -o cyclonedx-json=sbom.cdx.json
           SBOM_HASH=$(sha256sum sbom.cdx.json | awk '{print $1}')
           echo "hash=${SBOM_HASH}" >> "$GITHUB_OUTPUT"
+          echo "SBOM sha256: ${SBOM_HASH}"
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
         with:
-          name: sbom-${{ steps.tree.outputs.tag }}
+          name: sbom-${{ steps.target.outputs.tag }}
           path: sbom.cdx.json
 
       - name: Submit anchors
@@ -71,6 +72,12 @@ jobs:
           GPA_NETWORKS: ${{ vars.GPA_NETWORKS }}
         run: |
           npx ts-node --transpile-only scripts/submit-anchor.ts \
-            --tag "${{ steps.tree.outputs.tag }}" \
+            --tag "${{ steps.target.outputs.tag }}" \
             --tree-hash "${{ steps.tree.outputs.tree }}" \
             --sbom-hash "${{ steps.sbom.outputs.hash }}"
+
+      - name: Verify the anchor we just wrote
+        run: |
+          npx ts-node --transpile-only cli/src/index.ts verify \
+            --ref "${{ steps.target.outputs.tag }}" \
+            --tag "${{ steps.target.outputs.tag }}"

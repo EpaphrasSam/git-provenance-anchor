@@ -10,6 +10,7 @@ coverage.json
 !.env.example
 deployer-address.txt
 .deployer-address.txt
+.ci-key
 
 evaluation/data/tmp/
 

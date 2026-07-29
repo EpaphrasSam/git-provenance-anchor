@@ -38,6 +38,20 @@ bounded by per-repository keys and on-chain revocation rather than prevented.
 | Verifier CLI (`gpa`) | Tree-hash, verify, reverify, init, register, allowlist, anchor |
 | CI workflow templates | GitHub Actions and GitLab CI templates under `workflows/` |
 | Manifest schema | `manifest-schema/provenance-manifest.schema.json` |
+| Live CI anchoring | This repository anchors its own tags via `.github/workflows/` |
+
+## Adopting this in your own repository
+
+1. Deploy `AnchorRegistry`, or reuse an existing deployment record in `deployments/`.
+2. Run `gpa init` to create `.provenance-manifest.json`, then `gpa register`.
+3. Generate a **dedicated** key for CI, fund it on each target network, and authorise it with
+   `gpa allowlist add <address>`. Never reuse a personal wallet.
+4. Store that key as the `ANCHOR_DEPLOYER_KEY` repository secret, and optionally set a
+   `GPA_NETWORKS` variable to restrict which networks are anchored.
+5. Copy `workflows/provenance-anchor.yml` to `.github/workflows/` and protect it with a branch
+   protection rule plus a CODEOWNERS entry, so the anchoring step cannot be silently edited.
+
+Pushing a `v*` tag then anchors that tag with no manual step.
 
 ## Requirements
 
