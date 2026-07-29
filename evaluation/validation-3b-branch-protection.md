@@ -81,6 +81,12 @@ require pull requests, require code-owner review — does not survive a
 compromised maintainer account, because the exemption is on by default and has
 to be turned off explicitly. Arm 2 is the configuration adopters need.
 
+The registry cannot enforce any of this. Preventing a workflow edit is a
+platform capability, and the recommendation in Ch. 3 is scoped accordingly:
+branch protection with `enforce_admins` enabled is advice to adopters, not a
+property the system verifies. What the system contributes is that the edit
+cannot be made quietly, since the workflow file is inside the anchored tree.
+
 ## Re-applying the arm 2 configuration
 
 Protection was removed from `main` after the test. With one maintainer, arm 2
@@ -106,11 +112,3 @@ JSON
 
 `enforce_admins` is the field that matters. Everything else in that payload was
 already true in arm 1, where the attack succeeded.
-
-## Result
-
-The registry cannot enforce any of this. Preventing a workflow edit is a
-platform capability, and the recommendation in Ch. 3 is scoped accordingly:
-branch protection with `enforce_admins` enabled is advice to adopters, not a
-property the system verifies. What the system contributes is that the edit
-cannot be made quietly, since the workflow file is inside the anchored tree.
