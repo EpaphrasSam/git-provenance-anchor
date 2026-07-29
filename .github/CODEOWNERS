@@ -1,1 +1,3 @@
-/.github/workflows/provenance-anchor.yml @EpaphrasSam
+/workflows/ @EpaphrasSam
+/.github/ @EpaphrasSam
+/contracts/ @EpaphrasSam
