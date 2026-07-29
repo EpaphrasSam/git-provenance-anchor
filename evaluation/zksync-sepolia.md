@@ -81,8 +81,17 @@ Arbitrum or OP figures. Currency conversion still needs the live zkSync fee mode
 
 ```bash
 npx ts-node --transpile-only scripts/bridge-zksync.ts --amount 0.008
+npx ts-node --transpile-only scripts/fund-ci-zksync.ts --amount 0.002
 ```
 
-Bridges Sepolia ETH through the official deposit path. Credits typically appear
-on L2 within a few minutes; the script polls balance rather than waiting on
-finalization, which can hang.
+The first bridges Sepolia ETH to the deployer through the official deposit path.
+The second moves a slice to the CI key so GitHub Actions can submit. Credits
+typically appear on L2 within a few minutes; the bridge script polls balance
+rather than waiting on finalization, which can hang.
+
+## CI
+
+With `GPA_NETWORKS` including `zkSyncSepolia` and the CI key funded, tag
+`v0.4.0-m4` was anchored from Actions on all three networks in
+[run 30483333326](https://github.com/EpaphrasSam/git-provenance-anchor/actions/runs/30483333326).
+See `ci-end-to-end.md`.
