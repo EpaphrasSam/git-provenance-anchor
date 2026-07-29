@@ -1,0 +1,32 @@
+{
+  "name": "git-provenance-anchor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Trust-minimized software provenance for Git using selective Layer-2 blockchain anchoring",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "hardhat compile",
+    "test": "hardhat test",
+    "test:gas": "cross-env REPORT_GAS=true hardhat test",
+    "coverage": "hardhat coverage",
+    "clean": "hardhat clean",
+    "deploy:local": "hardhat run scripts/deploy.ts",
+    "deploy:arbitrum-sepolia": "hardhat run scripts/deploy.ts --network arbitrumSepolia",
+    "deploy:op-sepolia": "hardhat run scripts/deploy.ts --network opSepolia"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "@types/chai": "4.3.20",
+    "@types/mocha": "10.0.10",
+    "@types/node": "20.19.43",
+    "cross-env": "7.0.3",
+    "dotenv": "16.6.1",
+    "ethers": "6.17.0",
+    "hardhat": "2.29.0",
+    "ts-node": "10.9.2",
+    "typescript": "5.9.3"
+  }
+}

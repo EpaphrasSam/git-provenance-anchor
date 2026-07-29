@@ -1,0 +1,33 @@
+import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
+const config: HardhatUserConfig = {
+  solidity: {
+    version: "0.8.28",
+    settings: {
+      optimizer: { enabled: true, runs: 200 },
+    },
+  },
+  networks: {
+    hardhat: {},
+    arbitrumSepolia: {
+      url: process.env.ARBITRUM_SEPOLIA_RPC_URL ?? "https://sepolia-rollup.arbitrum.io/rpc",
+      accounts: process.env.ANCHOR_DEPLOYER_KEY ? [process.env.ANCHOR_DEPLOYER_KEY] : [],
+      chainId: 421614,
+    },
+    opSepolia: {
+      url: process.env.OP_SEPOLIA_RPC_URL ?? "https://sepolia.optimism.io",
+      accounts: process.env.ANCHOR_DEPLOYER_KEY ? [process.env.ANCHOR_DEPLOYER_KEY] : [],
+      chainId: 11155420,
+    },
+  },
+  gasReporter: {
+    enabled: process.env.REPORT_GAS === "true",
+    currency: "USD",
+  },
+};
+
+export default config;
