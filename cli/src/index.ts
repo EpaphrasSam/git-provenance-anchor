@@ -13,6 +13,7 @@ import {
   loadDeployments,
 } from "./lib/chain";
 import { hashArtifact, hashGitRef, treeHashToBytes32 } from "./lib/git-tree";
+import { toJson } from "./lib/json";
 import { gitTreeHash } from "./lib/git-exec";
 import {
   loadManifest,
@@ -48,16 +49,12 @@ program
     try {
       if (opts.json) {
         console.log(
-          JSON.stringify(
-            {
-              treeHash: result.treeHashHex,
-              bytes32: treeHashToBytes32(result.treeHashHex),
-              lfsPointers: result.lfsPointers,
-              pathCount: result.paths.length,
-            },
-            null,
-            2
-          )
+          toJson({
+            treeHash: result.treeHashHex,
+            bytes32: treeHashToBytes32(result.treeHashHex),
+            lfsPointers: result.lfsPointers,
+            pathCount: result.paths.length,
+          })
         );
       } else {
         console.log(result.treeHashHex);
@@ -150,7 +147,7 @@ program
         networks: opts.network.length > 0 ? opts.network : undefined,
       });
       if (opts.json) {
-        console.log(JSON.stringify(report, null, 2));
+        console.log(toJson(report));
       } else {
         console.log(`status: ${report.status}`);
         console.log(`project: ${report.projectId}`);
@@ -212,7 +209,7 @@ program
           listAnchorsFromEvents(repoRoot, network, projectId),
       });
       if (opts.json) {
-        console.log(JSON.stringify(result, null, 2));
+        console.log(toJson(result));
       } else {
         console.log(`status: ${result.status}`);
         for (const item of result.items) {
@@ -390,7 +387,7 @@ program
       all.push(...latestAnchors(events));
     }
     if (opts.json) {
-      console.log(JSON.stringify(all, null, 2));
+      console.log(toJson(all));
     } else {
       for (const a of all) {
         console.log(

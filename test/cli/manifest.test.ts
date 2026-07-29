@@ -9,6 +9,7 @@ import {
   type ProvenanceManifest,
 } from "../../cli/src/lib/manifest";
 import { treeHashToBytes32, bytes32ToTreeHashHex } from "../../cli/src/lib/git-tree";
+import { toJson } from "../../cli/src/lib/json";
 
 describe("manifest + padding", () => {
   it("round-trips left-padded SHA-1 tree hashes", () => {
@@ -38,6 +39,15 @@ describe("manifest + padding", () => {
     const loaded = loadManifest(written);
     expect(loaded.projectId).to.equal(manifest.projectId);
     expect(loaded.extras?.[0].path).to.equal("dist/**");
+  });
+
+  it("serialises the BigInt timestamps that chain reads return", () => {
+    const report = { timestamp: 1785341776n, revision: 1 };
+    expect(() => JSON.stringify(report)).to.throw(/BigInt/);
+    expect(JSON.parse(toJson(report))).to.deep.equal({
+      timestamp: "1785341776",
+      revision: 1,
+    });
   });
 
   it("rejects an invalid project id", () => {
