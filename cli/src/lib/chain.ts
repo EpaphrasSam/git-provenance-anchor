@@ -14,6 +14,8 @@ export interface DeploymentRecord {
   solcVersion: string;
   optimizer: { enabled: boolean; runs: number };
   deployedAt: string;
+  sourceCommit?: string;
+  sourceClean?: boolean;
 }
 
 export interface NetworkEndpoints {

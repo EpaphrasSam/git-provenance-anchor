@@ -12,5 +12,8 @@
     "enabled": true,
     "runs": 200
   },
-  "deployedAt": "2026-07-29T13:54:55.961Z"
+  "deployedAt": "2026-07-29T13:54:55.961Z",
+  "sourceCommit": "d102d4fe891c763da02540618bc3771595183781",
+  "sourceClean": true,
+  "sourceCommitNote": "Backfilled. Confirmed by compiling contracts/ at this commit and matching the runtime bytecode at this address exactly; see evaluation/deployed-bytecode.md."
 }

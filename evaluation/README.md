@@ -13,6 +13,7 @@ operator tooling, not just documentation of this deployment.
 | File | Claim | Reproduce |
 | --- | --- | --- |
 | `access-control.md` | A live deployment refuses anchors from accounts outside the project allowlist | `npm run check:access-control -- --send` |
+| `deployed-bytecode.md` | The code at each recorded address is the compiled output of a named commit | `npm run verify:bytecode` |
 | `cross-platform-determinism.md` | The anchored tree hash is identical on Windows, Linux, a CI runner, and an independent reimplementation | `scripts/tree-hashes.sh` on each platform |
 | `ci-end-to-end.md` | A tag push anchors on-chain with no human in the loop | push a `v*` tag; run URL recorded |
 | `gas-and-cost.md` | Gas per operation, why anchoring with an SBOM costs ~20k more, and how these differ from the test-suite figures | `npm run evidence` |

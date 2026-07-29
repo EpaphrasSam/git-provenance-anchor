@@ -50,6 +50,8 @@ to reproduce it. Full index in [`evaluation/README.md`](evaluation/README.md).
 - A tag push anchors on-chain with no human in the loop —
   `evaluation/ci-end-to-end.md`
 - Gas per operation, measured on live deployments — `evaluation/gas-and-cost.md`
+- The code at each recorded address is the compiled output of a named commit —
+  `evaluation/deployed-bytecode.md`
 
 If you deploy your own registry, run `npm run check:access-control` against it.
 A failure means the deployment is not what you think it is.
@@ -139,7 +141,9 @@ npm run deploy:op-sepolia
 ```
 
 Use a dedicated key, never a personal wallet. Deployment records are written to
-`deployments/<network>.json` with the address, block number, gas used, and compiler settings.
+`deployments/<network>.json` with the address, block number, gas used, compiler settings, and the
+commit `contracts/` was at — without which nothing ties the deployed bytecode to a state of the
+repository. Check that link at any time with `npm run verify:bytecode`.
 
 ## Repository layout
 

@@ -23,7 +23,8 @@
     "deploy:op-sepolia": "hardhat run scripts/deploy.ts --network opSepolia",
     "balances": "ts-node --transpile-only scripts/balances.ts",
     "evidence": "ts-node --transpile-only scripts/collect-evidence.ts",
-    "check:access-control": "ts-node --transpile-only scripts/check-access-control.ts"
+    "check:access-control": "ts-node --transpile-only scripts/check-access-control.ts",
+    "verify:bytecode": "hardhat run scripts/verify-deployed-bytecode.ts"
   },
   "dependencies": {
     "ajv": "8.20.0",
