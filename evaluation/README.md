@@ -17,6 +17,7 @@ operator tooling, not just documentation of this deployment.
 | `zksync-sepolia.md` | EraVM deployment, toolchain pins, and why its gas is a separate column | `npm run deploy:zksync-sepolia` |
 | `cross-platform-determinism.md` | The anchored tree hash is identical on Windows, Linux, a CI runner, and an independent reimplementation | `scripts/tree-hashes.sh` on each platform |
 | `ci-end-to-end.md` | A tag push anchors on-chain with no human in the loop | push a `v*` tag; run URL recorded |
+| `tag-retargeting.md` | Force-moving an anchored tag is flagged as `moved` by `gpa reverify` | retarget locally, then `gpa reverify` |
 | `gas-and-cost.md` | Gas per operation, why anchoring with an SBOM costs ~20k more, and how these differ from the test-suite figures | `npm run evidence` |
 | `workflow-tamper-protection.md` | Which GitHub branch protection configuration actually prevents the anchoring workflow being edited, and which only appears to | manual `gh api` calls, recorded in the file |
 

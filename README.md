@@ -54,6 +54,8 @@ to reproduce it. Full index in [`evaluation/README.md`](evaluation/README.md).
   `evaluation/deployed-bytecode.md`
 - zkSync Era Sepolia runs the same contract under EraVM with its own gas column —
   `evaluation/zksync-sepolia.md`
+- Force-moving an already-anchored tag is flagged by `gpa reverify` —
+  `evaluation/tag-retargeting.md`
 
 If you deploy your own registry, run `npm run check:access-control` against it.
 A failure means the deployment is not what you think it is.
