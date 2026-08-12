@@ -148,17 +148,20 @@ export function getReadContract(repoRoot: string, network: string): {
   return { contract, provider, deployment };
 }
 
-export function getWriteContract(repoRoot: string, network: string): {
+export async function getWriteContract(repoRoot: string, network: string): Promise<{
   contract: ethers.Contract;
   wallet: ethers.Wallet;
   deployment: DeploymentRecord;
-} {
+}> {
   const key = process.env.ANCHOR_DEPLOYER_KEY;
   if (!key) {
     throw new Error("ANCHOR_DEPLOYER_KEY is required for write commands");
   }
   const { provider, deployment } = getReadContract(repoRoot, network);
-  const wallet = new ethers.NonceManager(new ethers.Wallet(key, provider));
+  await provider.getNetwork();
+  const signer = new ethers.Wallet(key, provider);
+  const wallet = new ethers.NonceManager(signer);
+  await wallet.getNonce("pending");
   const contract = new ethers.Contract(deployment.address, ANCHOR_REGISTRY_ABI, wallet);
   return { contract, wallet: wallet as unknown as ethers.Wallet, deployment };
 }

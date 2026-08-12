@@ -1,0 +1,24 @@
+# GitLab CI twin of workflows/provenance-snapshot.yml.
+# Copy into an adopting repository and adjust image/cache to local conventions.
+# Requires CI variable ANCHOR_DEPLOYER_KEY (masked, protected).
+# Optional: GPA_NETWORKS, GPA_SNAPSHOT_REF (default: CI_DEFAULT_BRANCH).
+
+stages:
+  - snapshot
+
+provenance-snapshot:
+  stage: snapshot
+  image: node:20-bookworm
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "web"
+  before_script:
+    - apt-get update && apt-get install -y git
+  script:
+    - REF="${GPA_SNAPSHOT_REF:-$CI_DEFAULT_BRANCH}"
+    - git fetch origin "$REF"
+    - git checkout "$REF"
+    - TREE=$(git rev-parse "HEAD^{tree}")
+    - echo "Tree hash for SNAPSHOT ${REF}: ${TREE}"
+    - npm ci
+    - npx ts-node --transpile-only scripts/submit-anchor.ts --ref "$REF" --kind snapshot --tree-hash "$TREE"

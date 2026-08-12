@@ -1,0 +1,186 @@
+{
+ "generatedAt": "2026-08-12",
+ "question": "RQ2: is tag-only anchoring, or tag anchoring combined with periodic production-branch snapshots, more effective for coverage of documented supply chain attack classes?",
+ "baselineNote": "The published classification in ladisa-classification.csv already credits re-verification at AV-303, so it describes tag+reverify rather than tag-only. The tag-only baseline is reconstructed here by withdrawing that credit.",
+ "policies": [
+  "tag-only",
+  "tag+snapshots",
+  "tag+reverify"
+ ],
+ "counts": {
+  "tag-only": {
+   "internal": 4,
+   "out-of-scope": 34,
+   "detectable-passive": 14,
+   "detectable-conditional": 31,
+   "detectable": 34,
+   "partial": 1
+  },
+  "tag+snapshots": {
+   "internal": 4,
+   "out-of-scope": 12,
+   "out-of-scope-with-record": 22,
+   "detectable-passive": 14,
+   "detectable-conditional": 31,
+   "detectable": 34,
+   "partial": 1
+  },
+  "tag+reverify": {
+   "internal": 4,
+   "out-of-scope": 34,
+   "detectable": 48,
+   "detectable-conditional": 31,
+   "partial": 1
+  }
+ },
+ "vectorsThatChange": {
+  "AV-301": [
+   "AV-301",
+   "AV-304",
+   "AV-305",
+   "AV-306",
+   "AV-307",
+   "AV-308",
+   "AV-309"
+  ],
+  "AV-302": [
+   "AV-302",
+   "AV-601",
+   "AV-602",
+   "AV-603",
+   "AV-604",
+   "AV-605",
+   "AV-606",
+   "AV-607",
+   "AV-608",
+   "AV-700",
+   "AV-701",
+   "AV-702",
+   "AV-703",
+   "AV-800",
+   "AV-801"
+  ],
+  "AV-303": [
+   "AV-303",
+   "AV-600",
+   "AV-601",
+   "AV-602",
+   "AV-603",
+   "AV-604",
+   "AV-605",
+   "AV-606",
+   "AV-607",
+   "AV-608",
+   "AV-700",
+   "AV-701",
+   "AV-702",
+   "AV-703"
+  ]
+ },
+ "instancesThatChange": {
+  "AV-301": 7,
+  "AV-302": 15,
+  "AV-303": 14
+ },
+ "cadence": [
+  {
+   "repo": "spf13/cobra",
+   "medianTagGapDays": 98,
+   "tagsSince2024": 6,
+   "blindWindowTagOnlyDays": 98,
+   "blindWindowWeeklySnapshotsDays": 7,
+   "windowReductionDays": 91
+  },
+  {
+   "repo": "libarchive/libarchive",
+   "medianTagGapDays": 50,
+   "tagsSince2024": 17,
+   "blindWindowTagOnlyDays": 50,
+   "blindWindowWeeklySnapshotsDays": 7,
+   "windowReductionDays": 43
+  },
+  {
+   "repo": "curl/curl",
+   "medianTagGapDays": 49,
+   "tagsSince2024": 23,
+   "blindWindowTagOnlyDays": 49,
+   "blindWindowWeeklySnapshotsDays": 7,
+   "windowReductionDays": 42
+  },
+  {
+   "repo": "sharkdp/bat",
+   "medianTagGapDays": 28,
+   "tagsSince2024": 3,
+   "blindWindowTagOnlyDays": 28,
+   "blindWindowWeeklySnapshotsDays": 7,
+   "windowReductionDays": 21
+  },
+  {
+   "repo": "junegunn/fzf",
+   "medianTagGapDays": 16,
+   "tagsSince2024": 50,
+   "blindWindowTagOnlyDays": 16,
+   "blindWindowWeeklySnapshotsDays": 7,
+   "windowReductionDays": 9
+  },
+  {
+   "repo": "axios/axios",
+   "medianTagGapDays": 12,
+   "tagsSince2024": 57,
+   "blindWindowTagOnlyDays": 12,
+   "blindWindowWeeklySnapshotsDays": 7,
+   "windowReductionDays": 5
+  },
+  {
+   "repo": "pallets/click",
+   "medianTagGapDays": 11,
+   "tagsSince2024": 19,
+   "blindWindowTagOnlyDays": 11,
+   "blindWindowWeeklySnapshotsDays": 7,
+   "windowReductionDays": 4
+  },
+  {
+   "repo": "psf/requests",
+   "medianTagGapDays": 8,
+   "tagsSince2024": 12,
+   "blindWindowTagOnlyDays": 8,
+   "blindWindowWeeklySnapshotsDays": 7,
+   "windowReductionDays": 1
+  },
+  {
+   "repo": "expressjs/express",
+   "medianTagGapDays": 4,
+   "tagsSince2024": 18,
+   "blindWindowTagOnlyDays": 4,
+   "blindWindowWeeklySnapshotsDays": 4,
+   "windowReductionDays": 0
+  },
+  {
+   "repo": "BurntSushi/ripgrep",
+   "medianTagGapDays": 0,
+   "tagsSince2024": 42,
+   "blindWindowTagOnlyDays": 0,
+   "blindWindowWeeklySnapshotsDays": 0,
+   "windowReductionDays": 0
+  }
+ ],
+ "cost": {
+  "assumedSnapshotsPerYear": 52,
+  "perAnchorEthP50": {
+   "arbitrumOne": 1.594e-06,
+   "opMainnet": 8.118e-08,
+   "zkSyncEra": 4.808e-06
+  },
+  "annualSnapshotCostEth": {
+   "arbitrumOne": 8.2888e-05,
+   "opMainnet": 4.2213600000000005e-06,
+   "zkSyncEra": 0.00025001600000000004
+  },
+  "annualSnapshotCostUsdApprox": {
+   "arbitrumOne": 0.1575,
+   "opMainnet": 0.008,
+   "zkSyncEra": 0.475
+  },
+  "reverifyCost": "zero on-chain: reading a contract is free and requires no transaction"
+ }
+}

@@ -1,0 +1,80 @@
+# GitHub Actions template — copy into an adopting repository as
+# `.github/workflows/provenance-snapshot.yml`.
+#
+# Weekly KIND_SNAPSHOT of the default branch tip. Re-anchoring the same ref
+# supersedes the stored record and increments revision; prior submissions remain
+# in the event log. Optional: only enable this when release cadence is slow
+# enough that the blind window matters (see evaluation/rq2-strategies.md).
+#
+# Requires a repository secret:
+#   ANCHOR_DEPLOYER_KEY  — a dedicated key allowlisted for the project's on-chain id
+# Optional repository variables:
+#   GPA_NETWORKS         — space-separated deployment names (default: every deployments/ record)
+#   GPA_SNAPSHOT_REF     — branch to snapshot (default: repository default branch)
+#
+# Assumes the repository has a `.provenance-manifest.json` and a `deployments/` directory.
+
+name: provenance-snapshot
+
+on:
+  schedule:
+    # Weekly. Cadence is a project choice; weekly is the evaluation default.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch to snapshot (empty = default branch / GPA_SNAPSHOT_REF)
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve snapshot ref
+        id: target
+        run: |
+          if [ -n "${{ github.event.inputs.ref }}" ]; then
+            REF="${{ github.event.inputs.ref }}"
+          elif [ -n "${{ vars.GPA_SNAPSHOT_REF }}" ]; then
+            REF="${{ vars.GPA_SNAPSHOT_REF }}"
+          else
+            REF="${{ github.event.repository.default_branch }}"
+          fi
+          echo "ref=${REF}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout branch tip
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.target.outputs.ref }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compute tree hash
+        id: tree
+        run: |
+          REF="${{ steps.target.outputs.ref }}"
+          TREE=$(git rev-parse "HEAD^{tree}")
+          echo "tree=${TREE}" >> "$GITHUB_OUTPUT"
+          echo "Tree hash for SNAPSHOT ${REF}: ${TREE}"
+
+      - name: Submit snapshot anchors
+        env:
+          ANCHOR_DEPLOYER_KEY: ${{ secrets.ANCHOR_DEPLOYER_KEY }}
+          GPA_NETWORKS: ${{ vars.GPA_NETWORKS }}
+        run: |
+          npx ts-node --transpile-only scripts/submit-anchor.ts \
+            --ref "${{ steps.target.outputs.ref }}" \
+            --kind snapshot \
+            --tree-hash "${{ steps.tree.outputs.tree }}"

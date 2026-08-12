@@ -4,6 +4,7 @@
  *
  * Usage:
  *   npx ts-node scripts/submit-anchor.ts --tag v1.0.0 --tree-hash <40hex> [--sbom-hash <64hex>]
+ *   npx ts-node scripts/submit-anchor.ts --ref main --kind snapshot --tree-hash <40hex>
  *   npx ts-node scripts/submit-anchor.ts --tag v1.0.0 --tree-hash <40hex> --dry-run
  */
 import * as path from "path";
@@ -12,6 +13,7 @@ import { ethers } from "ethers";
 import {
   findRepoRoot,
   getWriteContract,
+  KIND_SNAPSHOT,
   KIND_TAG,
   loadDeployments,
 } from "../cli/src/lib/chain";
@@ -31,12 +33,22 @@ function hasFlag(flag: string): boolean {
 }
 
 async function main(): Promise<void> {
-  const tag = argValue("--tag");
+  const ref = argValue("--ref") ?? argValue("--tag");
   const treeHash = argValue("--tree-hash");
   const sbomRaw = argValue("--sbom-hash");
-  if (!tag || !treeHash) {
-    throw new Error("Required: --tag <tag> --tree-hash <hex>");
+  const kindRaw = (argValue("--kind") ?? "tag").toLowerCase();
+  if (!ref || !treeHash) {
+    throw new Error("Required: --tag <tag> or --ref <ref>, plus --tree-hash <hex>");
   }
+
+  const kind =
+    kindRaw === "tag"
+      ? KIND_TAG
+      : kindRaw === "snapshot"
+        ? KIND_SNAPSHOT
+        : (() => {
+            throw new Error("--kind must be tag or snapshot");
+          })();
 
   const root = findRepoRoot(path.resolve(__dirname, ".."));
   const manifest = tryLoadManifest(process.cwd()) ?? tryLoadManifest(root);
@@ -58,16 +70,18 @@ async function main(): Promise<void> {
     : [...loadDeployments(root).keys()];
 
   const dryRun = hasFlag("--dry-run");
+  const kindLabel = kind === KIND_TAG ? "TAG" : "SNAPSHOT";
   console.log(`project   ${projectId}`);
-  console.log(`tag       ${tag}`);
+  console.log(`kind      ${kindLabel}`);
+  console.log(`ref       ${ref}`);
   console.log(`treeHash  ${treeBytes32}`);
   console.log(`sbomHash  ${sbomBytes32}`);
   console.log(`networks  ${networks.join(", ")}`);
 
   for (const network of networks) {
-    const { contract, deployment, wallet } = getWriteContract(root, network);
+    const { contract, deployment, wallet } = await getWriteContract(root, network);
     console.log(
-      `anchor ${tag} on ${network} @ ${deployment.address} from ${wallet.address}`
+      `anchor ${kindLabel} ${ref} on ${network} @ ${deployment.address} from ${wallet.address}`
     );
 
     const allowed = await contract.isAllowlisted(projectId, wallet.address);
@@ -80,8 +94,8 @@ async function main(): Promise<void> {
     if (dryRun) {
       const gas = await contract.anchor.estimateGas(
         projectId,
-        KIND_TAG,
-        tag,
+        kind,
+        ref,
         treeBytes32,
         sbomBytes32
       );
@@ -89,7 +103,10 @@ async function main(): Promise<void> {
       continue;
     }
 
-    const tx = await contract.anchor(projectId, KIND_TAG, tag, treeBytes32, sbomBytes32);
+    const nonce = await wallet.getNonce("pending");
+    const tx = await contract.anchor(projectId, kind, ref, treeBytes32, sbomBytes32, {
+      nonce,
+    });
     const receipt = await tx.wait();
     console.log(`  tx=${receipt.hash}`);
   }

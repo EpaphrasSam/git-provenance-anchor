@@ -1,0 +1,25 @@
+# GitLab CI twin of workflows/provenance-reverify.yml.
+# Read-only; no ANCHOR_DEPLOYER_KEY. Optional: GPA_NETWORKS.
+# Prefer a daily schedule so a one-day revert window sits inside the check interval.
+
+stages:
+  - reverify
+
+provenance-reverify:
+  stage: reverify
+  image: node:20-bookworm
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "web"
+  before_script:
+    - apt-get update && apt-get install -y git
+  script:
+    - npm ci
+    - |
+      NETWORK_ARGS=()
+      if [ -n "$GPA_NETWORKS" ]; then
+        for n in $GPA_NETWORKS; do
+          NETWORK_ARGS+=(--network "$n")
+        done
+      fi
+      npx ts-node --transpile-only cli/src/index.ts reverify "${NETWORK_ARGS[@]}"

@@ -25,6 +25,7 @@ operator tooling, not just documentation of this deployment.
 | `ladisa-coverage.md` | Which of the 117 attack vectors in the Ladisa et al. taxonomy this system would detect, and which it would not | `python3 evaluation/ladisa-classify.py` |
 | `repository-sample.md` | Tree-hash reconstruction and verification time across twelve widely used projects, and the archive-based reconstruction defect it exposed | `npm run sample:clone`, then compare `hashGitRef` against `git rev-parse HEAD^{tree}` |
 | `tarball-sweep.md` | Published release artifacts versus the anchored tree; curl/libarchive manifests clear undeclared extras; Windows `hashArtifact` mode loss on tarball verify | `npm run sample:tarballs`; diagnosis in `data/control-row-diagnosis.json` |
+| `rq2-strategies.md` | Tag-only versus tag-plus-snapshots versus tag-plus-re-verification: the rubric re-run three ways, grounded in release cadence and priced from observed fees | `python3 evaluation/rq2-ablation.py` |
 | `network-tradeoffs.md` | Throughput, finality, cost and finality-security assumptions compared across the three production networks | figures drawn from `fee-distribution.md`, `latency.md`, and 30 daily block samples per network |
 | `workflow-tamper-protection.md` | Which GitHub branch protection configuration actually prevents the anchoring workflow being edited, and which only appears to | manual `gh api` calls, recorded in the file |
 
@@ -39,6 +40,7 @@ operator tooling, not just documentation of this deployment.
 | `data/latency.json` | settlement timing read from each network's own batch records (see `latency.md`) |
 | `data/ladisa-classification.csv` | `python3 evaluation/ladisa-classify.py`, one row per attack-tree node instance |
 | `data/sample-results.json` | per-repository measurements behind `repository-sample.md` |
+| `data/rq2-ablation.csv` and `data/rq2-ablation.json` | `python3 evaluation/rq2-ablation.py`, one row per vector per policy |
 | `data/tarball-sweep.json` | `npm run sample:tarballs` (curl/libarchive rows after applying `fixtures/manifests/`) |
 | `data/control-row-diagnosis.json` | Windows vs Linux (WSL) local `git archive` → `hashArtifact` vs `hashGitRef` for the mode-loss control rows |
 

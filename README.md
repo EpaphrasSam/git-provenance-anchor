@@ -75,6 +75,9 @@ A failure means the deployment is not what you think it is.
    `GPA_NETWORKS` variable to restrict which networks are anchored.
 5. Copy `workflows/provenance-anchor.yml` to `.github/workflows/`, add a CODEOWNERS entry for it,
    and protect the branch — **including `enforce_admins`**, see below.
+6. Optionally copy `workflows/provenance-reverify.yml` (daily, read-only; on by default in the
+   RQ2 recommendation) and, if release cadence is slow, `workflows/provenance-snapshot.yml`
+   (weekly `KIND_SNAPSHOT` of the default branch). GitLab twins live beside them.
 
 Pushing a `v*` tag then anchors that tag with no manual step.
 

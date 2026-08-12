@@ -56,9 +56,43 @@ at collection time and is illustrative only.
 | Register | [`0x454474f7…060b`](https://optimistic.etherscan.io/tx/0x454474f7840a0d7860d2fdbfd917ce7ffd4b5e90443015cad260a91d3995060b) | 94,630 | 9.5×10⁻⁸ |
 | Allowlist CI | [`0xc7fba234…bf46`](https://optimistic.etherscan.io/tx/0xc7fba2345c737f1ee65271f9623d7968a6cf91c19cd9e84601cfde303814bf46) | 48,679 | 4.9×10⁻⁸ |
 | Anchor `v0.4.0-m4` | [`0x560c03a0…45a2`](https://optimistic.etherscan.io/tx/0x560c03a0f69878623de2d71c71bc54ee5bc5868226c404c45e236756185645a2) | 79,276 | 7.9×10⁻⁸ |
+| Snapshot anchor `main` | [`0x5fb9a342…1a73`](https://optimistic.etherscan.io/tx/0x5fb9a3421140f4d07e64e3c366d05958c3e6de2f3019ab82a36ab04690aa1a73) | 79,216 | 7.9×10⁻⁸ |
 
 OP fees were negligible in this window (sub-cent). Exact deploy tx hash is in
 `deployments/opMainnet.json`.
+
+### The snapshot anchor
+
+Submitted 2026-08-12T18:14:23Z in block 155,479,843, one transaction only, with no
+schedule enabled. It exists so that the second mechanism in `rq2-strategies.md` is
+a demonstrated write path rather than a described one.
+
+Decoded from the `AnchorSubmitted` log:
+
+| Field | Value |
+| --- | --- |
+| Project id | `0xd5a2d84a…264e` (same as the tag anchors) |
+| Kind | `1`, `KIND_SNAPSHOT` |
+| Ref | `main` |
+| Tree hash | `9bbb494a8d862b597e27bfd69f798ba6ce00fc41` |
+| SBOM hash | zero, not generated for a snapshot |
+| Revision | 1 |
+| Calldata | 228 bytes, identical to a tag anchor |
+
+At 79,216 gas it costs 60 gas less than the tag anchor's 79,276, the difference
+being the shorter reference string. So a snapshot is the same transaction shape as
+a tag anchor and prices identically, which is what the RQ2 cost table already
+assumed and can now assert.
+
+The anchored tree is that of commit `dced3a8`, the committed state of `main`, not
+the working tree, so the uncommitted workflow templates are correctly absent from
+it. `gpa reverify --network opMainnet` passes on both the tag and the snapshot.
+
+One operational note worth recording. The first attempt failed on an OP nonce
+race: the provider offered nonce 0 while the account's next nonce was 6.
+`getWriteContract` now waits for the network and primes the nonce manager before
+signing, and the retry confirmed at nonce 6. Anyone anchoring to several chains
+from one key should expect this.
 
 **These OP figures are the L2 execution component only.** They come from ethers'
 `receipt.fee`, which is `gasUsed x gasPrice` and omits the separate `l1Fee` field

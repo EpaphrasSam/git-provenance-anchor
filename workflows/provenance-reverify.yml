@@ -1,0 +1,51 @@
+# GitHub Actions template — copy into an adopting repository as
+# `.github/workflows/provenance-reverify.yml`.
+#
+# Read-only walk of every anchored ref against the live Git repository.
+# Catches force-moved tags without a chain write. Daily by default so a
+# one-day revert window (tj-actions pattern) is inside the check interval.
+# See evaluation/rq2-strategies.md and evaluation/tag-retargeting.md.
+#
+# No ANCHOR_DEPLOYER_KEY required. Needs deployments/ and RPC reachability.
+# Optional repository variable:
+#   GPA_NETWORKS  — space-separated deployment names (default: every deployments/ record)
+
+name: provenance-reverify
+
+on:
+  schedule:
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reverify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Re-verify anchored refs
+        env:
+          GPA_NETWORKS: ${{ vars.GPA_NETWORKS }}
+        run: |
+          NETWORK_ARGS=()
+          if [ -n "$GPA_NETWORKS" ]; then
+            for n in $GPA_NETWORKS; do
+              NETWORK_ARGS+=(--network "$n")
+            done
+          fi
+          npx ts-node --transpile-only cli/src/index.ts reverify "${NETWORK_ARGS[@]}"

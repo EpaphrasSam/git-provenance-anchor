@@ -243,7 +243,7 @@ program
     const networks =
       opts.network.length > 0 ? opts.network : [...loadDeployments(root).keys()];
     for (const network of networks) {
-      const { contract, wallet, deployment } = getWriteContract(root, network);
+      const { contract, wallet, deployment } = await getWriteContract(root, network);
       console.log(`registering on ${network} (${deployment.address}) as ${wallet.address}...`);
       const tx = await contract.registerProject(projectId, label);
       const receipt = await tx.wait();
@@ -269,7 +269,7 @@ allowlist
     const networks =
       opts.network.length > 0 ? opts.network : [...loadDeployments(root).keys()];
     for (const network of networks) {
-      const { contract } = getWriteContract(root, network);
+      const { contract } = await getWriteContract(root, network);
       const tx = await contract.allowlistAdd(projectId, account);
       const receipt = await tx.wait();
       console.log(`${network}: allowlistAdd ${account} tx=${receipt.hash}`);
@@ -292,7 +292,7 @@ allowlist
     const networks =
       opts.network.length > 0 ? opts.network : [...loadDeployments(root).keys()];
     for (const network of networks) {
-      const { contract } = getWriteContract(root, network);
+      const { contract } = await getWriteContract(root, network);
       const tx = await contract.allowlistRemove(projectId, account);
       const receipt = await tx.wait();
       console.log(`${network}: allowlistRemove ${account} tx=${receipt.hash}`);
@@ -356,9 +356,10 @@ program
       console.log(`bytes32=${treeBytes32}`);
 
       for (const network of networks) {
-        const { contract, deployment } = getWriteContract(root, network);
+        const { contract, wallet, deployment } = await getWriteContract(root, network);
         console.log(`anchoring on ${network} (${deployment.address})...`);
-        const tx = await contract.anchor(projectId, kind, ref, treeBytes32, sbom);
+        const nonce = await wallet.getNonce("pending");
+        const tx = await contract.anchor(projectId, kind, ref, treeBytes32, sbom, { nonce });
         const receipt = await tx.wait();
         console.log(`  tx=${receipt.hash} status=${receipt.status}`);
       }
