@@ -14,13 +14,14 @@ provenance-anchor:
     - apt-get update && apt-get install -y curl ca-certificates git
     - curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
   script:
-    - TAG="$CI_COMMIT_TAG"
-    - TREE=$(git rev-parse "${TAG}^{tree}")
-    - echo "Tree hash for ${TAG}: ${TREE}"
-    - syft dir:. -o cyclonedx-json=sbom.cdx.json
-    - SBOM_HASH=$(sha256sum sbom.cdx.json | awk '{print $1}')
-    - npm ci
-    - npx ts-node --transpile-only scripts/submit-anchor.ts --tag "$TAG" --tree-hash "$TREE" --sbom-hash "$SBOM_HASH"
+    - |
+      TAG="$CI_COMMIT_TAG"
+      TREE=$(git rev-parse "${TAG}^{tree}")
+      echo "Tree hash for ${TAG}: ${TREE}"
+      syft dir:. -o cyclonedx-json=sbom.cdx.json
+      SBOM_HASH=$(sha256sum sbom.cdx.json | awk '{print $1}')
+      npm ci
+      npx ts-node --transpile-only scripts/submit-anchor.ts --tag "$TAG" --tree-hash "$TREE" --sbom-hash "$SBOM_HASH"
   artifacts:
     paths:
       - sbom.cdx.json
