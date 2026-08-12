@@ -2,6 +2,6 @@
   "schemaVersion": 1,
   "projectId": "0xd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e",
   "label": "git-provenance-anchor",
-  "networks": ["opSepolia", "arbitrumSepolia", "zkSyncSepolia"],
+  "networks": ["arbitrumOne", "opMainnet", "zkSyncEra"],
   "extras": []
 }

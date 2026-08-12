@@ -19,6 +19,7 @@ operator tooling, not just documentation of this deployment.
 | `ci-end-to-end.md` | A tag push anchors on-chain with no human in the loop | push a `v*` tag; run URL recorded |
 | `tag-retargeting.md` | Force-moving an anchored tag is flagged as `moved` by `gpa reverify` | retarget locally, then `gpa reverify` |
 | `gas-and-cost.md` | Gas per operation, why anchoring with an SBOM costs ~20k more, and how these differ from the test-suite figures | `npm run evidence` |
+| `mainnet.md` | Live registries on Arbitrum One, OP Mainnet, and zkSync Era, with fees actually paid for deploy / register / allowlist / smoke anchor | `gpa verify --tag v0.4.0-m4 --ref v0.4.0-m4 --network arbitrumOne --network opMainnet --network zkSyncEra` |
 | `workflow-tamper-protection.md` | Which GitHub branch protection configuration actually prevents the anchoring workflow being edited, and which only appears to | manual `gh api` calls, recorded in the file |
 
 ## Raw data
@@ -27,6 +28,7 @@ operator tooling, not just documentation of this deployment.
 | --- | --- |
 | `data/on-chain-evidence.json` | `npm run evidence` |
 | `data/access-control.json` | `npm run check:access-control -- --send` |
+| `data/mainnet-phase-a.json` | receipt walk after mainnet deploy / smoke (see `mainnet.md`) |
 
 Both stamp the commit they were collected at, so a figure can be tied to a
 specific state of the source. Neither requires a funded account, except for
@@ -44,6 +46,9 @@ cannot be regenerated without spending again.
 | Arbitrum Sepolia | 421614 | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` | EVM |
 | OP Sepolia | 11155420 | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` | EVM |
 | zkSync Sepolia | 300 | `0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB` | EraVM |
+| Arbitrum One | 42161 | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` | EVM |
+| OP Mainnet | 10 | `0x18600ECbC47aC362240b2CD87d92345eD426DC08` | EVM |
+| zkSync Era | 324 | `0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB` | EraVM |
 
 EVM deployments compiled with solc 0.8.28; zkSync with zksolc 1.5.15 / zkvm-solc
 0.8.28-1.0.2. Optimizer enabled at 200 runs. Full records under `deployments/`.
@@ -65,9 +70,8 @@ capability of this system would overstate what the design achieves.
 
 Listed so the gaps are visible rather than discovered late.
 
-- **Mainnet / fee pricing.** Gas units are measured on all three testnets;
-  converting them to currency needs live fee markets (EVM rollup blob fees;
-  zkSync published-data fees). No mainnet transactions required.
+- **Fee distributions over time.** `mainnet.md` records fees paid in one session.
+  A range across quieter and busier fee markets (calendar sampling) is still open.
 - **Verification latency.** Wall-clock time to verify a release, and how tree
   hashing scales with repository size, are both unrecorded.
 - **Scale.** Every measurement comes from this repository, which is small.

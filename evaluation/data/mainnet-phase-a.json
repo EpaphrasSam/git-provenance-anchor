@@ -1,0 +1,153 @@
+{
+  "collectedAt": "2026-08-12T10:18:13.969Z",
+  "ethUsdApprox": 1900,
+  "networks": {
+    "arbitrumOne": {
+      "chainId": 42161,
+      "registry": "0x253F20c2b74dc44B4ea908bE6674EEC8deA72622",
+      "deployer": "0x52eaE29937b149B7a0f3D7516C81aD561B96c043",
+      "sourceCommit": "34f167161f6836b67037bcc118161fb5b4323ba8",
+      "deployerBalanceAfter": "0.003657799460046",
+      "txs": {
+        "deploy": {
+          "hash": "0x2aa7ab323682ead3af237d0805c3ea2cd53ff2549ef4790db4d43c6e392a90eb",
+          "blockNumber": 493733993,
+          "status": 1,
+          "gasUsed": "883340",
+          "effectiveGasPrice": "20060000",
+          "feeWei": "17719800400000",
+          "feeEth": "0.0000177198004",
+          "explorer": "https://arbiscan.io/tx/0x2aa7ab323682ead3af237d0805c3ea2cd53ff2549ef4790db4d43c6e392a90eb"
+        },
+        "register": {
+          "hash": "0x75d36c1e3661276bf282c5ce9285e92bd8c425597bffd2b700904aab2ece6b8c",
+          "blockNumber": 493734198,
+          "status": 1,
+          "gasUsed": "95005",
+          "effectiveGasPrice": "20016000",
+          "feeWei": "1901620080000",
+          "feeEth": "0.00000190162008",
+          "explorer": "https://arbiscan.io/tx/0x75d36c1e3661276bf282c5ce9285e92bd8c425597bffd2b700904aab2ece6b8c"
+        },
+        "allowlist": {
+          "hash": "0xb48e5582a36eecb9b771425e1bfb5ff6a72254e5da9d4331540b7b33635afc26",
+          "blockNumber": 493734276,
+          "status": 1,
+          "gasUsed": "48953",
+          "effectiveGasPrice": "20114000",
+          "feeWei": "984640642000",
+          "feeEth": "0.000000984640642",
+          "explorer": "https://arbiscan.io/tx/0xb48e5582a36eecb9b771425e1bfb5ff6a72254e5da9d4331540b7b33635afc26"
+        },
+        "anchor": {
+          "hash": "0xee5213bd9b25d014aa56734202f486cff2f2e1b3e59e38ba70f599eb8808b248",
+          "blockNumber": 493734376,
+          "status": 1,
+          "gasUsed": "79708",
+          "effectiveGasPrice": "20004000",
+          "feeWei": "1594478832000",
+          "feeEth": "0.000001594478832",
+          "explorer": "https://arbiscan.io/tx/0xee5213bd9b25d014aa56734202f486cff2f2e1b3e59e38ba70f599eb8808b248"
+        }
+      }
+    },
+    "opMainnet": {
+      "chainId": 10,
+      "registry": "0x18600ECbC47aC362240b2CD87d92345eD426DC08",
+      "deployer": "0x52eaE29937b149B7a0f3D7516C81aD561B96c043",
+      "sourceCommit": "34f167161f6836b67037bcc118161fb5b4323ba8",
+      "deployerBalanceAfter": "0.003674628586657102",
+      "txs": {
+        "deploy": {
+          "hash": "0x2d2dcffd24b739d5a0dbf03c69d17cf1f4e93f3269a642970c7169db8289af62",
+          "blockNumber": 155465491,
+          "status": 1,
+          "gasUsed": "879549",
+          "effectiveGasPrice": "635",
+          "feeWei": "558513615",
+          "feeEth": "0.000000000558513615",
+          "explorer": "https://optimistic.etherscan.io/tx/0x2d2dcffd24b739d5a0dbf03c69d17cf1f4e93f3269a642970c7169db8289af62"
+        },
+        "register": {
+          "hash": "0x454474f7840a0d7860d2fdbfd917ce7ffd4b5e90443015cad260a91d3995060b",
+          "blockNumber": 155465511,
+          "status": 1,
+          "gasUsed": "94630",
+          "effectiveGasPrice": "1000536",
+          "feeWei": "94680721680",
+          "feeEth": "0.00000009468072168",
+          "explorer": "https://optimistic.etherscan.io/tx/0x454474f7840a0d7860d2fdbfd917ce7ffd4b5e90443015cad260a91d3995060b"
+        },
+        "allowlist": {
+          "hash": "0xc7fba2345c737f1ee65271f9623d7968a6cf91c19cd9e84601cfde303814bf46",
+          "blockNumber": 155465521,
+          "status": 1,
+          "gasUsed": "48679",
+          "effectiveGasPrice": "1000536",
+          "feeWei": "48705091944",
+          "feeEth": "0.000000048705091944",
+          "explorer": "https://optimistic.etherscan.io/tx/0xc7fba2345c737f1ee65271f9623d7968a6cf91c19cd9e84601cfde303814bf46"
+        },
+        "anchor": {
+          "hash": "0x560c03a0f69878623de2d71c71bc54ee5bc5868226c404c45e236756185645a2",
+          "blockNumber": 155465544,
+          "status": 1,
+          "gasUsed": "79276",
+          "effectiveGasPrice": "1000534",
+          "feeWei": "79318333384",
+          "feeEth": "0.000000079318333384",
+          "explorer": "https://optimistic.etherscan.io/tx/0x560c03a0f69878623de2d71c71bc54ee5bc5868226c404c45e236756185645a2"
+        }
+      }
+    },
+    "zkSyncEra": {
+      "chainId": 324,
+      "registry": "0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB",
+      "deployer": "0x52eaE29937b149B7a0f3D7516C81aD561B96c043",
+      "sourceCommit": "34f167161f6836b67037bcc118161fb5b4323ba8",
+      "deployerBalanceAfter": "0.003612431387750001",
+      "txs": {
+        "deploy": {
+          "hash": "0x43483095359b30fae087d5fc83b4969b1103bfd800c0e1d4e125027494c9180e",
+          "blockNumber": 71529861,
+          "status": 1,
+          "gasUsed": "1191265",
+          "effectiveGasPrice": "45250000",
+          "feeWei": "53904741250000",
+          "feeEth": "0.00005390474125",
+          "explorer": "https://explorer.zksync.io/tx/0x43483095359b30fae087d5fc83b4969b1103bfd800c0e1d4e125027494c9180e"
+        },
+        "register": {
+          "hash": "0x8ab19581bee210ea47dbb26bb14e0920ca07bc06a510e7df039be0c5e276a582",
+          "blockNumber": 71529873,
+          "status": 1,
+          "gasUsed": "104755",
+          "effectiveGasPrice": "45250000",
+          "feeWei": "4740163750000",
+          "feeEth": "0.00000474016375",
+          "explorer": "https://explorer.zksync.io/tx/0x8ab19581bee210ea47dbb26bb14e0920ca07bc06a510e7df039be0c5e276a582"
+        },
+        "allowlist": {
+          "hash": "0x1f05cfff2e6ca22745b390381ca97182233e33ce0daa42f631811c1f17738196",
+          "blockNumber": 71529877,
+          "status": 1,
+          "gasUsed": "90960",
+          "effectiveGasPrice": "45250000",
+          "feeWei": "4115940000000",
+          "feeEth": "0.00000411594",
+          "explorer": "https://explorer.zksync.io/tx/0x1f05cfff2e6ca22745b390381ca97182233e33ce0daa42f631811c1f17738196"
+        },
+        "anchor": {
+          "hash": "0x485190f0fb7965d1c047d6f846f50e69023fdbb3bdc0e9f17c113440f053cf9e",
+          "blockNumber": 71529888,
+          "status": 1,
+          "gasUsed": "106249",
+          "effectiveGasPrice": "45250000",
+          "feeWei": "4807767250000",
+          "feeEth": "0.00000480776725",
+          "explorer": "https://explorer.zksync.io/tx/0x485190f0fb7965d1c047d6f846f50e69023fdbb3bdc0e9f17c113440f053cf9e"
+        }
+      }
+    }
+  }
+}

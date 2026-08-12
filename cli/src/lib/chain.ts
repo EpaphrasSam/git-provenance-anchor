@@ -37,6 +37,18 @@ const DEFAULT_RPC: NetworkEndpoints = {
     chainId: 300,
     rpcUrl: process.env.ZKSYNC_SEPOLIA_RPC_URL || "https://sepolia.era.zksync.dev",
   },
+  arbitrumOne: {
+    chainId: 42161,
+    rpcUrl: process.env.ARBITRUM_ONE_RPC_URL || "https://arb1.arbitrum.io/rpc",
+  },
+  opMainnet: {
+    chainId: 10,
+    rpcUrl: process.env.OP_MAINNET_RPC_URL || "https://mainnet.optimism.io",
+  },
+  zkSyncEra: {
+    chainId: 324,
+    rpcUrl: process.env.ZKSYNC_ERA_RPC_URL || "https://mainnet.era.zksync.io",
+  },
 };
 
 export const KIND_TAG = 0;
@@ -104,6 +116,15 @@ export function rpcFor(network: string): string {
   if (network === "zkSyncSepolia" && process.env.ZKSYNC_SEPOLIA_RPC_URL) {
     return process.env.ZKSYNC_SEPOLIA_RPC_URL;
   }
+  if (network === "arbitrumOne" && process.env.ARBITRUM_ONE_RPC_URL) {
+    return process.env.ARBITRUM_ONE_RPC_URL;
+  }
+  if (network === "opMainnet" && process.env.OP_MAINNET_RPC_URL) {
+    return process.env.OP_MAINNET_RPC_URL;
+  }
+  if (network === "zkSyncEra" && process.env.ZKSYNC_ERA_RPC_URL) {
+    return process.env.ZKSYNC_ERA_RPC_URL;
+  }
   if (process.env[envKey]) return process.env[envKey]!;
   const fallback = DEFAULT_RPC[network];
   if (!fallback) {
@@ -137,9 +158,9 @@ export function getWriteContract(repoRoot: string, network: string): {
     throw new Error("ANCHOR_DEPLOYER_KEY is required for write commands");
   }
   const { provider, deployment } = getReadContract(repoRoot, network);
-  const wallet = new ethers.Wallet(key, provider);
+  const wallet = new ethers.NonceManager(new ethers.Wallet(key, provider));
   const contract = new ethers.Contract(deployment.address, ANCHOR_REGISTRY_ABI, wallet);
-  return { contract, wallet, deployment };
+  return { contract, wallet: wallet as unknown as ethers.Wallet, deployment };
 }
 
 export interface AnchorView {

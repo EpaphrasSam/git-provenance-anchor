@@ -1,0 +1,18 @@
+{
+  "contract": "AnchorRegistry",
+  "address": "0x253F20c2b74dc44B4ea908bE6674EEC8deA72622",
+  "network": "arbitrumOne",
+  "chainId": 42161,
+  "deployer": "0x52eaE29937b149B7a0f3D7516C81aD561B96c043",
+  "transactionHash": "0x2aa7ab323682ead3af237d0805c3ea2cd53ff2549ef4790db4d43c6e392a90eb",
+  "blockNumber": 493733993,
+  "gasUsed": "883340",
+  "solcVersion": "0.8.28",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200
+  },
+  "deployedAt": "2026-08-12T10:15:38.314Z",
+  "sourceCommit": "34f167161f6836b67037bcc118161fb5b4323ba8",
+  "sourceClean": true
+}

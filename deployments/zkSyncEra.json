@@ -1,0 +1,20 @@
+{
+  "contract": "AnchorRegistry",
+  "address": "0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB",
+  "network": "zkSyncEra",
+  "chainId": 324,
+  "deployer": "0x52eaE29937b149B7a0f3D7516C81aD561B96c043",
+  "transactionHash": "0x43483095359b30fae087d5fc83b4969b1103bfd800c0e1d4e125027494c9180e",
+  "blockNumber": 71529861,
+  "gasUsed": "1191265",
+  "solcVersion": "0.8.28",
+  "zksolcVersion": "1.5.15",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200
+  },
+  "deployedAt": "2026-08-12T10:16:13.238Z",
+  "sourceCommit": "34f167161f6836b67037bcc118161fb5b4323ba8",
+  "sourceClean": true,
+  "vm": "eraVM"
+}

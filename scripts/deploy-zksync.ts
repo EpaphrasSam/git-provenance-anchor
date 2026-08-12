@@ -1,11 +1,11 @@
 /**
- * Deploy AnchorRegistry to zkSync Era without hardhat-zksync-deploy's linker.
- * That linker breaks on Windows paths containing spaces; this contract has no
- * factory dependencies, so ContractFactory is enough.
+ * Deploy AnchorRegistry to zkSync Era (testnet or mainnet) without
+ * hardhat-zksync-deploy's linker. That linker breaks on Windows paths containing
+ * spaces; this contract has no factory dependencies, so ContractFactory is enough.
  *
  * Usage:
- *   npx hardhat compile --network zkSyncSepolia --force --no-typechain
- *   npx ts-node --transpile-only scripts/deploy-zksync.ts
+ *   npx ts-node --transpile-only scripts/deploy-zksync.ts --network zkSyncSepolia
+ *   npx ts-node --transpile-only scripts/deploy-zksync.ts --network zkSyncEra
  */
 import * as fs from "fs";
 import * as path from "path";
@@ -26,6 +26,30 @@ const ARTIFACT = path.join(
   "AnchorRegistry.json"
 );
 
+const NETWORKS: Record<
+  string,
+  { chainId: number; rpcEnv: string; defaultRpc: string; compileNetwork: string }
+> = {
+  zkSyncSepolia: {
+    chainId: 300,
+    rpcEnv: "ZKSYNC_SEPOLIA_RPC_URL",
+    defaultRpc: "https://sepolia.era.zksync.dev",
+    compileNetwork: "zkSyncSepolia",
+  },
+  zkSyncEra: {
+    chainId: 324,
+    rpcEnv: "ZKSYNC_ERA_RPC_URL",
+    defaultRpc: "https://mainnet.era.zksync.io",
+    compileNetwork: "zkSyncEra",
+  },
+};
+
+function argValue(flag: string): string | undefined {
+  const idx = process.argv.indexOf(flag);
+  if (idx === -1 || idx + 1 >= process.argv.length) return undefined;
+  return process.argv[idx + 1];
+}
+
 function git(...args: string[]): string {
   return execFileSync("git", args, { cwd: REPO_ROOT, encoding: "utf8" }).trim();
 }
@@ -44,11 +68,17 @@ async function main(): Promise<void> {
   const key = process.env.ANCHOR_DEPLOYER_KEY;
   if (!key) throw new Error("ANCHOR_DEPLOYER_KEY is required");
 
+  const networkName = argValue("--network") ?? "zkSyncSepolia";
+  const cfg = NETWORKS[networkName];
+  if (!cfg) {
+    throw new Error(`Unsupported network "${networkName}". Use: ${Object.keys(NETWORKS).join(", ")}`);
+  }
+
   if (!fs.existsSync(ARTIFACT)) {
-    console.log("compiling for zkSync...");
+    console.log(`compiling for ${cfg.compileNetwork}...`);
     execFileSync(
       process.platform === "win32" ? "npx.cmd" : "npx",
-      ["hardhat", "compile", "--network", "zkSyncSepolia", "--force", "--no-typechain"],
+      ["hardhat", "compile", "--network", cfg.compileNetwork, "--force", "--no-typechain"],
       { cwd: REPO_ROOT, stdio: "inherit", env: process.env }
     );
   }
@@ -66,19 +96,22 @@ async function main(): Promise<void> {
     );
   }
 
-  const rpc = process.env.ZKSYNC_SEPOLIA_RPC_URL || "https://sepolia.era.zksync.dev";
+  const rpc = process.env[cfg.rpcEnv] || cfg.defaultRpc;
   const provider = new Provider(rpc);
   const wallet = new Wallet(key, provider);
   const balance = await wallet.getBalance();
+  const net = await provider.getNetwork();
 
-  console.log(`network      zkSyncSepolia (chainId 300)`);
+  console.log(`network      ${networkName} (chainId ${cfg.chainId}, rpc reports ${net.chainId})`);
   console.log(`deployer     ${wallet.address}`);
   console.log(`balance      ${ethers.formatEther(balance)} ETH`);
 
+  if (Number(net.chainId) !== cfg.chainId) {
+    throw new Error(`RPC chainId mismatch: expected ${cfg.chainId}, got ${net.chainId}`);
+  }
+
   if (balance === 0n) {
-    throw new Error(
-      "Deployer has no balance on zkSync. Run: npx ts-node --transpile-only scripts/bridge-zksync.ts"
-    );
+    throw new Error(`Deployer has no balance on ${networkName}`);
   }
 
   const factory = new ContractFactory(artifact.abi, artifact.bytecode, wallet);
@@ -95,8 +128,8 @@ async function main(): Promise<void> {
   const record = {
     contract: "AnchorRegistry",
     address,
-    network: "zkSyncSepolia",
-    chainId: 300,
+    network: networkName,
+    chainId: cfg.chainId,
     deployer: wallet.address,
     transactionHash: tx.hash,
     blockNumber: receipt?.blockNumber ?? null,
@@ -111,7 +144,7 @@ async function main(): Promise<void> {
   };
 
   fs.mkdirSync(DEPLOYMENTS_DIR, { recursive: true });
-  const outFile = path.join(DEPLOYMENTS_DIR, "zkSyncSepolia.json");
+  const outFile = path.join(DEPLOYMENTS_DIR, `${networkName}.json`);
   fs.writeFileSync(outFile, `${JSON.stringify(record, null, 2)}\n`);
 
   console.log(`address      ${address}`);

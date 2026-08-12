@@ -81,17 +81,15 @@ same 79,276-gas operation cost 2.8× more in one Arbitrum Sepolia block than
 another, purely because gas price moved between them. A single fee observation is
 not a cost estimate.
 
-## Not yet measured
+## Mainnet fees (one session)
 
-**Mainnet pricing.** Gas units transfer from testnet to mainnet; prices do not.
-Converting the units above into currency needs the live fee environment on the
-target network, and on a rollup that has two components — L2 execution, and the
-L1 data availability cost of publishing the batch, which depends on calldata size
-and the prevailing blob base fee. The intended method reads current base fee and
-blob base fee from a mainnet RPC without transacting, applies them to the gas
-units and the 228-byte calldata figure, and reports a range across observed fee
-conditions. Not implemented.
+Live deploy / register / allowlist / smoke-anchor fees paid on Arbitrum One,
+OP Mainnet, and zkSync Era are recorded in `mainnet.md` and
+`data/mainnet-phase-a.json` (2026-08-12). EVM gas units on those receipts match
+the testnet column to normal calldata variation; zkSync remains its own column.
 
-**zkSync fee pricing.** EraVM gas units are measured above; converting them to
-currency needs zkSync's live fee model (L2 gas price plus published-data cost),
-which is not yet implemented.
+What is still open is a **distribution** over time (multiple fee-market windows),
+not the existence of any mainnet price observation.
+
+**Oracle-only pricing** (read base/blob fees, multiply by known gas units without
+transacting) remains a useful cross-check and is not implemented as a script.

@@ -1,0 +1,18 @@
+{
+  "contract": "AnchorRegistry",
+  "address": "0x18600ECbC47aC362240b2CD87d92345eD426DC08",
+  "network": "opMainnet",
+  "chainId": 10,
+  "deployer": "0x52eaE29937b149B7a0f3D7516C81aD561B96c043",
+  "transactionHash": "0x2d2dcffd24b739d5a0dbf03c69d17cf1f4e93f3269a642970c7169db8289af62",
+  "blockNumber": 155465491,
+  "gasUsed": "879549",
+  "solcVersion": "0.8.28",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200
+  },
+  "deployedAt": "2026-08-12T10:16:02.940Z",
+  "sourceCommit": "34f167161f6836b67037bcc118161fb5b4323ba8",
+  "sourceClean": true
+}

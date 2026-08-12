@@ -48,6 +48,25 @@ const config: HardhatUserConfig = {
       chainId: 300,
       zksync: true,
     },
+    arbitrumOne: {
+      url: process.env.ARBITRUM_ONE_RPC_URL || "https://arb1.arbitrum.io/rpc",
+      accounts,
+      chainId: 42161,
+      zksync: false,
+    },
+    opMainnet: {
+      url: process.env.OP_MAINNET_RPC_URL || "https://mainnet.optimism.io",
+      accounts,
+      chainId: 10,
+      zksync: false,
+    },
+    zkSyncEra: {
+      url: process.env.ZKSYNC_ERA_RPC_URL || "https://mainnet.era.zksync.io",
+      ethNetwork: process.env.ETHEREUM_RPC_URL || "https://ethereum.publicnode.com",
+      accounts,
+      chainId: 324,
+      zksync: true,
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS === "true",

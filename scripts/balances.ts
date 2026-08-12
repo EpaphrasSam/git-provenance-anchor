@@ -13,6 +13,9 @@ const KNOWN: Array<{ network: string; chainId: number }> = [
   { network: "arbitrumSepolia", chainId: 421614 },
   { network: "opSepolia", chainId: 11155420 },
   { network: "zkSyncSepolia", chainId: 300 },
+  { network: "arbitrumOne", chainId: 42161 },
+  { network: "opMainnet", chainId: 10 },
+  { network: "zkSyncEra", chainId: 324 },
 ];
 
 async function main(): Promise<void> {

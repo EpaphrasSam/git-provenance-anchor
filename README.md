@@ -30,6 +30,9 @@ bounded by per-repository keys and on-chain revocation rather than prevented.
 
 | Network | Status |
 |---------|--------|
+| Arbitrum One | Live at `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
+| OP Mainnet | Live at `0x18600ECbC47aC362240b2CD87d92345eD426DC08` |
+| zkSync Era | Live at `0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB` |
 | Arbitrum Sepolia | Live at `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
 | OP Sepolia | Live at `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
 | zkSync Era Sepolia | Live at `0x49eD55AD9Ae06f4652cA0082D861Cd4B0aB1fDAB` |
@@ -56,6 +59,8 @@ to reproduce it. Full index in [`evaluation/README.md`](evaluation/README.md).
   `evaluation/zksync-sepolia.md`
 - Force-moving an already-anchored tag is flagged by `gpa reverify` —
   `evaluation/tag-retargeting.md`
+- Mainnet registries on Arbitrum One, OP Mainnet, and zkSync Era, with fees paid
+  for deploy and a smoke anchor — `evaluation/mainnet.md`
 
 If you deploy your own registry, run `npm run check:access-control` against it.
 A failure means the deployment is not what you think it is.
@@ -143,6 +148,9 @@ Deploying to a testnet needs a funded key. Copy `.env.example` to `.env`, set
 npm run deploy:arbitrum-sepolia
 npm run deploy:op-sepolia
 npm run deploy:zksync-sepolia   # requires npm run build:zk and funded zkSync ETH
+npm run deploy:arbitrum-one
+npm run deploy:op-mainnet
+npm run deploy:zksync-era      # requires zk compile --network zkSyncEra
 ```
 
 Use a dedicated key, never a personal wallet. Deployment records are written to
