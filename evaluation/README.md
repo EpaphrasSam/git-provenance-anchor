@@ -22,6 +22,10 @@ operator tooling, not just documentation of this deployment.
 | `mainnet.md` | Live registries on Arbitrum One, OP Mainnet, and zkSync Era, with fees actually paid for deploy / register / allowlist / smoke anchor | `gpa verify --tag v0.4.0-m4 --ref v0.4.0-m4 --network arbitrumOne --network opMainnet --network zkSyncEra` |
 | `fee-distribution.md` | What an anchor would have cost at 365 points across a year on each production network, validated against the Phase A receipts | `npm run fees:all` |
 | `latency.md` | How long after a release the anchor is readable, posted to L1, and settled, on each production network | `zks_getBlockDetails` and Blockscout batch fields, recorded in the file |
+| `ladisa-coverage.md` | Which of the 117 attack vectors in the Ladisa et al. taxonomy this system would detect, and which it would not | `python3 evaluation/ladisa-classify.py` |
+| `repository-sample.md` | Tree-hash reconstruction and verification time across twelve widely used projects, and the archive-based reconstruction defect it exposed | `npm run sample:clone`, then compare `hashGitRef` against `git rev-parse HEAD^{tree}` |
+| `tarball-sweep.md` | Published release artifacts versus the anchored tree; curl/libarchive manifests clear undeclared extras; Windows `hashArtifact` mode loss on tarball verify | `npm run sample:tarballs`; diagnosis in `data/control-row-diagnosis.json` |
+| `network-tradeoffs.md` | Throughput, finality, cost and finality-security assumptions compared across the three production networks | figures drawn from `fee-distribution.md`, `latency.md`, and 30 daily block samples per network |
 | `workflow-tamper-protection.md` | Which GitHub branch protection configuration actually prevents the anchoring workflow being edited, and which only appears to | manual `gh api` calls, recorded in the file |
 
 ## Raw data
@@ -33,6 +37,10 @@ operator tooling, not just documentation of this deployment.
 | `data/mainnet-phase-a.json` | receipt walk after mainnet deploy / smoke (see `mainnet.md`) |
 | `data/fee-distribution.json` | `npm run fees:all` (per-sample series regenerates with `npm run fees:history`) |
 | `data/latency.json` | settlement timing read from each network's own batch records (see `latency.md`) |
+| `data/ladisa-classification.csv` | `python3 evaluation/ladisa-classify.py`, one row per attack-tree node instance |
+| `data/sample-results.json` | per-repository measurements behind `repository-sample.md` |
+| `data/tarball-sweep.json` | `npm run sample:tarballs` (curl/libarchive rows after applying `fixtures/manifests/`) |
+| `data/control-row-diagnosis.json` | Windows vs Linux (WSL) local `git archive` → `hashArtifact` vs `hashGitRef` for the mode-loss control rows |
 
 Both stamp the commit they were collected at, so a figure can be tied to a
 specific state of the source. Neither requires a funded account, except for
@@ -80,8 +88,11 @@ Listed so the gaps are visible rather than discovered late.
   held fixed there.
 - **Verification latency.** Anchor settlement timing is now in `latency.md`, but
   the other side is still open: wall-clock time for `gpa verify` to check a
-  release, and how tree hashing scales with repository size.
-- **Scale.** Every measurement comes from this repository, which is small.
-  Behaviour on a large history, or one using Git LFS substantially, is unknown.
+  release, and how tree hashing scales with repository size — partly answered by
+  `repository-sample.md`, still worth a dedicated verify-path timing note.
+- **Git LFS in the field.** Covered by a unit test, but no project in the sample
+  used it, so real-world behaviour is unobserved.
+- **Slow release cadences.** Nothing in the sample tags less often than every 98
+  days, which is the case where periodic snapshots would matter most for RQ2.
 - **GitLab CI.** The twin workflow under `workflows/` has never run against a live
   GitLab instance.

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "projectId": "0x4bbf85dcee1324393571319693184f283687afa3732f3aca158c1b1692b54d2f",
+  "label": "libarchive/libarchive",
+  "networks": [],
+  "extras": [
+    {
+      "path": "configure",
+      "reason": "Autotools configure script produced for the release tarball",
+      "source": "autoreconf"
+    },
+    {
+      "path": "aclocal.m4",
+      "reason": "Generated aclocal macro file shipped in the release tarball",
+      "source": "aclocal"
+    },
+    {
+      "path": "config.h.in",
+      "reason": "Autoheader-generated config header template",
+      "source": "autoheader"
+    },
+    {
+      "path": "Makefile.in",
+      "reason": "Automake-generated Makefile.in at the distribution root",
+      "source": "automake"
+    },
+    {
+      "path": "build/autoconf/*",
+      "reason": "Autotools / Libtool auxiliary scripts vendored under build/autoconf",
+      "source": "automake --add-missing / libtoolize"
+    },
+    {
+      "path": "*/test/list.h",
+      "reason": "Generated test registry headers included in the release tarball",
+      "source": "libarchive release scripts"
+    },
+    {
+      "path": "doc/html/**",
+      "reason": "Prebuilt HTML man pages included in the release tarball",
+      "source": "libarchive doc build"
+    },
+    {
+      "path": "doc/man/**",
+      "reason": "Prebuilt man pages included in the release tarball",
+      "source": "libarchive doc build"
+    },
+    {
+      "path": "doc/text/**",
+      "reason": "Prebuilt text man pages included in the release tarball",
+      "source": "libarchive doc build"
+    },
+    {
+      "path": "doc/wiki/**",
+      "reason": "Prebuilt wiki man pages included in the release tarball",
+      "source": "libarchive doc build"
+    },
+    {
+      "path": "doc/pdf/**",
+      "reason": "Prebuilt PDF man pages included in the release tarball",
+      "source": "libarchive doc build"
+    }
+  ]
+}

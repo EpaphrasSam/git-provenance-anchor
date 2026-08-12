@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "projectId": "0x1294f0616b9b14cae9a7b010b0236f90c44589091cf93b0ec7d2e84030f4db1b",
+  "label": "curl/curl",
+  "networks": [],
+  "extras": [
+    {
+      "path": "configure",
+      "reason": "Autotools configure script produced by autoreconf / buildconf for the release tarball",
+      "source": "autoreconf"
+    },
+    {
+      "path": "aclocal.m4",
+      "reason": "Generated aclocal macro file shipped in the release tarball",
+      "source": "aclocal"
+    },
+    {
+      "path": "**/Makefile.in",
+      "reason": "Automake-generated Makefile.in files present in the distribution",
+      "source": "automake"
+    },
+    {
+      "path": "compile",
+      "reason": "Autotools auxiliary script copied into the tarball",
+      "source": "automake --add-missing"
+    },
+    {
+      "path": "config.guess",
+      "reason": "Autotools auxiliary script copied into the tarball",
+      "source": "automake --add-missing"
+    },
+    {
+      "path": "config.sub",
+      "reason": "Autotools auxiliary script copied into the tarball",
+      "source": "automake --add-missing"
+    },
+    {
+      "path": "depcomp",
+      "reason": "Autotools auxiliary script copied into the tarball",
+      "source": "automake --add-missing"
+    },
+    {
+      "path": "install-sh",
+      "reason": "Autotools auxiliary script copied into the tarball",
+      "source": "automake --add-missing"
+    },
+    {
+      "path": "missing",
+      "reason": "Autotools auxiliary script copied into the tarball",
+      "source": "automake --add-missing"
+    },
+    {
+      "path": "ltmain.sh",
+      "reason": "Libtool auxiliary script shipped in the release tarball",
+      "source": "libtoolize"
+    },
+    {
+      "path": "m4/libtool.m4",
+      "reason": "Libtool M4 macros vendored into the release tarball",
+      "source": "libtoolize"
+    },
+    {
+      "path": "m4/ltoptions.m4",
+      "reason": "Libtool M4 macros vendored into the release tarball",
+      "source": "libtoolize"
+    },
+    {
+      "path": "m4/ltsugar.m4",
+      "reason": "Libtool M4 macros vendored into the release tarball",
+      "source": "libtoolize"
+    },
+    {
+      "path": "m4/ltversion.m4",
+      "reason": "Libtool M4 macros vendored into the release tarball",
+      "source": "libtoolize"
+    },
+    {
+      "path": "m4/lt~obsolete.m4",
+      "reason": "Libtool M4 macros vendored into the release tarball",
+      "source": "libtoolize"
+    },
+    {
+      "path": "lib/curl_config.h.in",
+      "reason": "Autoheader-generated config header template",
+      "source": "autoheader"
+    },
+    {
+      "path": "src/tool_hugehelp.c",
+      "reason": "Generated curl tool help source included in the release tarball",
+      "source": "curl release scripts"
+    },
+    {
+      "path": "tests/libtest/libtests.c",
+      "reason": "Generated test harness source included in the release tarball",
+      "source": "curl release scripts"
+    },
+    {
+      "path": "tests/server/servers.c",
+      "reason": "Generated test harness source included in the release tarball",
+      "source": "curl release scripts"
+    },
+    {
+      "path": "tests/tunit/tunits.c",
+      "reason": "Generated test harness source included in the release tarball",
+      "source": "curl release scripts"
+    },
+    {
+      "path": "tests/unit/units.c",
+      "reason": "Generated test harness source included in the release tarball",
+      "source": "curl release scripts"
+    },
+    {
+      "path": "docs/RELEASE-TOOLS.md",
+      "reason": "Generated release documentation included in the distribution",
+      "source": "curl release scripts"
+    },
+    {
+      "path": "docs/libcurl/libcurl-symbols.md",
+      "reason": "Generated symbol documentation included in the distribution",
+      "source": "curl release scripts"
+    }
+  ]
+}

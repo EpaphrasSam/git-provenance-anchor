@@ -31,6 +31,8 @@
     "fees:history": "ts-node --transpile-only scripts/fee-history.ts",
     "fees:analyse": "ts-node --transpile-only scripts/fee-analyse.ts",
     "fees:all": "npm run fees:history && npm run fees:analyse",
+    "sample:clone": "bash evaluation/sample-clone.sh ./sample",
+    "sample:tarballs": "ts-node --transpile-only scripts/tarball-sweep.ts --sample ./sample",
     "check:access-control": "ts-node --transpile-only scripts/check-access-control.ts",
     "verify:bytecode": "hardhat run scripts/verify-deployed-bytecode.ts"
   },

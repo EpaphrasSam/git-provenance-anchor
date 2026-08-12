@@ -36,6 +36,35 @@ and the tree hash is computed over stored objects rather than working-tree
 bytes, but it is the assumption most likely to be wrong in practice and worth
 demonstrating rather than asserting.
 
+## Scope of this claim, and what it took to extend it
+
+Every row above computes the hash of a **Git ref inside a repository**, either
+through Git itself or through `gpa tree-hash --ref`. That path reads the object
+store, so the operating system cannot influence the answer.
+
+The artifact path, `gpa tree-hash <tarball>`, is a separate question, and it did
+not hold when it was first tested. Hashing a tarball originally meant extracting
+it and reading modes back from the filesystem. A Windows filesystem carries
+neither the executable bit nor symlinks, so `100755` entries became `100644` and
+symlink entries vanished, changing the tree hash with no byte of content
+different. That was a real defect, found by the release tarball sweep rather than
+by this record.
+
+It has since been fixed: `hashArchive` now takes modes and symlink targets from
+the tar entry headers, which carry them, instead of from the filesystem. The
+sweep's affected repositories match on Windows after the change, and a regression
+test (`preserves 100755 from tar headers even when the filesystem drops +x`)
+guards it. Re-measured on Linux after the fix, the artifact path reproduces the
+object-store hash for cobra, click, fzf, express, axios, requests, ripgrep and
+godot-demo-projects.
+
+Three repositories still differ through the artifact path on every platform, and
+should: bat loses 92 submodule gitlinks, libarchive loses 8 paths to
+`export-ignore`, and curl has 5 blobs rewritten by `*.bat text eol=crlf`. Those
+are cases where an archive genuinely is not the tree, which is archive semantics
+rather than a platform question. Full account in `tarball-sweep.md` and
+`data/control-row-diagnosis.json`.
+
 ## The fourth row is the strongest one
 
 The `v0.3.0-m3` value was not computed locally. It was computed by the GitHub

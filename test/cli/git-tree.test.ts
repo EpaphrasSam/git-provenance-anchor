@@ -6,6 +6,7 @@ import {
   hashArchive,
   hashBlob,
   hashDirectory,
+  hashGitRef,
   isLfsPointer,
   treeHashToBytes32,
 } from "../../cli/src/lib/git-tree";
@@ -118,6 +119,37 @@ describe("git-tree hasher", function () {
     }
   });
 
+  it("preserves 100755 from tar headers even when the filesystem drops +x", async () => {
+    // Regression for evaluation/tarball-sweep.md / control-row-diagnosis.json:
+    // Windows extract loses the executable bit; modes must come from the archive.
+    const repo = await mkTempRepo();
+    writeFile(repo, "readme.txt", "plain\n");
+    writeFile(repo, "tools/run.sh", "#!/bin/sh\necho hi\n");
+    await gitInitCommit(repo);
+    assertGitOk(runGit(["update-index", "--chmod=+x", "tools/run.sh"], { cwd: repo }), "chmod");
+    assertGitOk(runGit(["commit", "--amend", "--no-edit"], { cwd: repo }), "amend");
+    assertGitOk(runGit(["tag", "v-exec"], { cwd: repo }), "tag");
+
+    const modeLine = runGit(["ls-tree", "HEAD", "tools/run.sh"], { cwd: repo }).stdout.trim();
+    expect(modeLine.startsWith("100755")).to.equal(true);
+
+    const archive = path.join(repo, "v-exec.tar.gz");
+    assertGitOk(
+      runGit(["archive", "--format=tar.gz", "-o", archive, "v-exec"], { cwd: repo }),
+      "archive"
+    );
+
+    const expected = gitTreeHash(repo, "v-exec");
+    const fromRef = await hashGitRef(repo, "v-exec");
+    const fromArchive = await hashArchive(archive);
+    try {
+      expect(fromRef.treeHashHex).to.equal(expected);
+      expect(fromArchive.treeHashHex).to.equal(expected);
+    } finally {
+      await fromArchive.cleanup();
+    }
+  });
+
   it("hashGitRef matches git rev-parse even when autocrlf would rewrite archives", async () => {
     const { hashGitRef } = await import("../../cli/src/lib/git-tree");
     const repo = await mkTempRepo();
@@ -168,5 +200,66 @@ describe("manifest extras", () => {
       { path: "dist/**", reason: "build output", source: "tsc" },
     ]);
     expect(matched).to.deep.equal(["dist/chunk.js", "dist/index.js"]);
+  });
+});
+
+describe("hashGitRef reads the object store, not an archive", () => {
+  // Regression cases from evaluation/repository-sample.md, where reconstructing
+  // through `git archive` disagreed with the tree hash the anchor commits to.
+  const mkRepo = (): string => {
+    const repo = fs.mkdtempSync(path.join(os.tmpdir(), "gpa-objstore-"));
+    assertGitOk(runGit(["init"], { cwd: repo }), "init");
+    assertGitOk(runGit(["config", "user.email", "gpa@test.local"], { cwd: repo }), "email");
+    assertGitOk(runGit(["config", "user.name", "GPA Test"], { cwd: repo }), "name");
+    assertGitOk(runGit(["config", "core.autocrlf", "false"], { cwd: repo }), "autocrlf");
+    return repo;
+  };
+
+  it("keeps files that .gitattributes marks export-ignore", async () => {
+    const repo = mkRepo();
+    fs.writeFileSync(path.join(repo, "keep.txt"), "kept\n");
+    fs.writeFileSync(path.join(repo, ".gitattributes"), ".git* export-ignore\n");
+    fs.mkdirSync(path.join(repo, ".github"), { recursive: true });
+    fs.writeFileSync(path.join(repo, ".github", "ci.yml"), "on: push\n");
+    assertGitOk(runGit(["add", "-A"], { cwd: repo }), "add");
+    assertGitOk(runGit(["commit", "-m", "export-ignore"], { cwd: repo }), "commit");
+
+    const expected = runGit(["rev-parse", "HEAD^{tree}"], { cwd: repo }).stdout.trim();
+    const result = await hashGitRef(repo, "HEAD");
+    expect(result.treeHashHex).to.equal(expected);
+  });
+
+  it("does not let an eol attribute rewrite blob contents", async () => {
+    const repo = mkRepo();
+    fs.writeFileSync(path.join(repo, "run.bat"), "echo hello\n");
+    fs.writeFileSync(path.join(repo, ".gitattributes"), "*.bat text eol=crlf\n");
+    assertGitOk(runGit(["add", "-A"], { cwd: repo }), "add");
+    assertGitOk(runGit(["commit", "-m", "eol"], { cwd: repo }), "commit");
+
+    const expected = runGit(["rev-parse", "HEAD^{tree}"], { cwd: repo }).stdout.trim();
+    const result = await hashGitRef(repo, "HEAD");
+    expect(result.treeHashHex).to.equal(expected);
+  });
+
+  it("keeps submodule gitlink entries in the tree", async () => {
+    const inner = mkRepo();
+    fs.writeFileSync(path.join(inner, "lib.txt"), "inner\n");
+    assertGitOk(runGit(["add", "-A"], { cwd: inner }), "inner add");
+    assertGitOk(runGit(["commit", "-m", "inner"], { cwd: inner }), "inner commit");
+
+    const outer = mkRepo();
+    fs.writeFileSync(path.join(outer, "main.txt"), "outer\n");
+    assertGitOk(runGit(["add", "-A"], { cwd: outer }), "outer add");
+    assertGitOk(runGit(["commit", "-m", "outer"], { cwd: outer }), "outer commit");
+    const added = runGit(
+      ["-c", "protocol.file.allow=always", "submodule", "add", inner, "vendor/inner"],
+      { cwd: outer }
+    );
+    if (added.status !== 0) return; // submodule support unavailable in this environment
+    assertGitOk(runGit(["commit", "-m", "add submodule"], { cwd: outer }), "submodule commit");
+
+    const expected = runGit(["rev-parse", "HEAD^{tree}"], { cwd: outer }).stdout.trim();
+    const result = await hashGitRef(outer, "HEAD");
+    expect(result.treeHashHex).to.equal(expected);
   });
 });

@@ -1,0 +1,90 @@
+{
+ "collectedAt": "2026-08-12T13:05:00Z",
+ "question": "Five generated-archive control rows in tarball-sweep.md have identical path sets, no extras and no missing files, yet their tree hashes differ from the anchor. Is the cause the same git archive behaviour that broke hashGitRef, or a defect in this project's artifact hashing?",
+ "method": "For each repository, produce a local `git archive HEAD`, extract it, and compare every extracted file against its tree entry on two axes: blob hash and executable bit. Then hash the same content through all three of the project's code paths and compare against `git rev-parse HEAD^{tree}`.",
+ "answer": "This project's artifact path, platform-dependently. The results below are from Linux, where tar extraction preserves the executable bit and everything matches. On Windows the same comparison mismatches, and a local `git archive` fed through hashArtifact there produces the same hashes as the GitHub downloads, which rules out anything specific to GitHub. Extracting a tarball means reading modes back from the filesystem, and Windows does not carry the executable bit, so every 100755 entry becomes 100644 and the tree hash changes with no content difference. Each of the five carries executable files: click 1, fzf 5, express 1, axios 2, godot-demo-projects 9. Stripping the executable bit from a Linux extraction reproduces the Windows hashes on demand.",
+ "correctionNote": "An earlier version of this file concluded that the cause was specific to GitHub's server-generated archive and that this project's code was ruled out. That conclusion was drawn from Linux measurements alone and was wrong as a general claim. The Windows run is what identified the real cause.",
+ "fix": "Read file modes (and symlink targets) from tar entry headers rather than from the filesystem after extraction. Applied in `cli/src/lib/git-tree.ts` (`hashArchive` / `collectTarLeafMeta`). Regression: `preserves 100755 from tar headers even when the filesystem drops +x`. Post-fix Windows check: click, fzf, express, axios local git archive → hashArtifact matches hashGitRef. Hashing a plain directory on Windows stays unreliable when modes were already lost before the tool sees the files.",
+ "repositories": [
+  {
+   "repo": "pallets/click",
+   "treeEntries": 150,
+   "fileByFile": { "identical": 150, "contentDiffers": 0, "modeDiffers": 0, "symlinkIssues": 0, "missing": 0 },
+   "gitRevParseTree": "206e6a28c8fbb22131308d573572a08d69a26381",
+   "hashGitRef": "match",
+   "hashDirectoryOnExtraction": "match",
+   "hashArtifactOnLocalTar": "match"
+  },
+  {
+   "repo": "junegunn/fzf",
+   "treeEntries": 155,
+   "fileByFile": { "identical": 155, "contentDiffers": 0, "modeDiffers": 0, "symlinkIssues": 0, "missing": 0 },
+   "gitRevParseTree": "f8e316409aa412e8410b6e624895057c354fb827",
+   "hashGitRef": "match",
+   "hashDirectoryOnExtraction": "match",
+   "hashArtifactOnLocalTar": "match"
+  },
+  {
+   "repo": "expressjs/express",
+   "treeEntries": 234,
+   "fileByFile": { "identical": 234, "contentDiffers": 0, "modeDiffers": 0, "symlinkIssues": 0, "missing": 0 },
+   "gitRevParseTree": "e1c06491cc90a1668a469a45c7d6604843d48ddd",
+   "hashGitRef": "match",
+   "hashDirectoryOnExtraction": "match",
+   "hashArtifactOnLocalTar": "match"
+  },
+  {
+   "repo": "axios/axios",
+   "treeEntries": 456,
+   "fileByFile": { "identical": 456, "contentDiffers": 0, "modeDiffers": 0, "symlinkIssues": 0, "missing": 0 },
+   "gitRevParseTree": "e235490f75463ad553dca06d75427aa17c1ab647",
+   "hashGitRef": "match",
+   "hashDirectoryOnExtraction": "match",
+   "hashArtifactOnLocalTar": "match"
+  },
+  {
+   "repo": "godotengine/godot-demo-projects",
+   "treeEntries": 4018,
+   "fileByFile": { "identical": 4018, "contentDiffers": 0, "modeDiffers": 0, "symlinkIssues": 0, "missing": 0 },
+   "gitRevParseTree": "b6daba21d92a13bbbddad608bc3c16b63d79b89f",
+   "hashGitRef": "match",
+   "hashDirectoryOnExtraction": "match",
+   "hashArtifactOnLocalTar": "match"
+  }
+ ],
+ "ruledOut": [
+  "Anything specific to GitHub's server-generated archive: on Windows a local `git archive` produces the same mismatching hashes as the downloads.",
+  "The three causes that broke the previous hashGitRef implementation: none of these five repositories loses a path to export-ignore, has its blobs rewritten by an eol or text attribute, or contains a submodule gitlink.",
+  "A defect in the ref path: hashGitRef reproduces the tree hash on every platform tested, because it reads the object store and never touches the filesystem."
+ ],
+  "wslConfirmation": {
+    "distro": "Ubuntu-24.04",
+    "collectedAt": "2026-08-12",
+    "note": "Re-ran hashGitRef vs hashArtifact(local git archive) under WSL. All four of click, fzf, express, axios reported identical=true. Windows run in the same session reported identical=false with full loss of 100755 bits after extract.",
+    "linuxIdentical": ["pallets/click", "junegunn/fzf", "expressjs/express", "axios/axios"]
+  },
+  "secondWindowsSymptom": {
+  "finding": "The rows described in tarball-sweep.md as losing one or two paths are the same root cause, not a separate puzzle. The lost-path counts equal each repository's symlink count exactly, because Windows does not materialise symlinks from a tar extraction by default and the entries vanish from the extracted tree.",
+  "evidence": {
+   "psf/requests": { "symlinks": 2, "paths": ["tests/certs/mtls/client/ca", "tests/certs/valid/ca"], "lostOnWindows": 2, "linuxArtifactPath": "match" },
+   "BurntSushi/ripgrep": { "symlinks": 1, "paths": ["HomebrewFormula"], "lostOnWindows": 1, "linuxArtifactPath": "match" },
+   "microsoft/fluentui-system-icons": { "symlinks": 1, "paths": ["FluentIcons.podspec"], "lostOnWindows": 1, "linuxArtifactPath": "not measured" }
+  }
+ },
+ "linuxArtifactPathResults": {
+  "note": "hashArtifact on a local `git archive HEAD`, compared against git rev-parse HEAD^{tree}, measured on Linux. Separates the Windows metadata bug from genuine archive-versus-tree semantics.",
+  "match": ["spf13/cobra", "pallets/click", "junegunn/fzf", "expressjs/express", "axios/axios", "godotengine/godot-demo-projects", "psf/requests", "BurntSushi/ripgrep"],
+  "mismatchForStructuralReasons": {
+   "sharkdp/bat": "92 submodule gitlinks omitted by git archive; 974 tree paths become 882",
+   "libarchive/libarchive": "8 paths dropped by .gitattributes export-ignore; 1476 become 1468",
+   "curl/curl": "path count identical at 4127, but 5 blobs rewritten by *.bat text eol=crlf"
+  },
+  "interpretation": "On Linux the artifact path reproduces the anchor for 8 of the 11 measured repositories. The three that do not are cases where an archive genuinely is not the tree, which no amount of mode handling will fix and which the manifest or clone-at-tag guidance addresses instead."
+ },
+ "platformDependence": {
+  "linux": "tar extraction preserves the executable bit and materialises symlinks; the affected repositories match",
+  "windows": "tar extraction drops the executable bit and does not materialise symlinks; the affected repositories mismatch",
+  "executableFilesPerRepo": { "pallets/click": 1, "junegunn/fzf": 5, "expressjs/express": 1, "axios/axios": 2, "godotengine/godot-demo-projects": 9 },
+  "symlinksPerRepo": { "pallets/click": 0, "junegunn/fzf": 0, "expressjs/express": 0, "axios/axios": 0, "godotengine/godot-demo-projects": 0 }
+ }
+}

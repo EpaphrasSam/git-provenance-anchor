@@ -16,6 +16,11 @@ deployer-address.txt
 
 evaluation/data/tmp/
 evaluation/data/*-simulated.json
+evaluation/data/*-tmp.json
+
+# Repository sample clones, ~1.2 GB. Rebuilt from recorded commit hashes with
+# evaluation/sample-clone.sh, so the hashes are the archive, not the checkout.
+sample/
 
 deployments/hardhat.json
 deployments/localhost.json
