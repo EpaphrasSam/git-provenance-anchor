@@ -28,6 +28,9 @@
     "deploy:zksync-era": "ts-node --transpile-only scripts/deploy-zksync.ts --network zkSyncEra",
     "balances": "ts-node --transpile-only scripts/balances.ts",
     "evidence": "ts-node --transpile-only scripts/collect-evidence.ts",
+    "fees:history": "ts-node --transpile-only scripts/fee-history.ts",
+    "fees:analyse": "ts-node --transpile-only scripts/fee-analyse.ts",
+    "fees:all": "npm run fees:history && npm run fees:analyse",
     "check:access-control": "ts-node --transpile-only scripts/check-access-control.ts",
     "verify:bytecode": "hardhat run scripts/verify-deployed-bytecode.ts"
   },

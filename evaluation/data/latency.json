@@ -1,0 +1,67 @@
+{
+ "collectedAt": "2026-08-12T11:10:00Z",
+ "subject": "Settlement timing for the Phase A mainnet anchor transactions of tag v0.4.0-m4",
+ "method": "Read from each network's own records: zks_getBlockDetails for zkSync Era, Blockscout's batch/commitment fields for Arbitrum One and OP Mainnet. No transactions sent.",
+ "caveat": "One anchor per network, all submitted within the same half hour on 2026-08-12. These are single observations of settlement timing, not a distribution.",
+
+ "networks": {
+  "arbitrumOne": {
+   "anchorTx": "0xee5213bd9b25d014aa56734202f486cff2f2e1b3e59e38ba70f599eb8808b248",
+   "l2Block": 493734376,
+   "l2BlockIso": "2026-08-12T10:17:15Z",
+   "l1BatchNumber": 1313426,
+   "batchDataContainer": "in_blob4844",
+   "l1CommitmentTx": "0xbff86a1f4f11257eeabd06c33eca921d6eddaa565c73611bc3866de9255cc89e",
+   "l1CommitmentIso": "2026-08-12T10:20:11Z",
+   "l1CommitmentStatus": "finalized",
+   "secondsToL1DataAvailability": 176,
+   "confirmationTx": null,
+   "confirmationNote": "Null at collection time. Arbitrum's confirmation follows the fraud-proof challenge window, roughly seven days, which is a protocol constant rather than something this measurement observes.",
+   "approxBlockTimeSeconds": 0.25
+  },
+
+  "opMainnet": {
+   "anchorTx": "0x560c03a0f69878623de2d71c71bc54ee5bc5868226c404c45e236756185645a2",
+   "l2Block": 155465544,
+   "l2BlockIso": "2026-08-12T10:17:45Z",
+   "l1BatchNumber": 485787,
+   "batchDataContainer": "in_blob4844",
+   "l1BatchTx": "0x33c75bb870631ba20969c5cd3fb843a68aaa422cf783903a513e2995fe456281",
+   "l1BatchIso": "2026-08-12T10:20:23Z",
+   "blobsInBatch": 5,
+   "secondsToL1DataAvailability": 158,
+   "confirmationNote": "OP Stack withdrawals and dispute resolution follow the same seven-day order of magnitude. Not observed here.",
+   "approxBlockTimeSeconds": 2
+  },
+
+  "zkSyncEra": {
+   "anchorTx": "0x485190f0fb7965d1c047d6f846f50e69023fdbb3bdc0e9f17c113440f053cf9e",
+   "l2Block": 71529888,
+   "l2BlockIso": "2026-08-12T10:17:52Z",
+   "l1BatchNumber": 515533,
+   "status": "sealed",
+   "commitTx": "0x284a1c8002e318f47cb743b46c1ea1edc02f768a06c6ac43de4f63431069ce62",
+   "committedIso": "2026-08-12T10:50:30Z",
+   "secondsToCommit": 1958,
+   "proveTx": "0x54d77c59cc56cb42b56886fa275af0741f2dd812b07c9c0515b64a802d86f4ee",
+   "provenIso": "2026-08-12T11:03:27Z",
+   "secondsToProof": 2735,
+   "executeTx": null,
+   "executedIso": null,
+   "executionNote": "Still pending at collection time. Execution is the final step at which the batch is applied on L1.",
+   "approxBlockTimeSeconds": 2.05
+  }
+ },
+
+ "inclusionLatency": {
+  "source": "evaluation/ci-end-to-end.md, run 30483333326 on testnets",
+  "submitStepSecondsForThreeChains": 12,
+  "note": "The CI job's submit step covers signing and awaiting inclusion on three chains sequentially. Per-chain inclusion is bounded below by the block time: roughly 0.25s on Arbitrum, 2s on OP, 2s on zkSync."
+ },
+
+ "comparator": {
+  "source": "Grilli and Speziali 2024, PineSU",
+  "reportedFinality": "approximately 15 minutes on Ethereum mainnet",
+  "note": "Named in the Chapter 3 baselines table as the latency comparator."
+ }
+}

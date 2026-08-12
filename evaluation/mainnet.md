@@ -60,6 +60,14 @@ at collection time and is illustrative only.
 OP fees were negligible in this window (sub-cent). Exact deploy tx hash is in
 `deployments/opMainnet.json`.
 
+**These OP figures are the L2 execution component only.** They come from ethers'
+`receipt.fee`, which is `gasUsed x gasPrice` and omits the separate `l1Fee` field
+OP Stack receipts carry for the cost of posting to L1. Reading the raw receipt for
+the anchor gives `l1Fee` = 1.862429623e9 wei, making the true total 8.118e-8 ETH
+rather than 7.9e-8, with L1 accounting for 2.29%. See `fee-distribution.md`, which
+uses the corrected basis throughout. Arbitrum and zkSync are unaffected: both
+price L1 costs inside `gasUsed`, so their receipt fees are already complete.
+
 ### zkSync Era
 
 | Step | Tx | Gas used (EraVM) | Fee (ETH) |
