@@ -25,6 +25,9 @@ operator tooling, not just documentation of this deployment.
 | `ladisa-coverage.md` | Which of the 117 attack vectors in the Ladisa et al. taxonomy this system would detect, and which it would not | `python3 evaluation/ladisa-classify.py` |
 | `repository-sample.md` | Tree-hash reconstruction and verification time across twelve widely used projects, and the archive-based reconstruction defect it exposed | `npm run sample:clone`, then compare `hashGitRef` against `git rev-parse HEAD^{tree}` |
 | `tarball-sweep.md` | Published release artifacts versus the anchored tree; curl/libarchive manifests clear undeclared extras; Windows `hashArtifact` mode loss on tarball verify | `npm run sample:tarballs`; diagnosis in `data/control-row-diagnosis.json` |
+| `functional-validation.md` | The four properties Chapter 3 promises, as one table: unexpected content, no false positives, allowlist enforcement, tag retargeting | per-row records listed in the file |
+| `workflow-impact.md` | What adopting the system costs a project: files added, config lines, manual steps, and why none of it varies by project | counts over the reference templates, plus `ci-end-to-end.md` |
+| `sbom-coverage.md` | What Syft 1.51.0 plus CycloneDX actually inventories on the twelve sampled source trees, against each project's own lockfile | `npm run sample:sbom` |
 | `rq2-strategies.md` | Tag-only versus tag-plus-snapshots versus tag-plus-re-verification: the rubric re-run three ways, grounded in release cadence and priced from observed fees | `python3 evaluation/rq2-ablation.py` |
 | `network-tradeoffs.md` | Throughput, finality, cost and finality-security assumptions compared across the three production networks | figures drawn from `fee-distribution.md`, `latency.md`, and 30 daily block samples per network |
 | `workflow-tamper-protection.md` | Which GitHub branch protection configuration actually prevents the anchoring workflow being edited, and which only appears to | manual `gh api` calls, recorded in the file |
@@ -43,6 +46,7 @@ operator tooling, not just documentation of this deployment.
 | `data/rq2-ablation.csv` and `data/rq2-ablation.json` | `python3 evaluation/rq2-ablation.py`, one row per vector per policy |
 | `data/tarball-sweep.json` | `npm run sample:tarballs` (curl/libarchive rows after applying `fixtures/manifests/`) |
 | `data/control-row-diagnosis.json` | Windows vs Linux (WSL) local `git archive` → `hashArtifact` vs `hashGitRef` for the mode-loss control rows |
+| `data/sbom-coverage.json` | `npm run sample:sbom`, one Syft CycloneDX document summarised per sampled repository |
 
 Both stamp the commit they were collected at, so a figure can be tied to a
 specific state of the source. Neither requires a funded account, except for

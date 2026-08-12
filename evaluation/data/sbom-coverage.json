@@ -1,0 +1,474 @@
+{
+ "collectedAt": "2026-08-12T19:11:24.346Z",
+ "syftVersion": "1.51.0",
+ "syftBinary": "C:\\Users\\isine\\OneDrive\\Documents\\Claude\\Projects\\MPhil Thesis\\git-provenance-anchor\\tools\\syft.exe",
+ "invocation": "syft dir:<clone> -o cyclonedx-json=<tmp>  (same as workflows/provenance-anchor.yml)",
+ "sampleSource": "evaluation/data/sample-results.json",
+ "repositories": [
+  {
+   "repo": "spf13/cobra",
+   "tag": "v1.10.2",
+   "commit": "88b30ab89da2d0d0abb153818746c5a2d30eccec",
+   "ecosystem": "Go",
+   "clone": "sample/spf13_cobra",
+   "syftMs": 2742,
+   "componentCount": 10,
+   "purlTypes": {
+    "github": 6,
+    "golang": 4
+   },
+   "componentTypes": {
+    "library": 10
+   },
+   "sampleNames": [
+    "actions/cache@v4",
+    "actions/checkout@v4",
+    "actions/labeler@v5",
+    "actions/setup-go@v6",
+    "github.com/cpuguy83/go-md2man/v2@v2.0.6",
+    "github.com/inconshreveable/mousetrap@v1.1.0",
+    "github.com/spf13/pflag@v1.0.9",
+    "go.yaml.in/yaml/v3@v3.0.4"
+   ],
+   "declared": {
+    "goMod": true,
+    "goDirectRequires": 4,
+    "gitlinks": 0
+   },
+   "notes": [
+    "go.mod lists 4 direct require lines; CycloneDX has 4 pkg:golang components"
+   ],
+   "bomFormat": "CycloneDX",
+   "specVersion": "1.7"
+  },
+  {
+   "repo": "psf/requests",
+   "tag": "v2.34.2",
+   "commit": "6e83187b8feb273ed4c6cdab5efd8d54901dfab3",
+   "ecosystem": "Python",
+   "clone": "sample/psf_requests",
+   "syftMs": 6654,
+   "componentCount": 23,
+   "purlTypes": {
+    "github": 21,
+    "pypi": 2
+   },
+   "componentTypes": {
+    "library": 23
+   },
+   "sampleNames": [
+    "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+    "actions/checkout@v6.0.2",
+    "actions/checkout@v6.0.2",
+    "actions/checkout@v6.0.2",
+    "actions/checkout@v6.0.2",
+    "actions/checkout@v6.0.2",
+    "actions/checkout@v6.0.2",
+    "actions/download-artifact@v8.0.0"
+   ],
+   "declared": {
+    "pyproject": true,
+    "pyprojectDeps": 4,
+    "gitlinks": 0
+   },
+   "notes": [
+    "pyproject.toml [project] dependencies lists 4 entries; CycloneDX has 2 pkg:pypi components"
+   ],
+   "bomFormat": "CycloneDX",
+   "specVersion": "1.7"
+  },
+  {
+   "repo": "pallets/click",
+   "tag": "8.4.2",
+   "commit": "b2e30a175449cfda909ee4fbf4a29a6a071cad53",
+   "ecosystem": "Python",
+   "clone": "sample/pallets_click",
+   "syftMs": 5374,
+   "componentCount": 101,
+   "purlTypes": {
+    "github": 20,
+    "pypi": 81
+   },
+   "componentTypes": {
+    "library": 101
+   },
+   "sampleNames": [
+    "actions/cache@v5.0.4",
+    "actions/cache@v5.0.4",
+    "actions/checkout@v6.0.2",
+    "actions/checkout@v6.0.2",
+    "actions/checkout@v6.0.2",
+    "actions/checkout@v6.0.2",
+    "actions/checkout@v6.0.2",
+    "actions/download-artifact@v8.0.1"
+   ],
+   "declared": {
+    "pyproject": true,
+    "pyprojectDeps": 1,
+    "gitlinks": 0
+   },
+   "notes": [
+    "pyproject.toml [project] dependencies lists 1 entries; CycloneDX has 81 pkg:pypi components"
+   ],
+   "bomFormat": "CycloneDX",
+   "specVersion": "1.7"
+  },
+  {
+   "repo": "junegunn/fzf",
+   "tag": "v0.74.2",
+   "commit": "3337be9d450cd349e99273a2d3985ceaf5f3753f",
+   "ecosystem": "Go",
+   "clone": "sample/junegunn_fzf",
+   "syftMs": 4331,
+   "componentCount": 45,
+   "purlTypes": {
+    "github": 19,
+    "gem": 15,
+    "golang": 11
+   },
+   "componentTypes": {
+    "library": 45
+   },
+   "sampleNames": [
+    "actions/checkout@v7",
+    "actions/checkout@v7",
+    "actions/checkout@v7",
+    "actions/checkout@v7",
+    "actions/checkout@v7",
+    "actions/checkout@v7",
+    "actions/dependency-review-action@v5",
+    "actions/labeler@v7"
+   ],
+   "declared": {
+    "goMod": true,
+    "goDirectRequires": 11,
+    "gitlinks": 0
+   },
+   "notes": [
+    "go.mod lists 11 direct require lines; CycloneDX has 11 pkg:golang components"
+   ],
+   "bomFormat": "CycloneDX",
+   "specVersion": "1.7"
+  },
+  {
+   "repo": "BurntSushi/ripgrep",
+   "tag": "14.1.1",
+   "commit": "4649aa9700619f94cf9c66876e9549d83420e16c",
+   "ecosystem": "Rust",
+   "clone": "sample/BurntSushi_ripgrep",
+   "syftMs": 4193,
+   "componentCount": 65,
+   "purlTypes": {
+    "github": 4,
+    "cargo": 51,
+    "(no purl)": 10
+   },
+   "componentTypes": {
+    "library": 65
+   },
+   "sampleNames": [
+    "actions/checkout@v4",
+    "actions/checkout@v4",
+    "aho-corasick@1.1.3",
+    "anyhow@1.0.87",
+    "bstr@1.10.0",
+    "cc@1.1.18",
+    "cfg-if@1.0.0",
+    "crossbeam-channel@0.5.13"
+   ],
+   "declared": {
+    "cargoLock": true,
+    "cargoPackages": 61,
+    "gitlinks": 0
+   },
+   "notes": [
+    "Cargo.lock has 61 [[package]] entries; CycloneDX has 51 pkg:cargo components"
+   ],
+   "bomFormat": "CycloneDX",
+   "specVersion": "1.7"
+  },
+  {
+   "repo": "expressjs/express",
+   "tag": "v4.22.2",
+   "commit": "df0abc9333a3398b97b71f6ea7cd77d5ea3e9f97",
+   "ecosystem": "JavaScript",
+   "clone": "sample/expressjs_express",
+   "syftMs": 4982,
+   "componentCount": 9,
+   "purlTypes": {
+    "github": 9
+   },
+   "componentTypes": {
+    "library": 9
+   },
+   "sampleNames": [
+    "actions/checkout@v4",
+    "actions/checkout@v4",
+    "actions/checkout@v4.1.1",
+    "actions/download-artifact@v4",
+    "actions/setup-node@v4",
+    "actions/upload-artifact@v4",
+    "coverallsapp/github-action@v2",
+    "github/codeql-action/analyze@v3.24.7"
+   ],
+   "declared": {
+    "packageJson": true,
+    "npmDirectDeps": 31,
+    "npmDevDeps": 16,
+    "npmWorkspaces": false,
+    "gitlinks": 0
+   },
+   "notes": [
+    "package.json has 31 dependencies and 16 devDependencies; CycloneDX has 0 pkg:npm components"
+   ],
+   "bomFormat": "CycloneDX",
+   "specVersion": "1.7"
+  },
+  {
+   "repo": "axios/axios",
+   "tag": "v1.19.0",
+   "commit": "311fcc5c8d989b7248f05d390bb83bfbfb009977",
+   "ecosystem": "JavaScript",
+   "clone": "sample/axios_axios",
+   "syftMs": 7780,
+   "componentCount": 1057,
+   "purlTypes": {
+    "npm": 1029,
+    "github": 28
+   },
+   "componentTypes": {
+    "library": 1057
+   },
+   "sampleNames": [
+    "@algolia/abtesting@1.16.1",
+    "@algolia/autocomplete-core@1.17.7",
+    "@algolia/autocomplete-plugin-algolia-insights@1.17.7",
+    "@algolia/autocomplete-preset-algolia@1.17.7",
+    "@algolia/autocomplete-shared@1.17.7",
+    "@algolia/client-abtesting@5.50.1",
+    "@algolia/client-analytics@5.50.1",
+    "@algolia/client-common@5.50.1"
+   ],
+   "declared": {
+    "packageJson": true,
+    "npmDirectDeps": 4,
+    "npmDevDeps": 39,
+    "npmWorkspaces": false,
+    "packageLock": true,
+    "gitlinks": 0
+   },
+   "notes": [
+    "package.json has 4 dependencies and 39 devDependencies, with package-lock.json; CycloneDX has 1029 pkg:npm components"
+   ],
+   "bomFormat": "CycloneDX",
+   "specVersion": "1.7"
+  },
+  {
+   "repo": "sharkdp/bat",
+   "tag": "v0.26.1",
+   "commit": "979ba22628bc9d8171f2cffca2bd5c90c9fc0a9e",
+   "ecosystem": "Rust",
+   "clone": "sample/sharkdp_bat",
+   "syftMs": 12013,
+   "componentCount": 294,
+   "purlTypes": {
+    "github": 8,
+    "cargo": 256,
+    "pypi": 28,
+    "(no purl)": 1,
+    "golang": 1
+   },
+   "componentTypes": {
+    "library": 294
+   },
+   "sampleNames": [
+    "actions/checkout@v5",
+    "actions/checkout@v5",
+    "actions/upload-artifact@master",
+    "adler2@2.0.0",
+    "aho-corasick@1.1.3",
+    "alabaster@0.7.6",
+    "alabaster@0.7.6",
+    "ansi_colours@1.2.3"
+   ],
+   "declared": {
+    "cargoLock": true,
+    "cargoPackages": 257,
+    "gitmodules": true,
+    "submoduleEntries": 92,
+    "gitlinks": 92
+   },
+   "notes": [
+    "Cargo.lock has 257 [[package]] entries; CycloneDX has 256 pkg:cargo components",
+    ".gitmodules has 92 entries, git ls-tree reports 92 gitlinks; sample clone is depth-1 without recurse-submodules"
+   ],
+   "bomFormat": "CycloneDX",
+   "specVersion": "1.7"
+  },
+  {
+   "repo": "libarchive/libarchive",
+   "tag": "v3.8.9",
+   "commit": "27cbc7827172698143e440801fc0ba39ccb4f1f5",
+   "ecosystem": "C / autotools",
+   "clone": "sample/libarchive_libarchive",
+   "syftMs": 20525,
+   "componentCount": 18,
+   "purlTypes": {
+    "github": 17,
+    "maven": 1
+   },
+   "componentTypes": {
+    "library": 18
+   },
+   "sampleNames": [
+    "acj/freebsd-firecracker-action@v0.11.0",
+    "actions/checkout@v7.0.1",
+    "actions/checkout@v7.0.1",
+    "actions/checkout@v7.0.1",
+    "actions/checkout@v7.0.1",
+    "actions/upload-artifact@v7.0.1",
+    "actions/upload-artifact@v7.0.1",
+    "actions/upload-artifact@v7.0.1"
+   ],
+   "declared": {
+    "cmakeLists": true,
+    "cmakeFindPackage": 13,
+    "configureAc": true,
+    "gitlinks": 0
+   },
+   "notes": [
+    "C/autotools tree (configure.ac=true, CMakeLists find_package=13); no language lockfile. CycloneDX component count 18"
+   ],
+   "bomFormat": "CycloneDX",
+   "specVersion": "1.7"
+  },
+  {
+   "repo": "godotengine/godot-demo-projects",
+   "tag": "4.7-6ad6167",
+   "commit": "6ad6167e0577fe3622c18546138f456b107ce93c",
+   "ecosystem": "GDScript / binary assets",
+   "clone": "sample/godotengine_godot-demo-projects",
+   "syftMs": 46019,
+   "componentCount": 6,
+   "purlTypes": {
+    "github": 6
+   },
+   "componentTypes": {
+    "library": 6
+   },
+   "sampleNames": [
+    "actions/cache@v4",
+    "actions/checkout@v6",
+    "actions/checkout@v6",
+    "actions/checkout@v6",
+    "JamesIves/github-pages-deploy-action@releases/v4",
+    "lycheeverse/lychee-action@v2"
+   ],
+   "declared": {
+    "gitlinks": 0
+   },
+   "notes": [],
+   "bomFormat": "CycloneDX",
+   "specVersion": "1.7"
+  },
+  {
+   "repo": "curl/curl",
+   "tag": "curl-8_16_0",
+   "commit": "11b991232fbcaa88e2b1faecac224416b0001e35",
+   "ecosystem": "C / autotools",
+   "clone": "sample/curl_curl",
+   "syftMs": 59508,
+   "componentCount": 29,
+   "purlTypes": {
+    "github": 29
+   },
+   "componentTypes": {
+    "library": 29
+   },
+   "sampleNames": [
+    "actions/cache@v4",
+    "actions/cache@v4",
+    "actions/cache@v4",
+    "actions/cache@v4",
+    "actions/checkout@v4",
+    "actions/checkout@v5",
+    "actions/checkout@v5",
+    "actions/checkout@v5"
+   ],
+   "declared": {
+    "cmakeLists": true,
+    "cmakeFindPackage": 32,
+    "configureAc": true,
+    "gitlinks": 0
+   },
+   "notes": [
+    "C/autotools tree (configure.ac=true, CMakeLists find_package=32); no language lockfile. CycloneDX component count 29"
+   ],
+   "bomFormat": "CycloneDX",
+   "specVersion": "1.7"
+  },
+  {
+   "repo": "microsoft/fluentui-system-icons",
+   "tag": "1.1.335",
+   "commit": "0a92ff83f03fa5319edaf0e2b2a09e460b69091a",
+   "ecosystem": "SVG / generated assets",
+   "clone": "sample/microsoft_fluentui-system-icons",
+   "syftMs": 900026,
+   "componentCount": 0,
+   "purlTypes": {},
+   "componentTypes": {},
+   "sampleNames": [],
+   "declared": {
+    "packageJson": true,
+    "npmDirectDeps": 0,
+    "npmDevDeps": 81,
+    "npmWorkspaces": true,
+    "yarnLock": true,
+    "gitlinks": 0
+   },
+   "notes": [
+    "Full-tree syft dir:. timed out after 900s on 118432 files, mostly generated SVGs.",
+    "Excluding **/*.svg finished: 2033 components ({\"npm\":1952,\"maven\":43,\"cocoapods\":4,\"github\":31,\"pub\":2,\"swift\":1}).",
+    "package.json has 0 runtime dependencies and 81 devDependencies, workspaces, yarn.lock (Yarn 4); Syft warned it could not parse yarn v2 __metadata."
+   ],
+   "error": "spawnSync C:\\Users\\isine\\OneDrive\\Documents\\Claude\\Projects\\MPhil Thesis\\git-provenance-anchor\\tools\\syft.exe ETIMEDOUT",
+   "fullTree": {
+    "timedOutAfterMs": 900026,
+    "error": "spawnSync C:\\Users\\isine\\OneDrive\\Documents\\Claude\\Projects\\MPhil Thesis\\git-provenance-anchor\\tools\\syft.exe ETIMEDOUT"
+   },
+   "excludeSvg": {
+    "invocation": "syft dir:<clone> --exclude **/*.svg -o cyclonedx-json",
+    "syftMs": 228000,
+    "bomFormat": "CycloneDX",
+    "specVersion": "1.7",
+    "componentCount": 2033,
+    "purlTypes": {
+     "npm": 1952,
+     "maven": 43,
+     "cocoapods": 4,
+     "github": 31,
+     "pub": 2,
+     "swift": 1
+    },
+    "componentTypes": {
+     "library": 2033
+    },
+    "yarnLockParseError": "unable to parse yarn v2 package key key=__metadata",
+    "sampleNames": [
+     "@adobe/css-tools@4.5.0",
+     "@asamuzakjp/css-color@5.1.11",
+     "@asamuzakjp/dom-selector@7.1.1",
+     "@asamuzakjp/generational-cache@1.0.1",
+     "@asamuzakjp/nwsapi@2.3.9",
+     "@babel/cli@7.29.7",
+     "@babel/code-frame@7.29.7",
+     "@babel/code-frame@8.0.0"
+    ]
+   }
+  }
+ ],
+ "notes": [
+  "fluentui-system-icons full-tree scan timed out at 900s; exclude-svg pass recorded under repositories[].excludeSvg",
+  "CycloneDX specVersion observed: 1.7 throughout"
+ ]
+}

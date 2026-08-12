@@ -22,6 +22,10 @@ evaluation/data/*-tmp.json
 # evaluation/sample-clone.sh, so the hashes are the archive, not the checkout.
 sample/
 
+# Local Syft binary used by scripts/sbom-coverage.ts. Version is pinned in
+# evaluation/sbom-coverage.md; the binary is not the archive.
+tools/
+
 deployments/hardhat.json
 deployments/localhost.json
 
