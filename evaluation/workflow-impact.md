@@ -20,19 +20,33 @@ documented barrier, not a claim of zero friction.
 | Repository secrets required | 1 (`ANCHOR_DEPLOYER_KEY`) |
 | Repository variables required | 1 (`GPA_NETWORKS`) |
 | One-time on-chain transactions | 2 (`registerProject`, `allowlistAdd`) |
-| Time from tag push to verified anchor | 49 s, of which ~12 s is submission to three chains |
+| Time from tag push to verified anchor | 49 s on this repository, of which ~12 s is submission to three chains. Not constant: see below |
 
 Adding the optional mechanisms from `rq2-strategies.md` costs a further 55
 effective lines for weekly snapshots and 33 for daily re-verification, plus one
 variable (`GPA_SNAPSHOT_REF`). Neither is required.
 
-## The result that matters is that none of this varies
+## Almost none of this varies, and the exception is worth naming
 
-Every figure above is a constant. It is the same for spf13/cobra at 66 files and
-0.7 MB as for microsoft/fluentui-system-icons at 118,432 files and 239 MB, and the
-same for a Go project as for a C project using autotools. The design adds two
-files and modifies none, so there is nothing for a project's size, language, build
-system or existing CI to interact with.
+Every figure above except the last is a constant. Files added, files modified,
+configuration lines, secrets, variables and one-off transactions are the same for
+spf13/cobra at 66 files and 0.7 MB as for microsoft/fluentui-system-icons at
+118,432 files and 239 MB, and the same for a Go project as for a C project using
+autotools. The design adds two files and modifies none, so there is nothing for a
+project's size, language, build system or existing CI to interact with.
+
+**Time is the exception, and the SBOM step is why.** `sbom-coverage.md` measured
+Syft over the same sample and it ranges across three orders of magnitude: 2.7 s
+for cobra, 59.5 s for curl, and 15 minutes for fluentui-system-icons, where
+`syft dir:.` as the shipped workflow writes it did not finish at all. Excluding
+`*.svg` brought that to roughly four minutes.
+
+So the honest form of the claim is that **adoption effort is constant and
+adoption runtime is not**. Everything a maintainer has to do is fixed; how long
+the pipeline then takes is dominated by scanning, and on a repository of many
+generated assets the reference workflow needs an exclusion or it will hang. That
+is a defect in the template rather than in the design, and it is recorded in
+`sbom-coverage.md` rather than smoothed over here.
 
 That is worth stating plainly because it is the specific contrast with the
 comparator. Tamanna et al.'s respondents struggled with hermetic builds, and a
@@ -93,3 +107,7 @@ figures above are what a maintainer would actually have to do.
   attempted, and Chapter 3 does not treat it as a required result.
 - Line counts are of the reference templates. A project could write a shorter or
   longer equivalent.
+- The reference workflow's `syft dir:.` has no exclusions and did not complete
+  within 15 minutes on a 118,432-file asset repository. Adoption effort stays
+  constant, but pipeline runtime does not, and the template needs an exclusion
+  option before it is safe to recommend for asset-heavy projects.
