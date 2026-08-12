@@ -162,6 +162,7 @@ export async function getWriteContract(repoRoot: string, network: string): Promi
   const signer = new ethers.Wallet(key, provider);
   const wallet = new ethers.NonceManager(signer);
   await wallet.getNonce("pending");
+  Object.defineProperty(wallet, "address", { value: signer.address });
   const contract = new ethers.Contract(deployment.address, ANCHOR_REGISTRY_ABI, wallet);
   return { contract, wallet: wallet as unknown as ethers.Wallet, deployment };
 }

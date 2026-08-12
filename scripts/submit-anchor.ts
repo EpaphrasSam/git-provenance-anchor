@@ -80,15 +80,14 @@ async function main(): Promise<void> {
 
   for (const network of networks) {
     const { contract, deployment, wallet } = await getWriteContract(root, network);
+    const from = wallet.address;
     console.log(
-      `anchor ${kindLabel} ${ref} on ${network} @ ${deployment.address} from ${wallet.address}`
+      `anchor ${kindLabel} ${ref} on ${network} @ ${deployment.address} from ${from}`
     );
 
-    const allowed = await contract.isAllowlisted(projectId, wallet.address);
+    const allowed = await contract.isAllowlisted(projectId, from);
     if (!allowed) {
-      throw new Error(
-        `${wallet.address} is not allowlisted for ${projectId} on ${network}`
-      );
+      throw new Error(`${from} is not allowlisted for ${projectId} on ${network}`);
     }
 
     if (dryRun) {
