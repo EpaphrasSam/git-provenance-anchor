@@ -1,0 +1,32 @@
+# Live GitLab CI for this repository. Adopting projects copy
+# workflows/provenance-anchor.gitlab-ci.yml rather than this file.
+#
+# Requires CI/CD variables:
+#   ANCHOR_DEPLOYER_KEY  — dedicated allowlisted key (masked)
+#   GPA_NETWORKS         — space-separated deployments (set to opSepolia for a cheap smoke)
+
+stages:
+  - anchor
+
+variables:
+  GIT_DEPTH: "0"
+
+provenance-anchor:
+  stage: anchor
+  image: node:20-bookworm
+  rules:
+    - if: $CI_COMMIT_TAG
+  before_script:
+    - apt-get update && apt-get install -y curl ca-certificates git
+    - curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+  script:
+    - TAG="$CI_COMMIT_TAG"
+    - TREE=$(git rev-parse "HEAD^{tree}")
+    - echo "Tree hash for ${TAG}: ${TREE}"
+    - syft dir:. -o cyclonedx-json=sbom.cdx.json
+    - SBOM_HASH=$(sha256sum sbom.cdx.json | awk '{print $1}')
+    - npm ci
+    - npx ts-node --transpile-only scripts/submit-anchor.ts --tag "$TAG" --tree-hash "$TREE" --sbom-hash "$SBOM_HASH"
+  artifacts:
+    paths:
+      - sbom.cdx.json
