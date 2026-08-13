@@ -107,3 +107,41 @@ This is a property of GitHub, not of this software. It is documented here becaus
 adopting the system without it leaves the anchoring definition writable by exactly
 the account the threat model is concerned with — but no part of the registry
 verifies or depends on it.
+
+**GitHub only.** The two-configuration experiment above, `enforce_admins` false
+against true, was run on GitHub. Nothing equivalent has been run on GitLab, even
+though the anchoring flow itself now runs on both platforms Objective 2 names
+(`ci-end-to-end.md`).
+
+Three separate properties are easy to collapse into one here, and they are not the
+same:
+
+**Isolation from the project's build pipeline** is structural and does not depend
+on branch protection at all. The anchoring job never invokes the project's build or
+release scripts, so an attacker who compromises those scripts cannot influence what
+the anchor records. That property holds on both platforms and the GitLab run
+exercises it.
+
+**Refusal of an admin editing the anchoring definition** is what this record
+actually tests, and it is what the two configurations differ on. A maintainer with
+sufficient permissions can otherwise disable the trigger or point the job at a
+different hash. Shown on GitHub only.
+
+**Detection of such an edit** is platform-independent, because the workflow file
+sits inside the anchored tree, as the section above already establishes. Blocking
+and detecting are different guarantees, and the protection configuration provides
+the first while the anchor provides the second regardless of platform.
+
+On GitLab the nearest controls are protected branches and protected tags, which are
+not a translation of the JSON payload above. Enforced Code Owner approval requires
+Premium or Ultimate: a `CODEOWNERS` file can exist on Free, but approvals do not
+block a merge. The admin-bypass path is not mysterious either, and should not be
+described as unknown. GitLab documents it: if "Allowed to push and merge" includes
+Maintainers or Owners, those roles skip merge requests much as GitHub admins skip
+protection without `enforce_admins`. It simply has not been exercised on this
+project.
+
+So the accurate summary is that isolation from the build pipeline is shown on both
+platforms, refusal of an admin editing the anchoring workflow is shown on GitHub
+only, and the recommendation in this record should be read as GitHub-specific until
+the same attack is pushed on a GitLab project.

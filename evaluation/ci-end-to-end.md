@@ -78,6 +78,25 @@ successful GitLab CI twin on OP Sepolia. It does not characterise behaviour on a
 large repository, on a repository using Git LFS in earnest, or under a
 concurrent-tag race.
 
+**What the GitLab run does and does not extend.** It establishes that the
+anchoring flow is not GitHub-specific: the GitHub job installs Syft through a
+marketplace action that has no GitLab equivalent, so the twin installs it from
+Syft's own install script instead, and both reach the same on-chain result,
+including a non-zero SBOM hash. That is a portability finding rather than a box
+ticked. It also exercises anchor isolation itself, which is structural: the job
+never invokes the project's build or release scripts on either platform.
+
+It does **not** extend the protection regime. `workflow-tamper-protection.md`
+records which GitHub branch-protection configuration actually refuses an
+unreviewed edit to the anchoring definition, and no equivalent has been run on
+GitLab. That is a distinct guarantee from isolation: isolation stops a compromised
+build script influencing the anchor, while protection stops a sufficiently
+privileged account rewriting the anchoring job itself. Detection of such an edit is
+platform-independent, since the workflow file sits inside the anchored tree.
+
+So: isolation from the build pipeline is shown on both platforms; refusal of an
+admin editing the workflow is shown on GitHub only.
+
 ## GitLab CI twin
 
 Live project: https://gitlab.com/EpaphrasSam/git-provenance-anchor
