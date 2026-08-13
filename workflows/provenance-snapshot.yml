@@ -57,6 +57,9 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Install published gpa
+        run: npm install -g git-provenance-anchor@0.1.1
+
       - name: Compute tree hash
         id: tree
         run: |
@@ -70,7 +73,7 @@ jobs:
           ANCHOR_DEPLOYER_KEY: ${{ secrets.ANCHOR_DEPLOYER_KEY }}
           GPA_NETWORKS: ${{ vars.GPA_NETWORKS }}
         run: |
-          npx --yes --package git-provenance-anchor@0.1.1 -- gpa anchor \
+          gpa anchor \
             --ref "${{ steps.target.outputs.ref }}" \
             --kind snapshot \
             --tree-hash "${{ steps.tree.outputs.tree }}"
