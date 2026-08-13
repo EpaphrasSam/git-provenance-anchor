@@ -70,7 +70,7 @@ jobs:
           ANCHOR_DEPLOYER_KEY: ${{ secrets.ANCHOR_DEPLOYER_KEY }}
           GPA_NETWORKS: ${{ vars.GPA_NETWORKS }}
         run: |
-          npx --yes git-provenance-anchor@0.1.0 anchor \
+          npx --yes git-provenance-anchor@0.1.1 anchor \
             --ref "${{ steps.target.outputs.ref }}" \
             --kind snapshot \
             --tree-hash "${{ steps.tree.outputs.tree }}"

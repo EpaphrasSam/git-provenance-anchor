@@ -14,4 +14,4 @@ provenance-reverify:
   before_script:
     - apt-get update && apt-get install -y git
   script:
-    - npx --yes git-provenance-anchor@0.1.0 reverify
+    - npx --yes git-provenance-anchor@0.1.1 reverify

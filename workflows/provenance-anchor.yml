@@ -65,7 +65,7 @@ jobs:
           ANCHOR_DEPLOYER_KEY: ${{ secrets.ANCHOR_DEPLOYER_KEY }}
           GPA_NETWORKS: ${{ vars.GPA_NETWORKS }}
         run: |
-          npx --yes git-provenance-anchor@0.1.0 anchor \
+          npx --yes git-provenance-anchor@0.1.1 anchor \
             --tag "${{ steps.tree.outputs.tag }}" \
             --tree-hash "${{ steps.tree.outputs.tree }}" \
             --sbom-hash "${{ steps.sbom.outputs.hash }}"

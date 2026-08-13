@@ -32,7 +32,7 @@ const program = new Command();
 program
   .name("gpa")
   .description("Git Provenance Anchor verifier and maintainer CLI")
-  .version("0.1.0");
+  .version("0.1.1");
 
 program
   .command("tree-hash")

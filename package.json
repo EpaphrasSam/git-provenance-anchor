@@ -1,6 +1,6 @@
 {
   "name": "git-provenance-anchor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Trust-minimized software provenance for Git using selective Layer-2 blockchain anchoring",
   "license": "Apache-2.0",
   "author": "EpaphrasSam",
@@ -24,11 +24,12 @@
   },
   "bin": {
     "gpa": "cli/bin/gpa.js",
-    "git-provenance-anchor": "cli/bin/gpa.js"
+    "git-provenance-anchor": "cli/bin/git-provenance-anchor.js"
   },
   "files": [
     "dist",
     "cli/bin/gpa.js",
+    "cli/bin/git-provenance-anchor.js",
     "manifest-schema",
     "deployments/arbitrumOne.json",
     "deployments/arbitrumSepolia.json",

@@ -123,7 +123,7 @@ gpa --help
 Without a global install:
 
 ```bash
-npx git-provenance-anchor@0.1.0 --help
+npx git-provenance-anchor@0.1.1 --help
 ```
 
 This is a research prototype, not a production product. Clone this repository to reproduce the

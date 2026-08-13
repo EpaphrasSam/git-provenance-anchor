@@ -36,10 +36,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Compute tree hash
         id: tree
@@ -71,13 +67,15 @@ jobs:
           ANCHOR_DEPLOYER_KEY: ${{ secrets.ANCHOR_DEPLOYER_KEY }}
           GPA_NETWORKS: ${{ vars.GPA_NETWORKS }}
         run: |
-          npx ts-node --transpile-only scripts/submit-anchor.ts \
+          npx --yes git-provenance-anchor@0.1.1 anchor \
             --tag "${{ steps.target.outputs.tag }}" \
             --tree-hash "${{ steps.tree.outputs.tree }}" \
             --sbom-hash "${{ steps.sbom.outputs.hash }}"
 
       - name: Verify the anchor we just wrote
+        env:
+          GPA_NETWORKS: ${{ vars.GPA_NETWORKS }}
         run: |
-          npx ts-node --transpile-only cli/src/index.ts verify \
+          npx --yes git-provenance-anchor@0.1.1 verify \
             --ref "${{ steps.target.outputs.tag }}" \
             --tag "${{ steps.target.outputs.tag }}"

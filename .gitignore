@@ -30,6 +30,7 @@ deployments/hardhat.json
 deployments/localhost.json
 
 dist/
+*.tgz
 
 *.log
 npm-debug.log*
