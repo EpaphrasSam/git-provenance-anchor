@@ -68,13 +68,15 @@ async function sendZkSync(key: string, to: string, amount: bigint): Promise<void
 async function main(): Promise<void> {
   const key = process.env.ANCHOR_DEPLOYER_KEY;
   if (!key) throw new Error("ANCHOR_DEPLOYER_KEY is required");
-  const ciKeyPath = path.join(__dirname, "..", ".ci-key");
+  const keyFile = argValue("--key-file");
+  const ciKeyPath = path.join(__dirname, "..", keyFile ?? ".ci-key");
   const to = fs.existsSync(ciKeyPath)
     ? new ethers.Wallet(fs.readFileSync(ciKeyPath, "utf8").trim()).address
     : CI_ADDRESS;
-  if (to.toLowerCase() !== CI_ADDRESS.toLowerCase()) {
-    throw new Error(`.ci-key address ${to} is not the allowlisted CI key`);
+  if (!keyFile && to.toLowerCase() !== CI_ADDRESS.toLowerCase()) {
+    throw new Error(`.ci-key address ${to} is not the allowlisted GitHub CI key`);
   }
+  console.log(`funding ${to}`);
   const amount = ethers.parseEther(argValue("--amount") ?? "0.0004");
   await sendEvm("arbitrumOne", 42161, key, to, amount);
   await sendEvm("opMainnet", 10, key, to, amount);

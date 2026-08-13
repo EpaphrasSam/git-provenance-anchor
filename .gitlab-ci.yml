@@ -3,7 +3,7 @@
 #
 # Requires CI/CD variables:
 #   ANCHOR_DEPLOYER_KEY  — dedicated allowlisted key (masked)
-#   GPA_NETWORKS         — space-separated deployments (opSepolia for this twin)
+#   GPA_NETWORKS         — space-separated deployments (GitLab uses its own CI key)
 
 workflow:
   rules:

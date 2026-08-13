@@ -13,6 +13,7 @@ coverage.json
 deployer-address.txt
 .deployer-address.txt
 .ci-key
+.gitlab-ci-key
 
 evaluation/data/tmp/
 evaluation/data/*-simulated.json
