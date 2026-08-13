@@ -100,5 +100,3 @@ Listed so the gaps are visible rather than discovered late.
   used it, so real-world behaviour is unobserved.
 - **Slow release cadences.** Nothing in the sample tags less often than every 98
   days, which is the case where periodic snapshots would matter most for RQ2.
-- **GitLab CI.** The twin workflow under `workflows/` has never run against a live
-  GitLab instance.

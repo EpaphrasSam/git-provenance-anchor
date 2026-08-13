@@ -73,7 +73,34 @@ though the deployment record existed.
 
 ## Scope
 
-One successful three-chain run on this repository. It does not characterise
-behaviour on a large repository, on a repository using Git LFS in earnest, or
-under a concurrent-tag race, and it does not test the GitLab CI twin under
+One successful three-chain run on this repository from GitHub Actions, plus one
+successful GitLab CI twin on OP Sepolia. It does not characterise behaviour on a
+large repository, on a repository using Git LFS in earnest, or under a
+concurrent-tag race.
+
+## GitLab CI twin
+
+Live project: https://gitlab.com/EpaphrasSam/git-provenance-anchor
+Pipeline: [run 2755773347](https://gitlab.com/EpaphrasSam/git-provenance-anchor/-/pipelines/2755773347)
+Job: [15869064572](https://gitlab.com/EpaphrasSam/git-provenance-anchor/-/jobs/15869064572)
+Triggered 2026-08-13 by tag `v0.4.0-gitlab-smoke4`. Wall-clock **53 s**.
+
+The job is `.gitlab-ci.yml` at the repo root, the GitLab equivalent of
+`.github/workflows/provenance-anchor.yml`. Adopting projects still copy
 `workflows/provenance-anchor.gitlab-ci.yml`.
+
+`GPA_NETWORKS` was `opSepolia` so this smoke did not spend mainnet. Submitter was
+the same CI key as GitHub Actions, `0x1318dA3655688daeFc4DA89ABAeDA33eA4A6e341`.
+
+| | OP Sepolia |
+| --- | --- |
+| Registry | `0x253F20c2b74dc44B4ea908bE6674EEC8deA72622` |
+| Anchor transaction | [`0xe2fb0bf1…d1ab`](https://sepolia-optimism.etherscan.io/tx/0xe2fb0bf187ba099ef8c56febb3f51592d9e0b28b8fcdda96876dbc572c3ad1ab) |
+| Tree hash | `188657ff55b47b735e42e821b5d4358b17214c2f` |
+| Tag | `v0.4.0-gitlab-smoke4` |
+
+Two defects showed up only because this ran on a real GitLab runner, not in a
+linter. Unquoted `{tree}` and `awk '{print $1}'` made GitLab parse the script as
+YAML maps. `NonceManager` hid `wallet.address`, so `isAllowlisted` was called
+with `null`. Both are fixed. Syft's GitHub release download 503'd twice; the
+template now retries the install.
