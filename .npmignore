@@ -1,0 +1,17 @@
+evaluation/
+sample/
+scripts/
+test/
+contracts/
+artifacts/
+artifacts-zk/
+cache/
+cache-zk/
+typechain-types/
+coverage/
+.env
+.env.*
+.ci-key
+deployments/hardhat.json
+deployments/localhost.json
+*.log

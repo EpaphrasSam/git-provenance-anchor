@@ -1,18 +1,53 @@
 {
   "name": "git-provenance-anchor",
   "version": "0.1.0",
-  "private": true,
   "description": "Trust-minimized software provenance for Git using selective Layer-2 blockchain anchoring",
   "license": "Apache-2.0",
+  "author": "EpaphrasSam",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EpaphrasSam/git-provenance-anchor.git"
+  },
+  "homepage": "https://github.com/EpaphrasSam/git-provenance-anchor",
+  "bugs": {
+    "url": "https://github.com/EpaphrasSam/git-provenance-anchor/issues"
+  },
+  "keywords": [
+    "git",
+    "provenance",
+    "sbom",
+    "supply-chain",
+    "layer-2"
+  ],
   "engines": {
     "node": ">=20"
   },
   "bin": {
-    "gpa": "./cli/bin/gpa.js"
+    "gpa": "cli/bin/gpa.js",
+    "git-provenance-anchor": "cli/bin/gpa.js"
+  },
+  "files": [
+    "dist",
+    "cli/bin/gpa.js",
+    "manifest-schema",
+    "deployments/arbitrumOne.json",
+    "deployments/arbitrumSepolia.json",
+    "deployments/opMainnet.json",
+    "deployments/opSepolia.json",
+    "deployments/zkSyncEra.json",
+    "deployments/zkSyncSepolia.json",
+    "workflows",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "hardhat compile --network hardhat --force",
     "build:zk": "hardhat compile --network zkSyncSepolia --force --no-typechain",
+    "build:cli": "tsc -p tsconfig.cli.json",
+    "prepublishOnly": "npm run build:cli",
     "test": "hardhat compile --network hardhat --force && hardhat test",
     "test:cli": "hardhat compile --network hardhat --force && hardhat test test/cli/**/*.ts",
     "test:gas": "hardhat compile --network hardhat --force && cross-env REPORT_GAS=true hardhat test",
@@ -39,7 +74,7 @@
   },
   "dependencies": {
     "ajv": "8.20.0",
-    "commander": "15.0.0",
+    "commander": "13.1.0",
     "dotenv": "16.6.1",
     "ethers": "6.17.0",
     "micromatch": "4.0.8",

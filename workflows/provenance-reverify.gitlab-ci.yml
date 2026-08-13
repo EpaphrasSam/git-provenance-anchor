@@ -14,12 +14,4 @@ provenance-reverify:
   before_script:
     - apt-get update && apt-get install -y git
   script:
-    - npm ci
-    - |
-      NETWORK_ARGS=()
-      if [ -n "$GPA_NETWORKS" ]; then
-        for n in $GPA_NETWORKS; do
-          NETWORK_ARGS+=(--network "$n")
-        done
-      fi
-      npx ts-node --transpile-only cli/src/index.ts reverify "${NETWORK_ARGS[@]}"
+    - npx --yes git-provenance-anchor@0.1.0 reverify

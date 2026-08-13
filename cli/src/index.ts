@@ -11,6 +11,8 @@ import {
   latestAnchors,
   listAnchorsFromEvents,
   loadDeployments,
+  networksFromEnv,
+  resolveNetworks,
 } from "./lib/chain";
 import { hashArtifact, hashGitRef, treeHashToBytes32 } from "./lib/git-tree";
 import { toJson } from "./lib/json";
@@ -144,7 +146,7 @@ program
         tag: opts.tag,
         repoRoot,
         manifest,
-        networks: opts.network.length > 0 ? opts.network : undefined,
+        networks: opts.network.length > 0 ? opts.network : networksFromEnv(),
       });
       if (opts.json) {
         console.log(toJson(report));
@@ -204,7 +206,7 @@ program
         repoRoot,
         gitRepo,
         projectId,
-        networks: opts.network.length > 0 ? opts.network : undefined,
+        networks: opts.network.length > 0 ? opts.network : networksFromEnv(),
         listAnchors: async (network) =>
           listAnchorsFromEvents(repoRoot, network, projectId),
       });
@@ -240,8 +242,7 @@ program
     const projectId = opts.project ?? manifest?.projectId;
     const label = opts.label ?? manifest?.label ?? "unnamed";
     if (!projectId) throw new Error("Pass --project or create a manifest with gpa init");
-    const networks =
-      opts.network.length > 0 ? opts.network : [...loadDeployments(root).keys()];
+    const networks = resolveNetworks(opts.network, loadDeployments(root));
     for (const network of networks) {
       const { contract, wallet, deployment } = await getWriteContract(root, network);
       console.log(`registering on ${network} (${deployment.address}) as ${wallet.address}...`);
@@ -266,8 +267,7 @@ allowlist
     const manifest = tryLoadManifest(process.cwd()) ?? tryLoadManifest(root);
     const projectId = opts.project ?? manifest?.projectId;
     if (!projectId) throw new Error("Pass --project or create a manifest");
-    const networks =
-      opts.network.length > 0 ? opts.network : [...loadDeployments(root).keys()];
+    const networks = resolveNetworks(opts.network, loadDeployments(root));
     for (const network of networks) {
       const { contract } = await getWriteContract(root, network);
       const tx = await contract.allowlistAdd(projectId, account);
@@ -289,8 +289,7 @@ allowlist
     const manifest = tryLoadManifest(process.cwd()) ?? tryLoadManifest(root);
     const projectId = opts.project ?? manifest?.projectId;
     if (!projectId) throw new Error("Pass --project or create a manifest");
-    const networks =
-      opts.network.length > 0 ? opts.network : [...loadDeployments(root).keys()];
+    const networks = resolveNetworks(opts.network, loadDeployments(root));
     for (const network of networks) {
       const { contract } = await getWriteContract(root, network);
       const tx = await contract.allowlistRemove(projectId, account);
@@ -348,8 +347,7 @@ program
           ? opts.sbomHash
           : treeHashToBytes32(opts.sbomHash);
 
-      const networks =
-        opts.network.length > 0 ? opts.network : [...loadDeployments(root).keys()];
+      const networks = resolveNetworks(opts.network, loadDeployments(root));
 
       console.log(`ref=${ref} kind=${kind === KIND_TAG ? "TAG" : "SNAPSHOT"}`);
       console.log(`tree=${treeHex}`);
@@ -380,8 +378,7 @@ program
     const manifest = tryLoadManifest(process.cwd()) ?? tryLoadManifest(root);
     const projectId = opts.project ?? manifest?.projectId;
     if (!projectId) throw new Error("Pass --project or create a manifest");
-    const networks =
-      opts.network.length > 0 ? opts.network : [...loadDeployments(root).keys()];
+    const networks = resolveNetworks(opts.network, loadDeployments(root));
     const all = [];
     for (const network of networks) {
       const events = await listAnchorsFromEvents(root, network, projectId);

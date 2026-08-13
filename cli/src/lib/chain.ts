@@ -77,6 +77,26 @@ export const ANCHOR_REGISTRY_ABI = [
   "error ZeroAddress()",
 ] as const;
 
+export function packageRoot(): string {
+  let dir = __dirname;
+  for (;;) {
+    const pkgPath = path.join(dir, "package.json");
+    if (fs.existsSync(pkgPath)) {
+      try {
+        const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8")) as { name?: string };
+        if (pkg.name === "git-provenance-anchor") return dir;
+      } catch {
+        // keep walking
+      }
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) {
+      throw new Error("Unable to locate git-provenance-anchor package root");
+    }
+    dir = parent;
+  }
+}
+
 export function findRepoRoot(start: string = process.cwd()): string {
   let dir = path.resolve(start);
   for (;;) {
@@ -92,17 +112,36 @@ export function findRepoRoot(start: string = process.cwd()): string {
   }
 }
 
-export function loadDeployments(repoRoot: string): Map<string, DeploymentRecord> {
-  const dir = path.join(repoRoot, "deployments");
+function readDeploymentDir(dir: string): Map<string, DeploymentRecord> {
   const map = new Map<string, DeploymentRecord>();
   if (!fs.existsSync(dir)) return map;
   for (const name of fs.readdirSync(dir)) {
     if (!name.endsWith(".json")) continue;
     const record = JSON.parse(fs.readFileSync(path.join(dir, name), "utf8")) as DeploymentRecord;
-    if (record.network === "hardhat") continue;
+    if (record.network === "hardhat" || record.network === "localhost") continue;
     map.set(record.network, record);
   }
   return map;
+}
+
+export function loadDeployments(repoRoot: string): Map<string, DeploymentRecord> {
+  const fromRepo = readDeploymentDir(path.join(repoRoot, "deployments"));
+  if (fromRepo.size > 0) return fromRepo;
+  return readDeploymentDir(path.join(packageRoot(), "deployments"));
+}
+
+export function networksFromEnv(): string[] | undefined {
+  const fromEnv = (process.env.GPA_NETWORKS ?? "").trim();
+  if (!fromEnv) return undefined;
+  return fromEnv.split(/[\s,]+/).filter(Boolean);
+}
+
+export function resolveNetworks(
+  explicit: string[],
+  deployments: Map<string, DeploymentRecord>
+): string[] {
+  if (explicit.length > 0) return explicit;
+  return networksFromEnv() ?? [...deployments.keys()];
 }
 
 export function rpcFor(network: string): string {

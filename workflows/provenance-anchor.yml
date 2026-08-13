@@ -6,10 +6,9 @@
 # Requires a repository secret:
 #   ANCHOR_DEPLOYER_KEY  — a dedicated key allowlisted for the project's on-chain id
 # Optional repository variable:
-#   GPA_NETWORKS         — space-separated deployment names (default: every deployments/ record)
+#   GPA_NETWORKS         — space-separated deployment names (default: bundled registries)
 #
-# Assumes the repository has a `.provenance-manifest.json` and a `deployments/` directory,
-# both produced by `gpa init` and the deploy script.
+# Assumes the repository has a `.provenance-manifest.json` from `gpa init`.
 
 name: provenance-anchor
 
@@ -35,10 +34,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Compute tree hash
         id: tree
@@ -70,7 +65,7 @@ jobs:
           ANCHOR_DEPLOYER_KEY: ${{ secrets.ANCHOR_DEPLOYER_KEY }}
           GPA_NETWORKS: ${{ vars.GPA_NETWORKS }}
         run: |
-          npx ts-node --transpile-only scripts/submit-anchor.ts \
+          npx --yes git-provenance-anchor@0.1.0 anchor \
             --tag "${{ steps.tree.outputs.tag }}" \
             --tree-hash "${{ steps.tree.outputs.tree }}" \
             --sbom-hash "${{ steps.sbom.outputs.hash }}"

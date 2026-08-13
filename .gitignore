@@ -29,6 +29,8 @@ tools/
 deployments/hardhat.json
 deployments/localhost.json
 
+dist/
+
 *.log
 npm-debug.log*
 

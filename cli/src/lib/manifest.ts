@@ -2,7 +2,11 @@ import * as fs from "fs";
 import * as path from "path";
 import Ajv, { type ErrorObject } from "ajv/dist/2020";
 import micromatch from "micromatch";
-import schema from "../../../manifest-schema/provenance-manifest.schema.json";
+import { packageRoot } from "./chain";
+
+const schema = JSON.parse(
+  fs.readFileSync(path.join(packageRoot(), "manifest-schema", "provenance-manifest.schema.json"), "utf8")
+) as object;
 
 export interface ManifestExtra {
   path: string;

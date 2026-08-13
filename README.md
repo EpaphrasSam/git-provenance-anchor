@@ -113,6 +113,22 @@ The observed behaviour of both configurations is recorded in
 changes the repository's tree hash, so the edit is detectable — but detection after a release is
 worse than refusal before one.
 
+## Install
+
+```bash
+npm install -g git-provenance-anchor
+gpa --help
+```
+
+Without a global install:
+
+```bash
+npx git-provenance-anchor@0.1.0 --help
+```
+
+This is a research prototype, not a production product. Clone this repository to reproduce the
+evaluation; `npm run gpa` still runs the local TypeScript tree.
+
 ## Requirements
 
 Node.js 20 or later. No wallet or funded account is needed to compile, test, or deploy locally.
