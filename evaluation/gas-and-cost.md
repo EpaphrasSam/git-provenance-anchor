@@ -88,8 +88,16 @@ OP Mainnet, and zkSync Era are recorded in `mainnet.md` and
 `data/mainnet-phase-a.json` (2026-08-12). EVM gas units on those receipts match
 the testnet column to normal calldata variation; zkSync remains its own column.
 
-What is still open is a **distribution** over time (multiple fee-market windows),
-not the existence of any mainnet price observation.
+A **distribution** over time is no longer open. `fee-distribution.md` prices an
+anchor at 365 daily points across a year on each production network, validated to
+the digit against these same receipts, and `npm run fees:all` regenerates it.
 
-**Oracle-only pricing** (read base/blob fees, multiply by known gas units without
-transacting) remains a useful cross-check and is not implemented as a script.
+Oracle-only pricing, reading historical base fees and multiplying by known gas
+units without transacting, is what that record does and is implemented in
+`scripts/fee-history.ts` and `scripts/fee-analyse.ts`.
+
+One caveat that belongs with any OP figure quoted from a receipt: ethers'
+`receipt.fee` is `gasUsed x gasPrice` and omits OP Stack's separate `l1Fee`, so an
+OP anchor's true total is 8.118e-8 ETH rather than the 7.9e-8 the L2 component
+alone suggests, with L1 at 2.29%. Arbitrum and zkSync price L1 costs inside
+`gasUsed`, so their receipt figures are already complete.

@@ -50,7 +50,10 @@ at collection time and is illustrative only.
 
 ### OP Mainnet
 
-| Step | Tx | Gas used | Fee (ETH) |
+Fees in this table are the **L2 execution component only**; see the note beneath
+it for the `l1Fee` that OP Stack reports separately.
+
+| Step | Tx | Gas used | Fee (ETH, L2 only) |
 | --- | --- | --- | --- |
 | Deploy | [`0x2d2dcffd…af62`](https://optimistic.etherscan.io/tx/0x2d2dcffd24b739d5a0dbf03c69d17cf1f4e93f3269a642970c7169db8289af62) | 879,549 | ~5.6×10⁻¹⁰ |
 | Register | [`0x454474f7…060b`](https://optimistic.etherscan.io/tx/0x454474f7840a0d7860d2fdbfd917ce7ffd4b5e90443015cad260a91d3995060b) | 94,630 | 9.5×10⁻⁸ |
