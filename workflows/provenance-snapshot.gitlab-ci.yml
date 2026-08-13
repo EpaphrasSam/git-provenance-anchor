@@ -21,5 +21,5 @@ provenance-snapshot:
       git checkout "$REF"
       TREE=$(git rev-parse "HEAD^{tree}")
       echo "Tree hash for SNAPSHOT ${REF}: ${TREE}"
-      npm install -g git-provenance-anchor@0.1.1
+      npm install -g git-provenance-anchor@1.0.0
       gpa anchor --ref "$REF" --kind snapshot --tree-hash "$TREE"

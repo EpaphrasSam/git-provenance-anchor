@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "scripts/sbom-coverage.ts",
+    "scripts/tarball-sweep.ts",
+    "test/evaluation-scripts.test.ts",
+    "cli/src/**/*.ts"
+  ]
+}

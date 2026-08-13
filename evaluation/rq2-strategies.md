@@ -29,14 +29,16 @@ withdrawing that credit.
 | Detectable, conditional on artifact type | 31 | 31 | 31 |
 | Detectable but passive | 14 | 14 | 0 |
 | Out of scope | 34 | **12** | 34 |
-| Out of scope, but recorded | 0 | **22** | 0 |
+| Out of scope, conditionally recorded | 0 | **22** | 0 |
 | Partially detectable | 1 | 1 | 1 |
 | Internal category nodes | 4 | 4 | 4 |
 
-Three nodes move, covering 36 of the 118 instances: AV-301 and AV-302 under
-snapshots, AV-303 under re-verification. Everything else is identical across the
-three policies, which is the expected shape: most of the taxonomy concerns
-attacks that neither mechanism touches.
+Three nodes change classification, covering 36 of the 118 instances: AV-301 and
+AV-302 under snapshots, and AV-303 under re-verification. The 22-instance
+snapshot count assumes that the malicious branch state is present when a
+scheduled snapshot runs. It is a conditional classification, not a claim that
+all 22 instances would be captured. Everything else is identical across the
+three policies.
 
 ## Re-verification: it changes who notices, and when
 
@@ -61,11 +63,12 @@ The shipped template schedules re-verification **daily**
 tj-actions-shaped incident inside one check interval rather than outside it. That
 is the reason the two mechanisms carry different default cadences: snapshots are
 weekly because they cost a transaction each, while re-verification is daily
-because it costs nothing, so the interval can be set by how fast you want to know
-rather than by what you are willing to spend.
+because it incurs no on-chain transaction fee, so the interval can be set by how
+fast you want to know rather than by what you are willing to spend.
 
-**It costs nothing on chain.** Reading a contract requires no transaction. The
-only cost is running the check.
+**It incurs no on-chain transaction fee.** Reading a contract requires no
+transaction. Running the check still consumes off-chain compute and network
+access.
 
 ## Snapshots: a smaller gain than expected, and not the one advertised
 
@@ -73,28 +76,31 @@ The intuition behind snapshots is that a malicious commit landing on the main
 branch and being reverted before the next release would otherwise leave no trace.
 That intuition is half right, and the half that is wrong matters.
 
-A snapshot of a poisoned branch **records the poison**. It does not detect it.
-The anchor faithfully commits to whatever state the branch was in, exactly as a
-tag anchor faithfully commits to a poisoned release. Injection into sources
-therefore remains out of scope under snapshots, because the rubric's first step
-still places it before the anchor.
+A snapshot taken while a poisoned branch state is present **records the
+poison**. It does not detect it. If the malicious state appears and is reverted
+between scheduled runs, no snapshot preserves it. The anchor faithfully commits
+to whatever state the branch contains at the instant of the run, exactly as a
+tag anchor commits to a poisoned release. Injection into sources therefore
+remains out of scope under snapshots.
 
-What snapshots genuinely add is twofold. Consumers who take code from the branch
-tip rather than from a tagged release gain something to verify against, where
-tag-only anchoring gives them nothing at all. And a commit later reverted or
-force-pushed away leaves an immutable record that it existed, which supports
-forensics after an incident even when the repository's own history has been
-rewritten.
+When a scheduled run overlaps the malicious state, consumers who take code from
+the branch tip gain something to verify against, and a later revert or
+force-push cannot erase the snapshot record. If there is no overlap, neither
+benefit applies to that state.
 
-That is why 22 instances move from out of scope to out of scope **with a record**
-rather than to detectable. Calling them detectable would overstate the mechanism.
+That is why the 22 instances move from out of scope to out of scope
+**conditionally recorded**, rather than to detectable. Calling them recorded
+without the timing condition would overstate the mechanism.
 
-## Cadence: who the blind window actually hurts
+## Cadence: interval between anchored states
 
-The window a snapshot policy closes is the gap between releases, and it varies by
-two orders of magnitude across the sample.
+The arithmetic below is a heuristic comparison between the median interval
+between tag anchors and a weekly schedule, assuming those runs succeed. It does
+not measure actual maximum tag gaps or calculate the probability of capturing a
+malicious state. Capture also depends on when the state appears and how long it
+remains present.
 
-| Repository | Median tag gap | Weekly snapshots | Window closed |
+| Repository | Median tag gap | Weekly heuristic | Heuristic difference |
 | --- | --- | --- | --- |
 | spf13/cobra | 98 d | 7 d | 91 d |
 | libarchive/libarchive | 50 d | 7 d | 43 d |
@@ -107,10 +113,12 @@ two orders of magnitude across the sample.
 | expressjs/express | 4 d | 4 d | 0 d |
 | BurntSushi/ripgrep | 0 d | 0 d | 0 d |
 
-For a project releasing every few days, weekly snapshots close nothing, because
-the tags already arrive faster than the snapshots would. For cobra at 98 days
-between releases, they close three months of it. The benefit is entirely
-cadence-dependent, and a single recommendation for all projects would be wrong.
+For a project releasing every few days, weekly snapshots do not add more frequent
+scheduled opportunities than its typical tag cadence. For cobra, the heuristic
+compares a 98-day median tag gap with a seven-day schedule, a difference of 91
+days. This is evidence about observation opportunities, not a measured reduction
+in a maximum gap or guaranteed preservation: a malicious state lasting less than
+a week can still fall entirely between runs.
 
 **The sample cannot speak to the case where this matters most.** Nothing here
 releases yearly, and a project with a twelve-month gap is exactly where snapshots
@@ -120,8 +128,9 @@ measurement.
 
 ## Cost
 
-Weekly snapshots are 52 additional anchor transactions a year. Priced at the
-median observed fee for each network:
+Weekly snapshots are 52 additional no-SBOM transactions a year. The retained
+prices use the no-SBOM snapshot shape, not the with-SBOM release shape used for
+RQ1:
 
 | Network | Annual cost of weekly snapshots |
 | --- | --- |
@@ -129,10 +138,10 @@ median observed fee for each network:
 | Arbitrum One | $0.16 |
 | zkSync Era | $0.48 |
 
-Re-verification adds nothing on chain at all.
+Re-verification adds no on-chain transaction or fee.
 
-So cost does not decide this. Half a dollar a year is not a reason to refuse a
-mechanism. The reason to be selective is that snapshots buy a narrow benefit,
+So cost does not decide this. The annual amounts remain modest for a release
+workflow. The reason to be selective is that snapshots buy a narrow benefit,
 branch-tip verifiability and a forensic record, rather than the broad one the
 intuition promises.
 
@@ -141,19 +150,21 @@ intuition promises.
 Neither mechanism dominates, and the honest answer is a policy rather than a
 winner.
 
-**Re-verification should be on by default.** It costs nothing, needs no
-transaction, and turns unbounded passive detection into bounded active detection
-for the one attack class the tag-only design leaves waiting on chance. There is no
-project for which it is a bad trade.
+**Re-verification should be on by default.** It needs no transaction, incurs no
+on-chain transaction fee, and turns unbounded passive detection into bounded
+active detection for the one attack class the tag-only design leaves waiting on
+chance. There is no project for which it is a bad trade.
 
-**Snapshots should be conditional on release cadence.** For fast-releasing
-projects they are close to pointless, because tags already arrive more often than
-snapshots would. For slow-releasing projects they close a window measured in
-months. And what they buy even then is a verifiable record for branch-tip
-consumers plus tamper-evident history, not detection of the injection itself.
+**Snapshots should be conditional on release cadence and the required observation
+interval.** For fast-releasing projects, tags already provide more frequent
+records. For slow-releasing projects, weekly snapshots create more observation
+opportunities, but preserve a malicious branch state only when it overlaps a run.
+Even then, they provide branch-tip verifiability and a forensic record, not
+detection of the injection itself.
 
 So the answer to "which strategy covers more" is that tag-plus-re-verification
-covers more of what the taxonomy actually contains, at no cost, while
+covers more of what the taxonomy actually contains without an on-chain transaction
+fee, while
 tag-plus-snapshots covers a different and narrower thing that is worth having
 only where the release cadence is slow.
 
@@ -167,14 +178,16 @@ only where the release cadence is slow.
   the one the data cannot demonstrate.
 - Cadence is a median. A project with irregular releases has a worst-case window
   much wider than its median suggests.
-- Cost uses median observed fees. The tail matters little here, since 52 anchors a
-  year at even the worst observed fee stays under a dollar and a half.
+- Cost uses the retained no-SBOM snapshot prices. At the worst retained OP fee
+  for that shape, 52 anchors cost about $0.010; the fixed `l1Fee` caveat still
+  applies.
 - Snapshot anchoring has now been exercised on a live network, once: OP Mainnet
   transaction
   [`0x5fb9a342…1a73`](https://optimistic.etherscan.io/tx/0x5fb9a3421140f4d07e64e3c366d05958c3e6de2f3019ab82a36ab04690aa1a73),
-  `KIND_SNAPSHOT` on ref `main`, 79,216 gas against the tag anchor's 79,276, with
-  identical 228-byte calldata. That confirms the cost basis this record uses
-  rather than assuming it. No schedule is running, so the cadence figures remain
+  `KIND_SNAPSHOT` on ref `main`, 79,216 gas against the Phase A no-SBOM tag smoke
+  anchor's 79,276, with identical 228-byte calldata. That confirms the cost basis
+  this record uses. It does not price the 99,524-gas OP release anchor carrying a
+  non-zero SBOM hash. No schedule is running, so the cadence figures remain
   arithmetic over historical release gaps rather than observed snapshot activity.
   Both templates exist (`workflows/provenance-snapshot.yml`, weekly, and
   `workflows/provenance-reverify.yml`, daily, with GitLab twins) and

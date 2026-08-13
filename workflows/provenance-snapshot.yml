@@ -3,8 +3,8 @@
 #
 # Weekly KIND_SNAPSHOT of the default branch tip. Re-anchoring the same ref
 # supersedes the stored record and increments revision; prior submissions remain
-# in the event log. Optional: only enable this when release cadence is slow
-# enough that the blind window matters (see evaluation/rq2-strategies.md).
+# in the event log. Optional: enable when release cadence is slow enough that
+# additional branch-state observations are useful (see evaluation/rq2-strategies.md).
 #
 # Requires a repository secret:
 #   ANCHOR_DEPLOYER_KEY  — a dedicated key allowlisted for the project's on-chain id
@@ -58,7 +58,7 @@ jobs:
           node-version: "20"
 
       - name: Install published gpa
-        run: npm install -g git-provenance-anchor@0.1.1
+        run: npm install -g git-provenance-anchor@1.0.0
 
       - name: Compute tree hash
         id: tree

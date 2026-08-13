@@ -2,6 +2,7 @@
  "generatedAt": "2026-08-12",
  "question": "RQ2: is tag-only anchoring, or tag anchoring combined with periodic production-branch snapshots, more effective for coverage of documented supply chain attack classes?",
  "baselineNote": "The published classification in ladisa-classification.csv already credits re-verification at AV-303, so it describes tag+reverify rather than tag-only. The tag-only baseline is reconstructed here by withdrawing that credit.",
+ "snapshotCountAssumption": "The 22 instances in the snapshot column are conditionally recorded, not guaranteed captures. Each moves only when the malicious branch state is present at a scheduled snapshot run.",
  "policies": [
   "tag-only",
   "tag+snapshots",
@@ -19,7 +20,7 @@
   "tag+snapshots": {
    "internal": 4,
    "out-of-scope": 12,
-   "out-of-scope-with-record": 22,
+   "out-of-scope-conditionally-recorded": 22,
    "detectable-passive": 14,
    "detectable-conditional": 31,
    "detectable": 34,
@@ -87,94 +88,109 @@
    "repo": "spf13/cobra",
    "medianTagGapDays": 98,
    "tagsSince2024": 6,
-   "blindWindowTagOnlyDays": 98,
-   "blindWindowWeeklySnapshotsDays": 7,
-   "windowReductionDays": 91
+   "heuristicTagIntervalDays": 98,
+   "heuristicWeeklyComparisonDays": 7,
+   "heuristicIntervalDifferenceDays": 91,
+   "timingCondition": "A malicious branch state is retained only if it overlaps a scheduled snapshot run. This compares a median tag interval with a weekly schedule; it is not a maximum-gap or capture-probability measurement."
   },
   {
    "repo": "libarchive/libarchive",
    "medianTagGapDays": 50,
    "tagsSince2024": 17,
-   "blindWindowTagOnlyDays": 50,
-   "blindWindowWeeklySnapshotsDays": 7,
-   "windowReductionDays": 43
+   "heuristicTagIntervalDays": 50,
+   "heuristicWeeklyComparisonDays": 7,
+   "heuristicIntervalDifferenceDays": 43,
+   "timingCondition": "A malicious branch state is retained only if it overlaps a scheduled snapshot run. This compares a median tag interval with a weekly schedule; it is not a maximum-gap or capture-probability measurement."
   },
   {
    "repo": "curl/curl",
    "medianTagGapDays": 49,
    "tagsSince2024": 23,
-   "blindWindowTagOnlyDays": 49,
-   "blindWindowWeeklySnapshotsDays": 7,
-   "windowReductionDays": 42
+   "heuristicTagIntervalDays": 49,
+   "heuristicWeeklyComparisonDays": 7,
+   "heuristicIntervalDifferenceDays": 42,
+   "timingCondition": "A malicious branch state is retained only if it overlaps a scheduled snapshot run. This compares a median tag interval with a weekly schedule; it is not a maximum-gap or capture-probability measurement."
   },
   {
    "repo": "sharkdp/bat",
    "medianTagGapDays": 28,
    "tagsSince2024": 3,
-   "blindWindowTagOnlyDays": 28,
-   "blindWindowWeeklySnapshotsDays": 7,
-   "windowReductionDays": 21
+   "heuristicTagIntervalDays": 28,
+   "heuristicWeeklyComparisonDays": 7,
+   "heuristicIntervalDifferenceDays": 21,
+   "timingCondition": "A malicious branch state is retained only if it overlaps a scheduled snapshot run. This compares a median tag interval with a weekly schedule; it is not a maximum-gap or capture-probability measurement."
   },
   {
    "repo": "junegunn/fzf",
    "medianTagGapDays": 16,
    "tagsSince2024": 50,
-   "blindWindowTagOnlyDays": 16,
-   "blindWindowWeeklySnapshotsDays": 7,
-   "windowReductionDays": 9
+   "heuristicTagIntervalDays": 16,
+   "heuristicWeeklyComparisonDays": 7,
+   "heuristicIntervalDifferenceDays": 9,
+   "timingCondition": "A malicious branch state is retained only if it overlaps a scheduled snapshot run. This compares a median tag interval with a weekly schedule; it is not a maximum-gap or capture-probability measurement."
   },
   {
    "repo": "axios/axios",
    "medianTagGapDays": 12,
    "tagsSince2024": 57,
-   "blindWindowTagOnlyDays": 12,
-   "blindWindowWeeklySnapshotsDays": 7,
-   "windowReductionDays": 5
+   "heuristicTagIntervalDays": 12,
+   "heuristicWeeklyComparisonDays": 7,
+   "heuristicIntervalDifferenceDays": 5,
+   "timingCondition": "A malicious branch state is retained only if it overlaps a scheduled snapshot run. This compares a median tag interval with a weekly schedule; it is not a maximum-gap or capture-probability measurement."
   },
   {
    "repo": "pallets/click",
    "medianTagGapDays": 11,
    "tagsSince2024": 19,
-   "blindWindowTagOnlyDays": 11,
-   "blindWindowWeeklySnapshotsDays": 7,
-   "windowReductionDays": 4
+   "heuristicTagIntervalDays": 11,
+   "heuristicWeeklyComparisonDays": 7,
+   "heuristicIntervalDifferenceDays": 4,
+   "timingCondition": "A malicious branch state is retained only if it overlaps a scheduled snapshot run. This compares a median tag interval with a weekly schedule; it is not a maximum-gap or capture-probability measurement."
   },
   {
    "repo": "psf/requests",
    "medianTagGapDays": 8,
    "tagsSince2024": 12,
-   "blindWindowTagOnlyDays": 8,
-   "blindWindowWeeklySnapshotsDays": 7,
-   "windowReductionDays": 1
+   "heuristicTagIntervalDays": 8,
+   "heuristicWeeklyComparisonDays": 7,
+   "heuristicIntervalDifferenceDays": 1,
+   "timingCondition": "A malicious branch state is retained only if it overlaps a scheduled snapshot run. This compares a median tag interval with a weekly schedule; it is not a maximum-gap or capture-probability measurement."
   },
   {
    "repo": "expressjs/express",
    "medianTagGapDays": 4,
    "tagsSince2024": 18,
-   "blindWindowTagOnlyDays": 4,
-   "blindWindowWeeklySnapshotsDays": 4,
-   "windowReductionDays": 0
+   "heuristicTagIntervalDays": 4,
+   "heuristicWeeklyComparisonDays": 4,
+   "heuristicIntervalDifferenceDays": 0,
+   "timingCondition": "A malicious branch state is retained only if it overlaps a scheduled snapshot run. This compares a median tag interval with a weekly schedule; it is not a maximum-gap or capture-probability measurement."
   },
   {
    "repo": "BurntSushi/ripgrep",
    "medianTagGapDays": 0,
    "tagsSince2024": 42,
-   "blindWindowTagOnlyDays": 0,
-   "blindWindowWeeklySnapshotsDays": 0,
-   "windowReductionDays": 0
+   "heuristicTagIntervalDays": 0,
+   "heuristicWeeklyComparisonDays": 0,
+   "heuristicIntervalDifferenceDays": 0,
+   "timingCondition": "A malicious branch state is retained only if it overlaps a scheduled snapshot run. This compares a median tag interval with a weekly schedule; it is not a maximum-gap or capture-probability measurement."
   }
  ],
  "cost": {
   "assumedSnapshotsPerYear": 52,
+  "basis": {
+   "arbitrumOne": "Explicit 1.594e-6 ETH p50 for the 79,708-gas no-SBOM Phase A shape",
+   "opMainnet": "79,216-gas live snapshot at p50 base fee, plus 0.001-gwei tip and observed l1Fee",
+   "zkSyncEra": "106,249-gas no-SBOM Phase A shape at the retained 0.04525-gwei fee"
+  },
   "perAnchorEthP50": {
    "arbitrumOne": 1.594e-06,
-   "opMainnet": 8.118e-08,
-   "zkSyncEra": 4.808e-06
+   "opMainnet": 8.1116215655e-08,
+   "zkSyncEra": 4.80776725e-06
   },
   "annualSnapshotCostEth": {
    "arbitrumOne": 8.2888e-05,
-   "opMainnet": 4.2213600000000005e-06,
-   "zkSyncEra": 0.00025001600000000004
+   "opMainnet": 4.21804321406e-06,
+   "zkSyncEra": 0.00025000389700000005
   },
   "annualSnapshotCostUsdApprox": {
    "arbitrumOne": 0.1575,

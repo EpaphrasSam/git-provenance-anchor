@@ -1,8 +1,10 @@
 # Attack coverage against the Ladisa et al. taxonomy
 
 Run 2026-08-12. Full classification: `data/ladisa-classification.csv`, one row per
-node instance. Regenerate with `python3 evaluation/ladisa-classify.py` from the
-taxonomy source named below.
+node instance. Run `python3 evaluation/ladisa-classify.py` from the repository
+root. If `taxonomy.json` and `references.json` are not available locally, the
+script requires network access and fetches both files from the pinned SAP commit
+named below. It writes `evaluation/data/ladisa-classification.csv`.
 
 This applies the five-step rubric from Chapter 3 to the attack tree in Ladisa et
 al., "SoK: Taxonomy of Attacks on Open-Source Software Supply Chains" (IEEE S&P
@@ -23,8 +25,8 @@ Source used: `github.com/SAP/risk-explorer-for-software-supply-chains`, file
 from 52 distinct vector identifiers**.
 
 The gap is structural rather than a disagreement. Fifteen identifiers, the
-credential-compromise and system-compromise subtree (`AV-600`–`AV-608`,
-`AV-700`–`AV-703`, `AV-800`, `AV-801`), are shared: the same vector hangs under
+credential-compromise and system-compromise subtree (`AV-600` to `AV-608`,
+`AV-700` to `AV-703`, `AV-800`, `AV-801`), are shared: the same vector hangs under
 six different parents, because taking over an account is a means to several
 different ends. Counting identifiers gives 52; counting positions in the tree
 gives 117. Neither is 107, and walking the repository's history does not produce
@@ -110,7 +112,9 @@ The taxonomy ships 269 references mapped to vectors, 371 vector-to-reference
 links. Fifteen shared identifiers classify differently depending on which parent
 they hang under, so each identifier's references are split evenly across its
 instances rather than assigned to whichever occurrence comes first. Root-level
-mappings are excluded.
+mappings are excluded. The resulting weighted denominator is 301 reference
+units. Unlike the 114-node classification denominator, it retains the internal
+category nodes.
 
 | Classification | Weighted references | Share |
 | --- | --- | --- |
@@ -119,6 +123,10 @@ mappings are excluded.
 | Partially detectable | 5.0 | 1.7% |
 | Out of scope | 123.8 | 41.1% |
 | Internal category nodes | 36.0 | 12.0% |
+
+The five rows sum to 301 weighted units. Internal category nodes account for 36
+units and 12.0%, so omitting that row would leave the weighted percentages without
+their full denominator.
 
 **The weighted picture is worse than the vector count, and the reason matters.**
 The documented incident literature is dominated by name confusion and by packages
@@ -153,14 +161,17 @@ The comparison is narrower than a coverage table suggests, because the two syste
 fail differently rather than at different rates.
 
 Sigstore establishes that an artifact was signed by a given identity through a
-given workflow, and records it in Rekor. On the vectors above it performs
-comparably: a substituted artifact fails signature verification much as it fails
-anchor comparison. The difference is not which attacks are covered but what a
-verifier must assume. Sigstore's verification terminates at a transparency log
-operated by one organisation, and a verifier has no external means of checking
-that the log is showing them true records. Anchor comparison terminates at a
-public chain, where the record is readable without permission and cannot be
-rewritten by any single party, including the project or its author.
+given workflow, and records verification material through Rekor. On the vectors
+above it performs comparably: a substituted artifact fails signature
+verification much as it fails anchor comparison. The difference is not which
+attacks are covered but what a verifier must assume. Rekor provides Merkle
+inclusion and consistency proofs with signed checkpoints. Rekor v2 can obtain
+co-signatures from synchronous witnesses that check a checkpoint against their
+previously observed state, while monitors independently observe log behaviour
+and scan entries. These mechanisms make split views and inconsistency auditable;
+they do not turn the log into a consensus network or remove omission and
+availability risks. Anchor comparison instead uses a public chain whose event
+history is ordered through an incentive-bearing consensus protocol.
 
 Both share the same blind spot, and it is the one this rubric names at step 1: an
 attacker holding the signing credential produces records that verify correctly in

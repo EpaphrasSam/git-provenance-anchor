@@ -2,7 +2,10 @@
 
 Collected 2026-08-12. Raw figures: `data/sbom-coverage.json`.
 Regenerate with `npm run sample:sbom` (needs Syft 1.51.0 on PATH, or
-`tools/syft.exe` as used here). Sample clones from `evaluation/sample-clone.sh`.
+`tools/syft.exe` as used here). Sample clones come from
+`evaluation/sample-clone.sh`. The command applies a 900-second timeout to each
+scan. If the full `microsoft/fluentui-system-icons` scan times out, it
+automatically runs the retained diagnostic pass with `--exclude '**/*.svg'`.
 
 Chapter 2 said a claim to "generate SBOMs" is not informative until the tool, the
 format, and the integrity of generation are named. Chapter 3 fixed the first two
@@ -60,24 +63,32 @@ is the contrast: 81 lockfile packages, 81 PyPI components.
 **express.** `package.json` lists 31 runtime dependencies and 16 devDependencies.
 There is no lockfile and no `node_modules` in the tagged tree. Syft emitted no
 npm components at all. axios, which does ship `package-lock.json`, produced 1,029.
-The difference is the lockfile, not the ecosystem.
+The contrast is between the dependency metadata recognised in these two scans,
+not between their shared ecosystem.
 
 **fluentui-system-icons.** 118,432 files, mostly generated SVGs. The same
-`syft dir:.` the workflow uses did not finish in 15 minutes. A second pass with
-`--exclude '**/*.svg'` completed in about four minutes and produced 2,033
-components: 1,952 npm, 43 Maven, 4 CocoaPods, 31 GitHub Actions, 2 pub, 1 Swift.
-Syft also warned it could not parse Yarn v2 `__metadata`; the repo pins Yarn
-4.17.1. The exclude pass is not what CI runs. It is recorded so the timeout is
-not mistaken for "this project has no packages."
+`syft dir:.` the workflow uses did not finish in 15 minutes. The automated
+diagnostic pass with `--exclude '**/*.svg'` completed in about four minutes and
+produced 2,033 components: 1,952 npm, 43 Maven, 4 CocoaPods, 31 GitHub Actions,
+2 pub, 1 Swift. Syft also warned it could not parse Yarn v2 `__metadata`; the
+repo pins Yarn 4.17.1. The exclusion pass is not what CI runs. In the JSON row,
+`fullTree` retains the timeout and error, while `excludeSvg` retains its
+invocation, exclusions, runtime, warnings, format, component counts and sample
+names. The top-level `timeoutMs` and `diagnosticRerun` fields record the procedure.
 
 ## What this supports
 
 Three coverage characteristics, not a ranking.
 
-**Lockfiles are what Syft sees.** Go modules, Cargo.lock, package-lock.json, and
-uv.lock produced BOMs that match the lockfile. A `package.json` or a PEP 621
-`dependencies` list without a lockfile did not. That is why express and requests
-look empty of their own runtime libraries, and why axios and click do not.
+**Coverage follows the dependency metadata recognised by Syft's catalogers.**
+The Go rows came from `go.mod`: their direct `require` entries matched the
+`pkg:golang` components. `go.sum` was present as checksum metadata, but it is not
+a lockfile and was not used as the direct-dependency denominator. `Cargo.lock`,
+`uv.lock` and `package-lock.json` also produced package inventories. By contrast,
+the sampled `package.json` and PEP 621 `pyproject.toml` manifests without an
+installed tree or recognised lock data did not yield their declared runtime
+dependencies. This is why express and requests omit their own runtime libraries,
+while axios and click do not.
 
 **C system libraries are out of scope for this invocation.** curl and libarchive
 declare dozens of optional dependencies through CMake (`OpenSSL`, `ZLIB`,
@@ -96,8 +107,9 @@ built artifact.
 O'Donoghue et al. measured a different disagreement (tool × format on container
 images, with a specific Syft-SPDX × Trivy failure). This record does not repeat
 that experiment and does not claim to. What it adds is that even after fixing the
-tool and the format, coverage on source trees still varies sharply with whether a
-lockfile is present and whether the dependencies are packages in the tree at all.
+tool and the format, coverage on source trees still varies with the catalogers
+that recognise the available dependency metadata and with whether dependencies
+are observable in the scanned tree.
 Choosing CycloneDX avoids the SPDX-analysis hole they reported; it does not make
 the inventory complete.
 
@@ -112,7 +124,7 @@ into a full one.
   images. The two results are not interchangeable.
 - No Trivy run, by design: Chapter 3 forbids a superiority claim.
 - `microsoft/fluentui-system-icons` full-tree scan timed out at 900 s. The
-  exclude-SVG pass is a diagnostic, not the CI command.
+  automatically recorded exclude-SVG pass is a diagnostic, not the CI command.
 - `sharkdp/bat`'s 92 submodules were not present in the depth-1 sample clone, and
   the anchoring workflow does not recurse submodules either.
 - Duplicate Actions entries (the same `actions/checkout` cited from several

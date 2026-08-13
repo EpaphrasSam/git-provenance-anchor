@@ -1,7 +1,37 @@
-import json, csv, collections
+import collections
+import csv
+import json
+from pathlib import Path
+from urllib.error import URLError
+from urllib.request import urlopen
 
-TAX = json.load(open("taxonomy.json"))
-REFS = json.load(open("references.json"))
+COMMIT = "79e2a3946a24cde1755809a50e54ee15e3af893e"
+BASE_URL = (
+    "https://raw.githubusercontent.com/SAP/"
+    f"risk-explorer-for-software-supply-chains/{COMMIT}/src/data"
+)
+EVALUATION_DIR = Path(__file__).resolve().parent
+DATA_DIR = EVALUATION_DIR / "data"
+
+
+def load_input(name):
+    candidates = (Path.cwd() / name, EVALUATION_DIR / name, DATA_DIR / name)
+    for candidate in candidates:
+        if candidate.is_file():
+            with candidate.open(encoding="utf-8") as handle:
+                return json.load(handle)
+    try:
+        with urlopen(f"{BASE_URL}/{name}", timeout=30) as response:
+            return json.load(response)
+    except (URLError, TimeoutError) as error:
+        raise RuntimeError(
+            f"{name} is not available locally and could not be fetched from "
+            f"the pinned SAP commit {COMMIT}; network access is required"
+        ) from error
+
+
+TAX = load_input("taxonomy.json")
+REFS = load_input("references.json")
 
 # Decision table. Key = avId at which the rubric reaches a uniform answer.
 # Every descendant inherits unless it appears here itself (rubric step 3).
@@ -63,9 +93,12 @@ for r in REFS:
 for row in rows:
     row["mappedReferences"] = refcount.get(row["avId"], 0)
 
-with open("/tmp/ladisa/ladisa-classification.csv", "w", newline="") as f:
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+output_path = DATA_DIR / "ladisa-classification.csv"
+with output_path.open("w", newline="", encoding="utf-8") as f:
     w = csv.DictWriter(f, fieldnames=list(rows[0]))
     w.writeheader(); w.writerows(rows)
+print("wrote:", output_path)
 
 inst = collections.Counter(r["classification"] for r in rows)
 uniq = collections.defaultdict(set)

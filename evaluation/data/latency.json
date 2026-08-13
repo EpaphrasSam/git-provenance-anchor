@@ -2,7 +2,7 @@
  "collectedAt": "2026-08-12T11:10:00Z",
  "subject": "Settlement timing for the Phase A mainnet anchor transactions of tag v0.4.0-m4",
  "method": "Read from each network's own records: zks_getBlockDetails for zkSync Era, Blockscout's batch/commitment fields for Arbitrum One and OP Mainnet. No transactions sent.",
- "caveat": "One anchor per network, all submitted within the same half hour on 2026-08-12. These are single observations of settlement timing, not a distribution.",
+ "caveat": "One anchor per network, all submitted within the same half hour on 2026-08-12. These are single observations of settlement timing, not a distribution. Per-chain mainnet inclusion latency was not instrumented.",
 
  "networks": {
   "arbitrumOne": {
@@ -56,7 +56,9 @@
  "inclusionLatency": {
   "source": "evaluation/ci-end-to-end.md, run 30483333326 on testnets",
   "submitStepSecondsForThreeChains": 12,
-  "note": "The CI job's submit step covers signing and awaiting inclusion on three chains sequentially. Per-chain inclusion is bounded below by the block time: roughly 0.25s on Arbitrum, 2s on OP, 2s on zkSync."
+  "measurementScope": "Combined testnet step covering signing, submission, and awaiting inclusion on three chains sequentially.",
+  "perChainMainnetInstrumented": false,
+  "note": "Approximate block intervals are protocol context only: roughly 0.25s on Arbitrum, 2s on OP, and 2.05s on zkSync. They are neither measured inclusion latencies nor lower bounds."
  },
 
  "comparator": {

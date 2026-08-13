@@ -36,7 +36,7 @@ import { loadManifest, resolveExtraPaths } from "../cli/src/lib/manifest";
  * behaviour this sweep exists to test. Projects that publish a real, built
  * tarball are listed explicitly, and those are the interesting rows.
  */
-const RELEASE_URL: Record<string, (tag: string) => string> = {
+const RELEASE_URL: Partial<Record<string, (tag: string) => string>> = {
   "curl/curl": (t) =>
     `https://github.com/curl/curl/releases/download/${t}/${t.replace("curl-", "curl-").replace(/_/g, ".")}.tar.gz`,
   "libarchive/libarchive": (t) =>
@@ -65,9 +65,36 @@ interface Row {
   extraInArtifact?: string[];
   missingFromArtifact?: string[];
   declaredByManifest?: string[];
+  manifest?: string;
   undeclared?: string[];
   verdict?: string;
   error?: string;
+}
+
+const FIXTURE_MANIFESTS: Record<string, string> = {
+  "curl/curl": "curl.provenance-manifest.json",
+  "libarchive/libarchive": "libarchive.provenance-manifest.json",
+};
+
+export function manifestForRepo(repoRoot: string, clone: string, repo: string): string | undefined {
+  const projectManifest = path.join(clone, ".provenance-manifest.json");
+  if (fs.existsSync(projectManifest)) return projectManifest;
+  const fixture = FIXTURE_MANIFESTS[repo];
+  if (!fixture) return undefined;
+  const fixturePath = path.join(repoRoot, "evaluation", "fixtures", "manifests", fixture);
+  return fs.existsSync(fixturePath) ? fixturePath : undefined;
+}
+
+export function comparisonVerdict(
+  identical: boolean,
+  undeclaredCount: number,
+  missingCount: number
+): string {
+  if (identical) return "artifact reproduces the anchored tree exactly";
+  if (undeclaredCount === 0 && missingCount === 0) {
+    return "aggregate mismatch remains after every extra file is declared";
+  }
+  return `${undeclaredCount} undeclared extra file(s), ${missingCount} missing path(s); aggregate mismatch`;
 }
 
 function download(url: string, dest: string): boolean {
@@ -128,8 +155,8 @@ async function main() {
       // Apply the project's manifest if it has one, through the same resolver
       // `gpa verify` uses, so this sweep cannot disagree with the real tool.
       let declared: string[] = [];
-      const manifestPath = path.join(dir, ".provenance-manifest.json");
-      if (fs.existsSync(manifestPath)) {
+      const manifestPath = manifestForRepo(repoRoot, dir, repo);
+      if (manifestPath) {
         try {
           const manifest = loadManifest(manifestPath);
           declared = resolveExtraPaths(extra, manifest.extras).matched;
@@ -146,12 +173,11 @@ async function main() {
         extraInArtifact: extra.slice(0, 200),
         missingFromArtifact: missing.slice(0, 200),
         declaredByManifest: declared,
+        manifest: manifestPath
+          ? path.relative(repoRoot, manifestPath).replace(/\\/g, "/")
+          : undefined,
         undeclared: undeclared.slice(0, 200),
-        verdict: identical
-          ? "artifact reproduces the anchored tree exactly"
-          : undeclared.length === 0
-            ? "differs, but every extra file is declared"
-            : `${undeclared.length} undeclared extra file(s), ${missing.length} missing`,
+        verdict: comparisonVerdict(identical, undeclared.length, missing.length),
       });
       if (artifact.cleanup) await artifact.cleanup();
       process.stderr.write(`  ${rows[rows.length - 1].verdict}\n`);
@@ -166,8 +192,14 @@ async function main() {
   const outPath = path.join(repoRoot, "evaluation", "data", outName);
   fs.writeFileSync(outPath, JSON.stringify({
     collectedAt: new Date().toISOString(),
-    note: "Compares each project's published release artifact against the tree hash that would be anchored for the same tag. Rows sourced from a generated archive cannot show build-added files by construction; rows from a published release tarball can.",
+    note: "Compares each project's published release artifact against the tree hash that would be anchored for the same tag. The checked-in curl and libarchive fixture manifests are applied automatically when clean sample clones do not contain project manifests. Rows sourced from a generated archive cannot show build-added files by construction; rows from a published release tarball can.",
     sampleDir, rows,
+    fixtureManifests: Object.fromEntries(
+      Object.entries(FIXTURE_MANIFESTS).map(([repo, file]) => [
+        repo,
+        `evaluation/fixtures/manifests/${file}`,
+      ])
+    ),
   }, null, 1) + "\n");
 
   const real = rows.filter((r) => r.source === "published release tarball" && r.downloaded && !r.error);
@@ -176,4 +208,9 @@ async function main() {
   console.log(`Published tarballs compared: ${real.length}, of which ${clean.length} produced no undeclared extras.`);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+if (require.main === module) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}

@@ -17,9 +17,11 @@ The distinction matters here more than it usually does, because the three answer
 are seconds, minutes, and days apart.
 
 **Inclusion on the L2.** The anchor is in a block and readable by `gpa verify`.
-Bounded by the block time: roughly 0.25 s on Arbitrum, 2 s on OP and zkSync. The
-CI job's submit step took about 12 seconds for all three chains together,
-including signing.
+The protocols' approximate block intervals are 0.25 s on Arbitrum and about 2 s
+on OP and zkSync, but these are context rather than measured inclusion latencies
+or lower bounds. A testnet CI job's combined step took about 12 seconds to sign,
+submit, and await all three chains sequentially. Per-chain mainnet inclusion was
+not instrumented.
 
 **Data availability on Ethereum.** The batch containing the anchor has been posted
 to L1, so the record survives the L2 operator disappearing.
@@ -40,15 +42,16 @@ days. For zkSync it waits for the validity proof to be verified and executed.
 | Final settlement | ~7 day challenge window | ~7 day challenge window | pending execution at collection |
 
 The two optimistic rollups posted to Ethereum in under three minutes. zkSync Era
-took about half an hour to commit and three quarters of an hour to have its proof
-verified, which is the expected shape: a validity proof has to be produced before
-anything can be posted, and that costs real time.
+committed its batch after 32 minutes 38 seconds. The validity proof was verified
+12 minutes 57 seconds after that commit, or 45 minutes 35 seconds after the
+anchor's L2 block. Execution remained pending at collection.
 
 ## Why none of this delays a release
 
 The anchoring workflow does not block the release. A maintainer pushes a tag, the
-release proceeds, and the anchor is submitted alongside it. The only latency a
-maintainer experiences is inclusion, which is seconds.
+release proceeds, and the anchor is submitted alongside it. The retained timing
+evidence for this operational step is the combined 12-second testnet observation,
+not a per-chain mainnet inclusion measurement.
 
 The longer horizons matter to a **verifier**, and they matter asymmetrically. A
 consumer checking a release years later is reading a long-settled record, so the
@@ -85,5 +88,6 @@ the one that affects a release pipeline.
   here.
 - zkSync's execution step was still pending at collection. Re-reading
   `zks_getBlockDetails` for L2 block 71529888 later would complete the record.
-- Inclusion latency is inferred from block times and the CI submit step rather
-  than instrumented per chain. Timing a submission directly would sharpen it.
+- Per-chain mainnet inclusion latency was not instrumented. Approximate protocol
+  block intervals are reported only as context, while the combined 12-second
+  submit-step observation came from testnets.

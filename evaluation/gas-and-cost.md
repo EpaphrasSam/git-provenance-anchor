@@ -83,14 +83,20 @@ not a cost estimate.
 
 ## Mainnet fees (one session)
 
-Live deploy / register / allowlist / smoke-anchor fees paid on Arbitrum One,
-OP Mainnet, and zkSync Era are recorded in `mainnet.md` and
-`data/mainnet-phase-a.json` (2026-08-12). EVM gas units on those receipts match
-the testnet column to normal calldata variation; zkSync remains its own column.
+Live deploy, register, allowlist and no-SBOM smoke-anchor fees paid on Arbitrum
+One, OP Mainnet and zkSync Era are recorded in `mainnet.md` and
+`data/mainnet-phase-a.json` (2026-08-12). Those smoke anchors used 79,708,
+79,276 and 106,249 gas. They validate fee arithmetic, not the SBOM surcharge.
+The v0.5.4 first-write release anchors carried non-zero SBOM hashes and used
+100,048, 99,524 and 106,722 gas respectively.
 
-A **distribution** over time is no longer open. `fee-distribution.md` prices an
-anchor at 365 daily points across a year on each production network, validated to
-the digit against these same receipts, and `npm run fees:all` regenerates it.
+A **distribution** over time is no longer open. `fee-distribution.md` prices the
+v0.5.4 first-write, with-SBOM release shape at 365 daily points across a year on
+each production network. The Phase A no-SBOM receipts validate the arithmetic
+using their own gas usage. The original block-level samples were not archived.
+`npm run fees:history -- --end 2026-08-12T10:44:09Z` reconstructs a new 365-point
+raw-compatible series over the same window, and `npm run fees:analyse` applies
+the recorded arithmetic; this does not prove the original block IDs.
 
 Oracle-only pricing, reading historical base fees and multiplying by known gas
 units without transacting, is what that record does and is implemented in
@@ -98,6 +104,10 @@ units without transacting, is what that record does and is implemented in
 
 One caveat that belongs with any OP figure quoted from a receipt: ethers'
 `receipt.fee` is `gasUsed x gasPrice` and omits OP Stack's separate `l1Fee`, so an
-OP anchor's true total is 8.118e-8 ETH rather than the 7.9e-8 the L2 component
-alone suggests, with L1 at 2.29%. Arbitrum and zkSync price L1 costs inside
-`gasUsed`, so their receipt figures are already complete.
+Phase A OP smoke anchor's true total is 8.118e-8 ETH rather than the 7.9e-8 the
+L2 component alone suggests, with L1 at 2.29%. Arbitrum and zkSync price L1 costs
+inside `gasUsed`, so their receipt figures are already complete. The historical
+OP release formula applies 99,524 gas and fixes the priority fee at the observed
+1,000,000 wei, or 0.001 gwei, and `l1Fee` at the observed 1,862,429,623 wei. The
+Phase A receipt validates this arithmetic with its own 79,276 gas, but historical
+variation in either fixed input is not reconstructed.

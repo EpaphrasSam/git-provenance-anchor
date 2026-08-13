@@ -2,8 +2,8 @@
  * Reconstructs what an anchor transaction would have cost, at intervals across a
  * historical window, on each mainnet the project targets.
  *
- * Why reconstruction rather than live sampling: an anchor's gas units are fixed
- * and already measured from real receipts, while the gas price is a property of
+ * Why reconstruction rather than live sampling: a release anchor's gas units are
+ * measured from real first-write receipts, while the gas price is a property of
  * the moment. Every historical gas price is still readable from block headers,
  * so the distribution can be recovered backwards instead of accumulated forwards.
  *
@@ -13,11 +13,13 @@
  * Usage:
  *   npx ts-node --transpile-only scripts/fee-history.ts
  *   npx ts-node --transpile-only scripts/fee-history.ts --days 365 --interval 24
+ *   npx ts-node --transpile-only scripts/fee-history.ts --end 2026-08-12T10:44:09Z
  *   npx ts-node --transpile-only scripts/fee-history.ts --days 30 --interval 6 --out fee-history-dense.json
  *
  * Flags:
  *   --days N        length of the lookback window in days (default 365)
  *   --interval H    hours between samples (default 24)
+ *   --end ISO        pin the final target time (default current time)
  *   --delay MS      pause between RPC calls (default 120)
  *   --networks a,b  restrict to named networks
  *   --out FILE      filename under evaluation/data (default fee-history.json)
@@ -31,14 +33,13 @@ import { findRepoRoot, loadDeployments, rpcFor } from "../cli/src/lib/chain";
 dotenv.config();
 
 /**
- * Gas units observed in the Phase A mainnet anchor receipts. Held as constants
- * rather than re-estimated, so a historical figure is the real transaction's
- * size priced at a historical moment, not an estimate priced at one.
+ * Gas units observed in the v0.5.4 first-write mainnet release anchors, each with
+ * a non-zero SBOM hash.
  */
 const ANCHOR_GAS_UNITS: Record<string, number> = {
-  arbitrumOne: 79708,
-  opMainnet: 79276,
-  zkSyncEra: 106249,
+  arbitrumOne: 100048,
+  opMainnet: 99524,
+  zkSyncEra: 106722,
 };
 
 /** Approximate block times, used only to seed the search for a block. */
@@ -58,7 +59,7 @@ const FEE_MODEL_NOTE: Record<string, string> = {
   arbitrumOne:
     "Nitro charges the L1 posting cost as additional gas units inside gasUsed, so gasUsed x effectiveGasPrice is the whole fee. Holding gas units fixed therefore understates cost when L1 posting is expensive: the real transaction would have burned more units, not just paid a higher price.",
   opMainnet:
-    "OP Stack splits the fee: gasUsed x effectiveGasPrice covers L2 execution, and a separate l1Fee field on the receipt covers posting to L1. A reconstruction from L2 base fee alone is the execution component only; the recorded receipts carry the l1Fee to add.",
+    "OP Stack splits the fee: gasUsed x effectiveGasPrice covers L2 execution, and a separate l1Fee field on the receipt covers posting to L1. Analysis adds the observed 1,000,000 wei priority fee and 1,862,429,623 wei l1Fee. Historical variation in those fixed inputs is not reconstructed.",
   zkSyncEra:
     "EraVM prices execution and published data together through its own gas model, so gasUsed x effectiveGasPrice is the whole fee. Units are not comparable with the EVM chains.",
 };
@@ -97,6 +98,15 @@ function arg(name: string, fallback?: string): string | undefined {
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+export function buildTargets(days: number, intervalHours: number, endSeconds: number): number[] {
+  const stepSeconds = Math.round(intervalHours * 3600);
+  const sampleCount = Math.ceil((days * 24) / intervalHours);
+  return Array.from(
+    { length: sampleCount },
+    (_, index) => endSeconds - (sampleCount - 1 - index) * stepSeconds,
+  );
+}
 
 async function withRetry<T>(label: string, fn: () => Promise<T>, attempts = 4): Promise<T> {
   let lastError: unknown;
@@ -292,6 +302,13 @@ async function main() {
   const delayMs = Number(arg("delay", "120"));
   const outName = arg("out", "fee-history.json")!;
   const only = arg("networks");
+  const endArg = arg("end");
+
+  if (!Number.isFinite(days) || days <= 0) throw new Error("--days must be greater than zero");
+  if (!Number.isFinite(intervalHours) || intervalHours <= 0) {
+    throw new Error("--interval must be greater than zero");
+  }
+  if (!Number.isFinite(delayMs) || delayMs < 0) throw new Error("--delay must not be negative");
 
   const deployments = loadDeployments(repoRoot);
   let networks = [...deployments.keys()].filter((n) => n in ANCHOR_GAS_UNITS);
@@ -303,10 +320,12 @@ async function main() {
     throw new Error("No mainnet deployments found. Expected arbitrumOne, opMainnet or zkSyncEra.");
   }
 
-  const nowSeconds = Math.floor(Date.now() / 1000);
-  const stepSeconds = Math.round(intervalHours * 3600);
-  const targets: number[] = [];
-  for (let t = nowSeconds - days * 86400; t <= nowSeconds; t += stepSeconds) targets.push(t);
+  const endMillis = endArg === undefined ? Date.now() : Date.parse(endArg);
+  if (!Number.isFinite(endMillis)) {
+    throw new Error(`Invalid --end value: ${endArg}. Use an ISO-8601 timestamp.`);
+  }
+  const endSeconds = Math.floor(endMillis / 1000);
+  const targets = buildTargets(days, intervalHours, endSeconds);
 
   console.log(
     `Reconstructing ${targets.length} sample points per network over ${days} days ` +
@@ -335,10 +354,16 @@ async function main() {
       {
         collectedAt: new Date().toISOString(),
         method:
-          "Anchor gas units are held at the values observed in the Phase A mainnet receipts and priced " +
-          "at historical block base fees. Figures are counterfactual: what an anchor would have cost had " +
-          "it been submitted at that moment, not a fee that was paid.",
-        window: { days, intervalHours, samplesPerNetwork: targets.length },
+          "Release-anchor gas units are held at the values observed in the v0.5.4 first-write mainnet " +
+          "receipts with non-zero SBOM hashes and priced at historical block base fees. Figures are " +
+          "counterfactual: what a release anchor would have cost had it been submitted at that moment, " +
+          "not a fee that was paid. Phase A no-SBOM receipts validate the fee arithmetic only.",
+        window: {
+          days,
+          intervalHours,
+          samplesPerNetwork: targets.length,
+          end: new Date(endSeconds * 1000).toISOString(),
+        },
         anchorGasUnits: ANCHOR_GAS_UNITS,
         anchorCalldataBytes: 228,
         feeModelNotes: FEE_MODEL_NOTE,
@@ -356,7 +381,9 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}

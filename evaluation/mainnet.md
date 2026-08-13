@@ -46,7 +46,7 @@ at collection time and is illustrative only.
 | Deploy | [`0x2aa7ab32…90eb`](https://arbiscan.io/tx/0x2aa7ab323682ead3af237d0805c3ea2cd53ff2549ef4790db4d43c6e392a90eb) | 883,340 | 0.00001772 |
 | Register | [`0x75d36c1e…6b8c`](https://arbiscan.io/tx/0x75d36c1e3661276bf282c5ce9285e92bd8c425597bffd2b700904aab2ece6b8c) | 95,005 | 0.00000190 |
 | Allowlist CI | [`0xb48e5582…fc26`](https://arbiscan.io/tx/0xb48e5582a36eecb9b771425e1bfb5ff6a72254e5da9d4331540b7b33635afc26) | 48,953 | 0.00000098 |
-| Anchor `v0.4.0-m4` | [`0xee5213bd…b248`](https://arbiscan.io/tx/0xee5213bd9b25d014aa56734202f486cff2f2e1b3e59e38ba70f599eb8808b248) | 79,708 | 0.00000159 |
+| No-SBOM smoke anchor `v0.4.0-m4` | [`0xee5213bd…b248`](https://arbiscan.io/tx/0xee5213bd9b25d014aa56734202f486cff2f2e1b3e59e38ba70f599eb8808b248) | 79,708 | 0.00000159 |
 
 ### OP Mainnet
 
@@ -58,7 +58,7 @@ it for the `l1Fee` that OP Stack reports separately.
 | Deploy | [`0x2d2dcffd…af62`](https://optimistic.etherscan.io/tx/0x2d2dcffd24b739d5a0dbf03c69d17cf1f4e93f3269a642970c7169db8289af62) | 879,549 | ~5.6×10⁻¹⁰ |
 | Register | [`0x454474f7…060b`](https://optimistic.etherscan.io/tx/0x454474f7840a0d7860d2fdbfd917ce7ffd4b5e90443015cad260a91d3995060b) | 94,630 | 9.5×10⁻⁸ |
 | Allowlist CI | [`0xc7fba234…bf46`](https://optimistic.etherscan.io/tx/0xc7fba2345c737f1ee65271f9623d7968a6cf91c19cd9e84601cfde303814bf46) | 48,679 | 4.9×10⁻⁸ |
-| Anchor `v0.4.0-m4` | [`0x560c03a0…45a2`](https://optimistic.etherscan.io/tx/0x560c03a0f69878623de2d71c71bc54ee5bc5868226c404c45e236756185645a2) | 79,276 | 7.9×10⁻⁸ |
+| No-SBOM smoke anchor `v0.4.0-m4` | [`0x560c03a0…45a2`](https://optimistic.etherscan.io/tx/0x560c03a0f69878623de2d71c71bc54ee5bc5868226c404c45e236756185645a2) | 79,276 | 7.9×10⁻⁸ |
 | Snapshot anchor `main` | [`0x5fb9a342…1a73`](https://optimistic.etherscan.io/tx/0x5fb9a3421140f4d07e64e3c366d05958c3e6de2f3019ab82a36ab04690aa1a73) | 79,216 | 7.9×10⁻⁸ |
 
 OP fees were negligible in this window (sub-cent). Exact deploy tx hash is in
@@ -80,12 +80,12 @@ Decoded from the `AnchorSubmitted` log:
 | Tree hash | `9bbb494a8d862b597e27bfd69f798ba6ce00fc41` |
 | SBOM hash | zero, not generated for a snapshot |
 | Revision | 1 |
-| Calldata | 228 bytes, identical to a tag anchor |
+| Calldata | 228 bytes, identical to the Phase A no-SBOM tag smoke anchor |
 
-At 79,216 gas it costs 60 gas less than the tag anchor's 79,276, the difference
-being the shorter reference string. So a snapshot is the same transaction shape as
-a tag anchor and prices identically, which is what the RQ2 cost table already
-assumed and can now assert.
+At 79,216 gas it costs 60 gas less than the Phase A no-SBOM tag smoke anchor's
+79,276, the difference being the shorter reference string. This is the transaction
+shape used by the RQ2 snapshot cost table. It is separate from RQ1's 99,524-gas OP
+release anchor with a non-zero SBOM hash.
 
 The anchored tree is that of commit `dced3a8`, the committed state of `main`, not
 the working tree, so the uncommitted workflow templates are correctly absent from
@@ -102,8 +102,9 @@ from one key should expect this.
 OP Stack receipts carry for the cost of posting to L1. Reading the raw receipt for
 the anchor gives `l1Fee` = 1.862429623e9 wei, making the true total 8.118e-8 ETH
 rather than 7.9e-8, with L1 accounting for 2.29%. See `fee-distribution.md`, which
-uses the corrected basis throughout. Arbitrum and zkSync are unaffected: both
-price L1 costs inside `gasUsed`, so their receipt fees are already complete.
+uses the receipt's 1,000,000-wei priority fee in the historical counterfactual.
+Arbitrum and zkSync are unaffected: both price L1 costs inside `gasUsed`, so their
+receipt fees are already complete.
 
 ### zkSync Era
 
@@ -112,7 +113,7 @@ price L1 costs inside `gasUsed`, so their receipt fees are already complete.
 | Deploy | [`0x43483095…180e`](https://explorer.zksync.io/tx/0x43483095359b30fae087d5fc83b4969b1103bfd800c0e1d4e125027494c9180e) | 1,191,265 | 0.00005390 |
 | Register | [`0x8ab19581…a582`](https://explorer.zksync.io/tx/0x8ab19581bee210ea47dbb26bb14e0920ca07bc06a510e7df039be0c5e276a582) | 104,755 | 0.00000474 |
 | Allowlist CI | [`0x1f05cfff…8196`](https://explorer.zksync.io/tx/0x1f05cfff2e6ca22745b390381ca97182233e33ce0daa42f631811c1f17738196) | 90,960 | 0.00000412 |
-| Anchor `v0.4.0-m4` | [`0x485190f0…cf9e`](https://explorer.zksync.io/tx/0x485190f0fb7965d1c047d6f846f50e69023fdbb3bdc0e9f17c113440f053cf9e) | 106,249 | 0.00000481 |
+| No-SBOM smoke anchor `v0.4.0-m4` | [`0x485190f0…cf9e`](https://explorer.zksync.io/tx/0x485190f0fb7965d1c047d6f846f50e69023fdbb3bdc0e9f17c113440f053cf9e) | 106,249 | 0.00000481 |
 
 EraVM gas units are not comparable to the EVM column. Report fees in ETH/USD
 beside the EVM rows; do not ratio the gas figures.
@@ -147,6 +148,10 @@ GitLab CI
 ([pipeline 2756003177](https://gitlab.com/EpaphrasSam/git-provenance-anchor/-/pipelines/2756003177))
 wrote revision 2 from its own key
 `0x62b7531A4b6Ebd0d478f81dB8BcB1115D2aEc011`, same tree on every network.
+
+This is a freeze of the mainnet deployment and dual-platform anchor evidence.
+The corrected verifier, current workflow templates and updated evaluation records
+in the working tree post-date `v0.5.4` and are not claimed to be inside the tag.
 
 | Network | GitHub (rev 1) | GitLab (rev 2) |
 | --- | --- | --- |

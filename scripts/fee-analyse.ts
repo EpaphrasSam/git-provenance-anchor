@@ -3,16 +3,16 @@
  * cost claim needs, and checks the reconstruction against transactions that were
  * actually paid for.
  *
- * The validation matters more than the percentiles. A counterfactual figure is
- * only worth reading if the same arithmetic reproduces a real receipt, so the
- * script recomputes each Phase A transaction from its block's base fee and
- * reports the error against the fee that was charged.
+ * The validation applies the reconstruction formula to each Phase A receipt's
+ * own gasUsed and reports the error against the fee that was charged. Distribution
+ * pricing separately uses the release-anchor units stored in anchorGasUnits.
  *
  * Reads and writes local files only; no network access.
  *
  * Usage:
  *   npx ts-node --transpile-only scripts/fee-analyse.ts
  *   npx ts-node --transpile-only scripts/fee-analyse.ts --in fee-history-dense.json --eth-usd 1900
+ *   npx ts-node --transpile-only scripts/fee-analyse.ts --in fee-arithmetic-input.json --out fee-arithmetic-output.json
  */
 import * as fs from "fs";
 import * as path from "path";
@@ -25,6 +25,15 @@ function arg(name: string, fallback?: string): string | undefined {
 }
 
 const WEI_PER_ETH = 1e18;
+const OP_PRIORITY_FEE_WEI = 1_000_000n;
+const OP_L1_FEE_WEI = 1_862_429_623n;
+
+function reconstructedCostWei(network: string, gasUnits: number, baseFeeWei: bigint): bigint {
+  if (network === "opMainnet") {
+    return BigInt(gasUnits) * (baseFeeWei + OP_PRIORITY_FEE_WEI) + OP_L1_FEE_WEI;
+  }
+  return BigInt(gasUnits) * baseFeeWei;
+}
 
 /** Nearest-rank percentile over an ascending array. */
 function percentile(sorted: number[], p: number): number {
@@ -73,6 +82,7 @@ function monthKey(iso: string): string {
 function main() {
   const repoRoot = findRepoRoot();
   const inName = arg("in", "fee-history.json")!;
+  const outName = arg("out", "fee-distribution.json")!;
   const ethUsd = Number(arg("eth-usd", "1900"));
   const inPath = path.join(repoRoot, "evaluation", "data", inName);
 
@@ -107,7 +117,11 @@ function main() {
     };
 
     if (!isL1 && units) {
-      const costEth = samples.map((s) => (Number(BigInt(s.baseFeePerGasWei!)) * units) / WEI_PER_ETH);
+      const costEth = samples.map(
+        (s) =>
+          Number(reconstructedCostWei(net.network, units, BigInt(s.baseFeePerGasWei!))) /
+          WEI_PER_ETH,
+      );
       const costStats = describe(costEth);
       entry.anchorGasUnits = units;
       entry.anchorCostEth = costStats;
@@ -162,7 +176,6 @@ function main() {
     perNetwork[net.network] = entry;
   }
 
-  // Validation: recompute each Phase A transaction from its own block's base fee.
   const validation: Record<string, unknown>[] = [];
   for (const r of raw.phaseAReceipts?.receipts ?? []) {
     if (r.error || !r.gasUsed) continue;
@@ -172,7 +185,13 @@ function main() {
     const paidEth = effective ? (gasUsed * effective) / WEI_PER_ETH : null;
     const l1FeeEth = r.l1Fee ? Number(r.l1Fee) / WEI_PER_ETH : null;
     const totalPaidEth = paidEth === null ? null : paidEth + (l1FeeEth ?? 0);
-    const reconstructedEth = baseFee ? (gasUsed * baseFee) / WEI_PER_ETH : null;
+    const reconstructedEth =
+      baseFee === null
+        ? null
+        : Number(
+            reconstructedCostWei(r.network, gasUsed, BigInt(r.blockBaseFeePerGas)),
+          ) / WEI_PER_ETH;
+    const validationPaidEth = r.network === "opMainnet" ? totalPaidEth : paidEth;
 
     validation.push({
       network: r.network,
@@ -185,9 +204,11 @@ function main() {
       l2FeeEth: paidEth,
       l1FeeEth,
       totalPaidEth,
-      reconstructedFromBaseFeeEth: reconstructedEth,
+      reconstructedEth,
       reconstructionErrorPct:
-        reconstructedEth && paidEth ? ((reconstructedEth - paidEth) / paidEth) * 100 : null,
+        reconstructedEth && validationPaidEth
+          ? ((reconstructedEth - validationPaidEth) / validationPaidEth) * 100
+          : null,
       l1ShareOfTotalPct:
         totalPaidEth && l1FeeEth !== null ? (l1FeeEth / totalPaidEth) * 100 : null,
       gasUsedForL1: r.gasUsedForL1 ?? null,
@@ -199,25 +220,28 @@ function main() {
     source: inName,
     sourceCollectedAt: raw.collectedAt,
     ethUsdAssumed: ethUsd,
-    method: raw.method,
+    method:
+      `${raw.method} OP Mainnet adds the observed 0.001 gwei priority fee and the observed ` +
+      `1,862,429,623 wei l1Fee to each reconstructed sample.`,
     window: raw.window,
     feeModelNotes: raw.feeModelNotes,
     networks: perNetwork,
     phaseAValidation: validation,
   };
 
-  const outPath = path.join(repoRoot, "evaluation", "data", "fee-distribution.json");
+  const outPath = path.join(repoRoot, "evaluation", "data", outName);
   fs.writeFileSync(outPath, JSON.stringify(out, null, 1) + "\n");
 
   console.log(`\nAnchor cost distribution (ETH at ~$${ethUsd}/ETH):\n`);
   lines.forEach((l) => console.log("  " + l));
 
-  console.log(`\nValidation against Phase A receipts:\n`);
+  console.log(`\nValidation against Phase A no-SBOM receipts:\n`);
   for (const v of validation as any[]) {
     if (v.reconstructionErrorPct === null) continue;
     console.log(
       `  ${String(v.network).padEnd(12)} ${String(v.label).padEnd(10)} ` +
-        `paid(L2) ${fmtEth(v.l2FeeEth)}  reconstructed ${fmtEth(v.reconstructedFromBaseFeeEth)}  ` +
+        `paid ${fmtEth(v.network === "opMainnet" ? v.totalPaidEth : v.l2FeeEth)}  ` +
+        `reconstructed ${fmtEth(v.reconstructedEth)}  ` +
         `error ${v.reconstructionErrorPct.toFixed(2)}%` +
         (v.l1FeeEth ? `  +L1 ${fmtEth(v.l1FeeEth)} (${v.l1ShareOfTotalPct.toFixed(1)}% of total)` : ""),
     );

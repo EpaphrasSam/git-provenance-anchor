@@ -2,7 +2,9 @@
  "collectedAt": "2026-08-12T19:11:24.346Z",
  "syftVersion": "1.51.0",
  "syftBinary": "C:\\Users\\isine\\OneDrive\\Documents\\Claude\\Projects\\MPhil Thesis\\git-provenance-anchor\\tools\\syft.exe",
+ "timeoutMs": 900000,
  "invocation": "syft dir:<clone> -o cyclonedx-json=<tmp>  (same as workflows/provenance-anchor.yml)",
+ "diagnosticRerun": "If microsoft/fluentui-system-icons times out, rerun with --exclude **/*.svg and retain the result under repositories[].excludeSvg.",
  "sampleSource": "evaluation/data/sample-results.json",
  "repositories": [
   {
@@ -33,10 +35,12 @@
    "declared": {
     "goMod": true,
     "goDirectRequires": 4,
+    "goSum": true,
+    "goSumLines": 13,
     "gitlinks": 0
    },
    "notes": [
-    "go.mod lists 4 direct require lines; CycloneDX has 4 pkg:golang components"
+    "go.mod lists 4 direct require lines; go.sum present=true; CycloneDX has 4 pkg:golang components"
    ],
    "bomFormat": "CycloneDX",
    "specVersion": "1.7"
@@ -142,10 +146,12 @@
    "declared": {
     "goMod": true,
     "goDirectRequires": 11,
+    "goSum": true,
+    "goSumLines": 55,
     "gitlinks": 0
    },
    "notes": [
-    "go.mod lists 11 direct require lines; CycloneDX has 11 pkg:golang components"
+    "go.mod lists 11 direct require lines; go.sum present=true; CycloneDX has 11 pkg:golang components"
    ],
    "bomFormat": "CycloneDX",
    "specVersion": "1.7"
@@ -437,7 +443,13 @@
     "error": "spawnSync C:\\Users\\isine\\OneDrive\\Documents\\Claude\\Projects\\MPhil Thesis\\git-provenance-anchor\\tools\\syft.exe ETIMEDOUT"
    },
    "excludeSvg": {
-    "invocation": "syft dir:<clone> --exclude **/*.svg -o cyclonedx-json",
+    "invocation": "syft dir:<clone> --exclude **/*.svg -o cyclonedx-json=<tmp>",
+    "exclusions": [
+     "**/*.svg"
+    ],
+    "warnings": [
+     "unable to parse yarn v2 package key key=__metadata"
+    ],
     "syftMs": 228000,
     "bomFormat": "CycloneDX",
     "specVersion": "1.7",

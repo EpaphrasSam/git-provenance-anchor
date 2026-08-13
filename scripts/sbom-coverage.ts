@@ -11,12 +11,13 @@
  *   --sample DIR   directory from evaluation/sample-clone.sh (default ./sample)
  *   --syft PATH    syft binary (default: tools/syft.exe, then PATH)
  *   --only REPO    restrict to one repository
+ *   --timeout-seconds N  timeout for each Syft pass (default 900)
  *   --out FILE     filename under evaluation/data (default sbom-coverage.json)
  */
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import { execFileSync } from "child_process";
+import { execFileSync, spawnSync } from "child_process";
 import { findRepoRoot } from "../cli/src/lib/chain";
 
 function arg(name: string, fallback?: string): string | undefined {
@@ -72,7 +73,37 @@ interface Row {
   sampleNames: string[];
   declared: Record<string, number | string | boolean>;
   notes: string[];
+  fullTree?: ScanResult;
+  excludeSvg?: ScanResult & {
+    invocation: string;
+    exclusions: string[];
+    warnings: string[];
+  };
   error?: string;
+}
+
+interface ScanResult {
+  syftMs: number;
+  bomFormat?: string;
+  specVersion?: string;
+  componentCount?: number;
+  purlTypes?: Record<string, number>;
+  componentTypes?: Record<string, number>;
+  sampleNames?: string[];
+  timedOutAfterMs?: number;
+  error?: string;
+}
+
+const DIAGNOSTIC_EXCLUDES: Record<string, string[]> = {
+  "microsoft/fluentui-system-icons": ["**/*.svg"],
+};
+
+export function parseTimeoutMs(value: string | undefined): number {
+  const seconds = value === undefined ? 900 : Number(value);
+  if (!Number.isFinite(seconds) || seconds <= 0) {
+    throw new Error("--timeout-seconds must be a positive number");
+  }
+  return Math.round(seconds * 1000);
 }
 
 function resolveSyft(root: string): string {
@@ -117,6 +148,11 @@ function declaredSignals(clone: string): Record<string, number | string | boolea
   if (goMod) {
     out.goMod = true;
     out.goDirectRequires = countMatches(goMod, /^\t[^\s/]/gm);
+  }
+  const goSum = readIf(path.join(clone, "go.sum"));
+  if (goSum) {
+    out.goSum = true;
+    out.goSumLines = countMatches(goSum, /^.+$/gm);
   }
   const cargoLock = readIf(path.join(clone, "Cargo.lock"));
   if (cargoLock) {
@@ -205,13 +241,55 @@ function summariseBom(bom: CycloneDx): Pick<
   };
 }
 
+function runSyft(
+  syft: string,
+  clone: string,
+  tmp: string,
+  timeoutMs: number,
+  exclusions: string[] = []
+): { result: ScanResult; warnings: string[] } {
+  const args = [`dir:${clone}`];
+  for (const exclusion of exclusions) args.push("--exclude", exclusion);
+  args.push("-o", `cyclonedx-json=${tmp}`);
+  fs.rmSync(tmp, { force: true });
+  const started = Date.now();
+  const run = spawnSync(syft, args, {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+    timeout: timeoutMs,
+    windowsHide: true,
+  });
+  const syftMs = Date.now() - started;
+  const warnings = (run.stderr ?? "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (run.error || run.status !== 0) {
+    const timedOut = run.error && "code" in run.error && run.error.code === "ETIMEDOUT";
+    const message =
+      run.error?.message ?? (warnings.join("\n") || `Syft exited with status ${run.status}`);
+    return {
+      result: {
+        syftMs,
+        ...(timedOut ? { timedOutAfterMs: syftMs } : {}),
+        error: message,
+      },
+      warnings,
+    };
+  }
+  const bom = JSON.parse(fs.readFileSync(tmp, "utf8")) as CycloneDx;
+  return { result: { syftMs, ...summariseBom(bom) }, warnings };
+}
+
 function notesFor(row: Row): string[] {
   const n: string[] = [];
   const d = row.declared;
   if (d.goMod && typeof d.goDirectRequires === "number") {
     const found = row.purlTypes.golang ?? 0;
     n.push(
-      `go.mod lists ${d.goDirectRequires} direct require lines; CycloneDX has ${found} pkg:golang components`
+      `go.mod lists ${d.goDirectRequires} direct require lines; go.sum present=${Boolean(
+        d.goSum
+      )}; CycloneDX has ${found} pkg:golang components`
     );
   }
   if (d.cargoLock && typeof d.cargoPackages === "number") {
@@ -258,6 +336,7 @@ function main(): void {
   const sampleRoot = path.resolve(arg("sample", path.join(root, "sample"))!);
   const only = arg("only");
   const outName = arg("out", "sbom-coverage.json")!;
+  const timeoutMs = parseTimeoutMs(arg("timeout-seconds"));
   const syft = resolveSyft(root);
   const version = syftVersion(syft);
 
@@ -290,20 +369,37 @@ function main(): void {
     }
     row.declared = declaredSignals(clone);
     const tmp = path.join(os.tmpdir(), `gpa-sbom-${repo.repo.replace("/", "-")}.cdx.json`);
-    const started = Date.now();
     try {
-      execFileSync(syft, ["dir:" + clone, "-o", `cyclonedx-json=${tmp}`], {
-        stdio: ["ignore", "pipe", "pipe"],
-        timeout: 60 * 60 * 1000,
-        windowsHide: true,
-      });
-      row.syftMs = Date.now() - started;
-      const bom = JSON.parse(fs.readFileSync(tmp, "utf8")) as CycloneDx;
-      Object.assign(row, summariseBom(bom));
+      const fullTree = runSyft(syft, clone, tmp, timeoutMs);
+      row.syftMs = fullTree.result.syftMs;
+      row.fullTree = fullTree.result;
+      if (fullTree.result.error) {
+        row.error = fullTree.result.error;
+      } else {
+        Object.assign(row, fullTree.result);
+      }
+
+      const exclusions = DIAGNOSTIC_EXCLUDES[repo.repo];
+      if (fullTree.result.timedOutAfterMs && exclusions) {
+        const diagnostic = runSyft(syft, clone, tmp, timeoutMs, exclusions);
+        row.excludeSvg = {
+          invocation: "syft dir:<clone> --exclude **/*.svg -o cyclonedx-json=<tmp>",
+          exclusions,
+          warnings: diagnostic.warnings,
+          ...diagnostic.result,
+        };
+      }
       row.notes = notesFor(row);
-    } catch (err) {
-      row.syftMs = Date.now() - started;
-      row.error = err instanceof Error ? err.message : String(err);
+      if (row.fullTree.timedOutAfterMs) {
+        row.notes.unshift(
+          `Full-tree syft dir:. timed out after ${Math.round(row.fullTree.timedOutAfterMs / 1000)}s.`
+        );
+      }
+      if (row.excludeSvg && !row.excludeSvg.error) {
+        row.notes.push(
+          `Excluding **/*.svg finished with ${row.excludeSvg.componentCount} components.`
+        );
+      }
     } finally {
       try {
         fs.unlinkSync(tmp);
@@ -322,7 +418,10 @@ function main(): void {
     collectedAt: new Date().toISOString(),
     syftVersion: version,
     syftBinary: syft,
+    timeoutMs,
     invocation: "syft dir:<clone> -o cyclonedx-json=<tmp>  (same as workflows/provenance-anchor.yml)",
+    diagnosticRerun:
+      "If microsoft/fluentui-system-icons times out, rerun with --exclude **/*.svg and retain the result under repositories[].excludeSvg.",
     sampleSource: "evaluation/data/sample-results.json",
     repositories: rows,
   };
@@ -331,4 +430,4 @@ function main(): void {
   console.log(`wrote ${dest}`);
 }
 
-main();
+if (require.main === module) main();

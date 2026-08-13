@@ -1,0 +1,104 @@
+{
+  "collectedAt": "2026-08-12T10:50:00Z",
+  "method": "Historical release-anchor pricing uses v0.5.4 first-write gas units with non-zero SBOM hashes. The Phase A no-SBOM receipts validate fee arithmetic using each receipt's own gasUsed.",
+  "window": {
+    "samplesPerNetwork": 1,
+    "intervalHours": 24,
+    "end": "2026-08-12T10:50:00Z"
+  },
+  "anchorGasUnits": {
+    "arbitrumOne": 100048,
+    "opMainnet": 99524,
+    "zkSyncEra": 106722
+  },
+  "feeModelNotes": {
+    "arbitrumOne": "Gas units include the observed L1 posting share.",
+    "opMainnet": "The formula adds the observed 0.001 gwei priority fee and fixed 1,862,429,623 wei l1Fee.",
+    "zkSyncEra": "EraVM units are not comparable with EVM units."
+  },
+  "networks": [
+    {
+      "network": "arbitrumOne",
+      "chainId": 42161,
+      "requested": 1,
+      "collected": 1,
+      "failures": [],
+      "samples": [
+        {
+          "targetIso": "2026-08-12T10:50:00Z",
+          "blockIso": "2026-08-12T10:50:00Z",
+          "blockNumber": 493734376,
+          "baseFeePerGasWei": "20004000"
+        }
+      ]
+    },
+    {
+      "network": "opMainnet",
+      "chainId": 10,
+      "requested": 1,
+      "collected": 1,
+      "failures": [],
+      "samples": [
+        {
+          "targetIso": "2026-08-12T10:50:00Z",
+          "blockIso": "2026-08-12T10:50:00Z",
+          "blockNumber": 155465544,
+          "baseFeePerGasWei": "534"
+        }
+      ]
+    },
+    {
+      "network": "zkSyncEra",
+      "chainId": 324,
+      "requested": 1,
+      "collected": 1,
+      "failures": [],
+      "samples": [
+        {
+          "targetIso": "2026-08-12T10:50:00Z",
+          "blockIso": "2026-08-12T10:50:00Z",
+          "blockNumber": 71529888,
+          "baseFeePerGasWei": "45250000"
+        }
+      ]
+    }
+  ],
+  "phaseAReceipts": {
+    "note": "Archived Phase A no-SBOM receipt fields used to check the reconstruction formula. Validation uses each receipt's gasUsed, not anchorGasUnits.",
+    "receipts": [
+      {
+        "network": "arbitrumOne",
+        "label": "anchor",
+        "hash": "0xee5213bd9b25d014aa56734202f486cff2f2e1b3e59e38ba70f599eb8808b248",
+        "blockIso": "2026-08-12T10:50:00Z",
+        "gasUsed": "79708",
+        "effectiveGasPrice": "20004000",
+        "blockBaseFeePerGas": "20004000",
+        "l1Fee": null,
+        "gasUsedForL1": "432"
+      },
+      {
+        "network": "opMainnet",
+        "label": "anchor",
+        "hash": "0x560c03a0f69878623de2d71c71bc54ee5bc5868226c404c45e236756185645a2",
+        "blockIso": "2026-08-12T10:50:00Z",
+        "gasUsed": "79276",
+        "effectiveGasPrice": "1000534",
+        "blockBaseFeePerGas": "534",
+        "l1Fee": "1862429623",
+        "gasUsedForL1": null
+      },
+      {
+        "network": "zkSyncEra",
+        "label": "anchor",
+        "hash": "0x485190f0fb7965d1c047d6f846f50e69023fdbb3bdc0e9f17c113440f053cf9e",
+        "blockIso": "2026-08-12T10:50:00Z",
+        "gasUsed": "106249",
+        "effectiveGasPrice": "45250000",
+        "blockBaseFeePerGas": "45250000",
+        "l1Fee": null,
+        "gasUsedForL1": null
+      }
+    ]
+  }
+}

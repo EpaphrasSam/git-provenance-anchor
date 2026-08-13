@@ -1,53 +1,29 @@
 # Choosing between the three networks
 
-Run 2026-08-12. Consolidates the measurements behind RQ3: throughput, finality,
-per-transaction cost, and the security assumptions under each network's finality.
-Cost detail is in `fee-distribution.md`, timing in `latency.md`. Utilisation
-figures come from 30 daily block samples per network taken on 2026-08-12.
+Run 2026-08-12. Consolidates the retained measurements behind RQ3:
+per-transaction cost, observed finality timing, and the security assumptions under
+each network's finality. Cost detail is in `fee-distribution.md`, timing in
+`latency.md`. The planned throughput evidence was not retained.
 
 ## The four dimensions side by side
 
 | | Arbitrum One | OP Mainnet | zkSync Era |
 | --- | --- | --- | --- |
-| Median anchor cost | 1.594e-6 ETH (~$0.003) | 8.118e-8 ETH | 4.808e-6 ETH (~$0.009) |
-| Worst observed in a year | 1.747e-5 ETH (~11× median) | 1.002e-7 ETH (1.23× median) | 4.808e-6 ETH (no variation) |
+| Median release-anchor cost | 2.0007592e-6 ETH (~$0.0038) | 1.0143390e-7 ETH (~$0.000193) | 4.8291705e-6 ETH (~$0.0092) |
+| Worst observed in a year | 2.1928019e-5 ETH (~11× median) | 1.2536067e-7 ETH (~1.24× median) | 4.8291705e-6 ETH (no variation) |
 | To L1 data availability | 2 min 56 s | 2 min 38 s | 32 min 38 s |
 | Validity proof verified | n/a | n/a | 45 min 35 s |
 | Full settlement | ~7 day challenge window | ~7 day challenge window | proof plus execution |
-| Observed throughput | 2.57 M gas/s | 5.55 M gas/s | 0.08 M gas/s |
-| Anchor gas | 79,708 (EVM) | 79,276 (EVM) | 106,249 (EraVM) |
+| First-write release-anchor gas | 100,048 (EVM) | 99,524 (EVM) | 106,722 (EraVM) |
 | Proof system | fraud proofs | fraud proofs | validity proofs |
 
-## Throughput, as a capacity argument
+## Throughput evidence gap
 
-Chapter 3 scopes this deliberately as a capacity question rather than a stress
-test, because saturating a public network to see where it breaks is neither
-possible nor useful here. The question is whether provenance anchoring could ever
-represent a meaningful load.
-
-One anchor is roughly 80,000 gas. Against observed throughput that is 32 anchors
-per second on Arbitrum One and 70 on OP Mainnet before anchoring would equal the
-network's entire current activity. On zkSync Era it is about one per second,
-because that network is running at a fraction of the other two's volume.
-
-A deliberately absurd upper bound makes the point better than a plausible one. npm
-alone hosts around 3.4 million packages. If every one of them cut a release every
-week, that is 5.6 releases per second, or about 448,000 gas per second of
-anchoring. That would be 17.5% of Arbitrum One's current observed throughput and
-8.1% of OP Mainnet's. It would exceed zkSync Era's present activity several times
-over, though that is a statement about how quiet zkSync currently is rather than
-about a ceiling.
-
-Real anchoring load is orders of magnitude below that, because most packages do
-not release weekly and most releases are not anchored. Throughput is not a
-constraint on either optimistic network, and the honest form of the claim is a
-headroom argument, not a benchmark.
-
-One measurement note: Arbitrum One and zkSync Era both report a nominal block gas
-limit of 2^50, a placeholder rather than a real capacity bound, so block
-utilisation percentages are meaningless on those chains. Gas per second is used
-instead, which is comparable across all three. OP Mainnet does expose a real
-40 M limit and ran at about 28% median utilisation.
+Chapter 3 proposed a capacity question, but no raw block sample, collection script
+or stress-test result was retained. Throughput capacity was therefore not
+delivered. The anchor gas row cannot repair that omission: EraVM and EVM gas
+measure different execution models, so the zkSync value is not cross-network
+comparable with the Arbitrum One and OP Mainnet values.
 
 ## Security assumptions behind each finality mechanism
 
@@ -90,28 +66,24 @@ They are current descriptions with an expiry date.
 
 ## What this implies for deployment
 
-Anchoring to several networks at once is the intended configuration, and these
-results support it for a reason beyond redundancy: the three fail differently. An
-optimistic rollup's weak point is a sequencer that will not include your
-transaction. A validity rollup's weak point is a proof system that can be paused.
-When the same tree hash is anchored on all three, all three network trust models
-would need to fail for the verifier to receive a network-layer contradiction.
-Compromise of the shared submitting key remains outside that redundancy because it
-can place the same false record on every network without any network trust model
-failing.
+Anchoring to several networks at once is the intended configuration, and the
+three networks fail differently. An optimistic rollup's weak point is a sequencer
+that will not include a transaction. A validity rollup's weak point is a proof
+system that can be paused. One network failure can create a contradiction with
+the other two. Suppressing that signal at the network layer requires all three
+networks to fail consistently, returning the same false record or omitting the
+same expected record. Compromise of the shared submitting key remains outside
+that redundancy because it can place the same false record on every network
+without any network trust model failing.
 
-If a project must choose one, the measurements suggest OP Mainnet on cost and
-latency, Arbitrum One if the priority is the deepest activity and the most mature
-fraud-proof ecosystem, and zkSync Era where a cryptographic finality argument is
-worth the extra half hour and the higher per-anchor cost.
+If a project must choose one, OP Mainnet has the lowest retained median cost and
+the shortest observed L1 posting interval in this single sample. There is no
+capacity ranking.
 
 ## Limitations
 
-- Throughput figures are observed activity, not measured capacity ceilings.
-  Neither optimistic network was anywhere near saturation during sampling.
-- Utilisation is unavailable on two of the three networks because their reported
-  gas limits are placeholders.
+- Throughput capacity is unresolved because the block-level inputs and collection
+  procedure were not retained and no stress test was run.
+- EraVM gas is not directly comparable with EVM gas.
 - Settlement timings are single observations per network, taken within the same
   half hour, as recorded in `latency.md`.
-- The npm figure is an order-of-magnitude bound used to make a headroom argument,
-  not an adoption estimate.

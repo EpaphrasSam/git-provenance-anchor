@@ -2,8 +2,17 @@
 
 Claims this project makes about itself, with the evidence behind them and a
 command to reproduce each one. Where a figure came from an event that cannot be
-re-run — a transaction already mined, a CI run already finished — the transaction
-hash or run URL is recorded so it can be checked independently.
+re-run, such as a transaction already mined or a CI run already finished, the
+transaction hash or run URL is recorded so it can be checked independently.
+
+Tag `v0.5.4` freezes the mainnet deployment and dual-platform anchoring evidence.
+The corrected verifier, current templates, scripts and updated records are
+post-`v0.5.4` working-tree material unless a record says otherwise.
+
+In the current verifier, `gpa verify --sbom` checks both the reconstructed tree
+hash and the supplied SBOM hash against every configured network. Aggregate
+verification fails on a hash mismatch, disagreement between networks, or a
+missing anchor on any configured network.
 
 If you deploy your own registry, the scripts here work against it too. They are
 operator tooling, not just documentation of this deployment.
@@ -20,16 +29,16 @@ operator tooling, not just documentation of this deployment.
 | `tag-retargeting.md` | Force-moving an anchored tag is flagged as `moved` by `gpa reverify` | retarget locally, then `gpa reverify` |
 | `gas-and-cost.md` | Gas per operation, why anchoring with an SBOM costs ~20k more, and how these differ from the test-suite figures | `npm run evidence` |
 | `mainnet.md` | Live registries on Arbitrum One, OP Mainnet, and zkSync Era, with fees actually paid for deploy / register / allowlist / smoke anchor | `gpa verify --tag v0.4.0-m4 --ref v0.4.0-m4 --network arbitrumOne --network opMainnet --network zkSyncEra` |
-| `fee-distribution.md` | What an anchor would have cost at 365 points across a year on each production network, validated against the Phase A receipts | `npm run fees:all` |
+| `fee-distribution.md` | Retained aggregate costs for 365 points across a year, with arithmetic validated against Phase A receipts; original block-level samples were not archived | `npm run fees:history -- --end 2026-08-12T10:44:09Z`, then `npm run fees:analyse` reconstructs a new raw-compatible series |
 | `latency.md` | How long after a release the anchor is readable, posted to L1, and settled, on each production network | `zks_getBlockDetails` and Blockscout batch fields, recorded in the file |
 | `ladisa-coverage.md` | Coverage across the maintained Ladisa tree: 117 non-root node instances, 114 of which receive classifications | `python3 evaluation/ladisa-classify.py` |
-| `repository-sample.md` | Tree-hash reconstruction and verification time across twelve widely used projects, and the archive-based reconstruction defect it exposed | `npm run sample:clone`, then compare `hashGitRef` against `git rev-parse HEAD^{tree}` |
-| `tarball-sweep.md` | Published release artifacts versus the anchored tree; curl/libarchive manifests clear undeclared extras; Windows `hashArtifact` mode loss on tarball verify | `npm run sample:tarballs`; diagnosis in `data/control-row-diagnosis.json` |
-| `functional-validation.md` | The four properties Chapter 3 promises, as one table: unexpected content, no false positives, allowlist enforcement, tag retargeting | per-row records listed in the file |
-| `workflow-impact.md` | What adopting the system costs a project: files added, config lines, manual steps, and why none of it varies by project | counts over the reference templates, plus `ci-end-to-end.md` |
-| `sbom-coverage.md` | What Syft 1.51.0 plus CycloneDX actually inventories on the twelve sampled source trees, against each project's own lockfile | `npm run sample:sbom` |
+| `repository-sample.md` | Git-reference tree-hash reconstruction across twelve widely used projects, including fixed overhead, large-repository scaling and the archive-based reconstruction defect | `npm run sample:clone`, then compare `hashGitRef` against `git rev-parse HEAD^{tree}` |
+| `tarball-sweep.md` | Published release artifacts versus the anchored tree; curl/libarchive manifests clear undeclared additions, while legitimate omission gaps remain | `npm run sample:tarballs`; diagnosis in `data/control-row-diagnosis.json` |
+| `functional-validation.md` | The Chapter 3 properties, with the manifest-extra result separated from unsupported end-to-end false-positive claims | per-row records listed in the file |
+| `workflow-impact.md` | Current template line counts, files added, manual steps, runtime variation and the unmeasured end-to-end noise burden | counts over the reference templates, plus `ci-end-to-end.md` |
+| `sbom-coverage.md` | What Syft 1.51.0 plus CycloneDX inventories on the twelve sampled source trees, compared with recognised dependency metadata and package manifests | `npm run sample:sbom`, with a 900-second timeout and an automatic SVG-exclusion diagnostic after the fluentui timeout |
 | `rq2-strategies.md` | Tag-only versus tag-plus-snapshots versus tag-plus-re-verification: the rubric re-run three ways, grounded in release cadence and priced from observed fees | `python3 evaluation/rq2-ablation.py` |
-| `network-tradeoffs.md` | Throughput, finality, cost and finality-security assumptions compared across the three production networks | figures drawn from `fee-distribution.md`, `latency.md`, and 30 daily block samples per network |
+| `network-tradeoffs.md` | Cost, latency and finality-security assumptions across the three production networks; throughput capacity was not delivered | figures drawn from `fee-distribution.md` and `latency.md` |
 | `workflow-tamper-protection.md` | Which GitHub branch protection configuration actually prevents the anchoring workflow being edited, and which only appears to | manual `gh api` calls, recorded in the file |
 
 ## Raw data
@@ -39,12 +48,13 @@ operator tooling, not just documentation of this deployment.
 | `data/on-chain-evidence.json` | `npm run evidence` |
 | `data/access-control.json` | `npm run check:access-control -- --send` |
 | `data/mainnet-phase-a.json` | receipt walk after mainnet deploy / smoke (see `mainnet.md`) |
-| `data/fee-distribution.json` | `npm run fees:all` (per-sample series regenerates with `npm run fees:history`) |
+| `data/fee-distribution.json` | Retained aggregate distribution and receipt validation. `npm run fees:history -- --end 2026-08-12T10:44:09Z` reconstructs a new 365-point raw-compatible input; it does not reproduce the unarchived original block IDs |
+| `data/fee-arithmetic-input.json` | Archived raw-compatible fixture for checking the Arbitrum, OP and zkSync arithmetic without network access |
 | `data/latency.json` | settlement timing read from each network's own batch records (see `latency.md`) |
 | `data/ladisa-classification.csv` | `python3 evaluation/ladisa-classify.py`, one row per attack-tree node instance |
 | `data/sample-results.json` | per-repository measurements behind `repository-sample.md` |
 | `data/rq2-ablation.csv` and `data/rq2-ablation.json` | `python3 evaluation/rq2-ablation.py`, one row per vector per policy |
-| `data/tarball-sweep.json` | `npm run sample:tarballs` (curl/libarchive rows after applying `fixtures/manifests/`) |
+| `data/tarball-sweep.json` | `npm run sample:tarballs`; the script automatically applies the checked-in curl/libarchive fixtures to clean clones |
 | `data/control-row-diagnosis.json` | Windows vs Linux (WSL) local `git archive` → `hashArtifact` vs `hashGitRef` for the mode-loss control rows |
 | `data/sbom-coverage.json` | `npm run sample:sbom`, one Syft CycloneDX document summarised per sampled repository |
 
@@ -77,10 +87,10 @@ Most of what is recorded here is a property of this software: the allowlist chec
 and the determinism of the tree hash are things the code does, and anyone can
 verify them from the chain and the repository.
 
-`workflow-tamper-protection.md` is different. It documents a property of GitHub,
+`workflow-tamper-protection.md` is different. It documents a property of GitHub
 and exists to justify a configuration recommendation rather than to evidence a
-feature. The registry cannot prevent a workflow file being edited — that is a
-hosting-platform capability. What it can do is make the edit visible, because the
+feature. The registry cannot prevent a workflow file being edited because that is
+a hosting-platform capability. What it can do is make the edit visible, because the
 workflow file sits inside the anchored tree. Presenting the platform setting as a
 capability of this system would overstate what the design achieves.
 
@@ -92,11 +102,13 @@ Listed so the gaps are visible rather than discovered late.
   resolution. A denser pass over the worst days would tighten the tail, and
   Arbitrum's tail is a floor rather than a point estimate because gas units are
   held fixed there.
-- **Verification latency.** Anchor settlement timing is now in `latency.md`, but
-  the other side is still open: wall-clock time for `gpa verify` to check a
-  release, and how tree hashing scales with repository size — partly answered by
-  `repository-sample.md`, still worth a dedicated verify-path timing note.
+- **Verification latency.** Anchor settlement timing is in `latency.md`.
+  `repository-sample.md` times Git-reference reconstruction only; end-to-end
+  `gpa verify` timing remains open.
 - **Git LFS in the field.** Covered by a unit test, but no project in the sample
   used it, so real-world behaviour is unobserved.
 - **Slow release cadences.** Nothing in the sample tags less often than every 98
   days, which is the case where periodic snapshots would matter most for RQ2.
+- **Throughput capacity.** No raw block sample, collection script or stress test
+  was retained. EraVM gas is not directly comparable with EVM gas, so the gas
+  figures do not supply a cross-network capacity result.

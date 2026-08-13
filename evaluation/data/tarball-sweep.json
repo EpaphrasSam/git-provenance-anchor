@@ -227,6 +227,7 @@
    "source": "published release tarball",
    "url": "https://github.com/libarchive/libarchive/releases/download/v3.8.9/libarchive-3.8.9.tar.gz",
    "downloaded": true,
+   "manifest": "evaluation/fixtures/manifests/libarchive.provenance-manifest.json",
    "anchoredTreeHash": "7e56e62d504013b00eae01739d2fe01e45dbbe84",
    "artifactTreeHash": "1e14a9cad794b64eeca6ec8da2a70bca33ad5897",
    "identical": false,
@@ -727,6 +728,7 @@
    "source": "published release tarball",
    "url": "https://github.com/curl/curl/releases/download/curl-8_16_0/curl-8.16.0.tar.gz",
    "downloaded": true,
+   "manifest": "evaluation/fixtures/manifests/curl.provenance-manifest.json",
    "anchoredTreeHash": "3ce4603a9a21498fe59da07a0638c78173dd3e51",
    "artifactTreeHash": "5892f5daddea634eb6e3e7bcd45fb13cc566ee6d",
    "identical": false,
@@ -947,7 +949,7 @@
    "verdict": "differs, but every extra file is declared"
   }
  ],
- "manifests": {
+ "fixtureManifests": {
   "curl/curl": "evaluation/fixtures/manifests/curl.provenance-manifest.json",
   "libarchive/libarchive": "evaluation/fixtures/manifests/libarchive.provenance-manifest.json"
  }

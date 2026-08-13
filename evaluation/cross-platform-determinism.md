@@ -18,8 +18,8 @@ the working tree.
 | --- | --- | --- | --- | --- | --- |
 | Windows, native Git | 2.x | `true` | `17a33046…` | `0fd3e55b…` | `008e66db…` |
 | WSL2 Ubuntu 24.04, Linux Git | 2.43.0 | unset | `17a33046…` | `0fd3e55b…` | `008e66db…` |
-| Windows, `gpa tree-hash --ref` | — | `true` | `17a33046…` | `0fd3e55b…` | `008e66db…` |
-| GitHub Actions `ubuntu-latest` | — | default | — | — | `008e66db…` |
+| Windows, `gpa tree-hash --ref` | n/a | `true` | `17a33046...` | `0fd3e55b...` | `008e66db...` |
+| GitHub Actions `ubuntu-latest` | n/a | default | n/a | n/a | `008e66db...` |
 
 Full values:
 
@@ -29,8 +29,8 @@ v0.2.0-m2  0fd3e55bd3e0800c175eb4fca9372c8c73947b7e
 v0.3.0-m3  008e66dbe108d6bc46b9030b83f04af58187e5ca
 ```
 
-The two host platforms disagree on line-ending configuration — Windows has
-`core.autocrlf=true`, the Ubuntu checkout leaves it unset — and still produce
+The two host platforms disagree on line-ending configuration. Windows has
+`core.autocrlf=true`, while the Ubuntu checkout leaves it unset. Both produce
 identical hashes. That is expected, because Git stores blobs in normalised form
 and the tree hash is computed over stored objects rather than working-tree
 bytes, but it is the assumption most likely to be wrong in practice and worth
@@ -44,11 +44,11 @@ store, so the operating system cannot influence the answer.
 
 The artifact path, `gpa tree-hash <tarball>`, is a separate question, and it did
 not hold when it was first tested. Hashing a tarball originally meant extracting
-it and reading modes back from the filesystem. A Windows filesystem carries
-neither the executable bit nor symlinks, so `100755` entries became `100644` and
-symlink entries vanished, changing the tree hash with no byte of content
-different. That was a real defect, found by the release tarball sweep rather than
-by this record.
+it and reading metadata back from the extracted directory. In the Windows
+evaluation path, extraction did not preserve Unix executable bits and did not
+materialise archive symlinks. The tool therefore read `100755` entries as
+`100644`, while link entries vanished. The tree hash changed although no
+regular-file content differed. The release tarball sweep found this defect.
 
 It has since been fixed: `hashArchive` now takes modes and symlink targets from
 the tar entry headers, which carry them, instead of from the filesystem. The

@@ -32,7 +32,7 @@ const program = new Command();
 program
   .name("gpa")
   .description("Git Provenance Anchor verifier and maintainer CLI")
-  .version("0.1.1");
+  .version("1.0.0");
 
 program
   .command("tree-hash")
@@ -108,6 +108,7 @@ program
   .option("--repo <path>", "Repository for --ref", ".")
   .option("--project <id>", "Project id (default: from .provenance-manifest.json)")
   .option("--manifest <path>", "Path to manifest file")
+  .option("--sbom <path>", "SBOM file whose SHA-256 must match each present anchor")
   .option("--network <name>", "Restrict to one network (repeatable)", (v, acc: string[]) => {
     acc.push(v);
     return acc;
@@ -122,6 +123,7 @@ program
         repo: string;
         project?: string;
         manifest?: string;
+        sbom?: string;
         network: string[];
         json?: boolean;
       }
@@ -146,6 +148,7 @@ program
         tag: opts.tag,
         repoRoot,
         manifest,
+        sbomPath: opts.sbom ? path.resolve(opts.sbom) : undefined,
         networks: opts.network.length > 0 ? opts.network : networksFromEnv(),
       });
       if (opts.json) {
@@ -155,6 +158,10 @@ program
         console.log(`project: ${report.projectId}`);
         console.log(`tag: ${report.tag}`);
         console.log(`computed: ${report.computedTreeHash}`);
+        if (report.computedSbomHash) {
+          console.log(`sbom: ${report.sbomPath}`);
+          console.log(`sbom sha256: ${report.computedSbomHash}`);
+        }
         if (report.usedExtras.length > 0) {
           console.log(`extras used (${report.usedExtras.length}):`);
           for (const e of report.usedExtras) console.log(`  ${e}`);
@@ -169,7 +176,11 @@ program
             continue;
           }
           console.log(
-            `${n.network}: rev=${n.anchor.revision} match=${n.matchesComputed} tree=${n.anchor.treeHash}`
+            `${n.network}: rev=${n.anchor.revision} treeMatch=${n.matchesComputed}` +
+              (report.computedSbomHash
+                ? ` sbomMatch=${n.matchesSbom} sbom=${n.anchor.sbomHash}`
+                : "") +
+              ` tree=${n.anchor.treeHash}`
           );
         }
         console.log(report.message);

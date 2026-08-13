@@ -47,6 +47,8 @@ jobs:
 
       - name: Install Syft
         uses: anchore/sbom-action/download-syft@v0
+        with:
+          syft-version: v1.51.0
 
       - name: Generate CycloneDX SBOM
         id: sbom
@@ -63,7 +65,7 @@ jobs:
           path: sbom.cdx.json
 
       - name: Install published gpa
-        run: npm install -g git-provenance-anchor@0.1.1
+        run: npm install -g git-provenance-anchor@1.0.0
 
       - name: Submit anchors
         env:
@@ -81,4 +83,5 @@ jobs:
         run: |
           gpa verify \
             --ref "${{ steps.target.outputs.tag }}" \
-            --tag "${{ steps.target.outputs.tag }}"
+            --tag "${{ steps.target.outputs.tag }}" \
+            --sbom sbom.cdx.json

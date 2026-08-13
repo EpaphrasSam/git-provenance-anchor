@@ -1,6 +1,6 @@
 {
  "collectedAt": "2026-08-12T10:50:00Z",
- "method": "Historical reconstruction. Anchor gas units are held at the values observed in the Phase A mainnet receipts and priced at the base fee of a block sampled once per day across the window. Figures are counterfactual: what an anchor would have cost had it been submitted at that moment, not a fee that was paid. The Phase A transactions themselves are the validation case.",
+ "method": "Historical reconstruction of a first-write release anchor with a non-zero SBOM hash. Gas units come from the v0.5.4 mainnet receipts and are priced at the base fee of a block sampled once per day across the window. Arbitrum aggregate costs are scaled from the retained 79,708-gas bases by 100,048/79,708. OP Mainnet uses 99,524 gas with the observed 1,000,000 wei priority fee and 1,862,429,623 wei l1Fee. Figures are counterfactual: what a release anchor would have cost had it been submitted at that moment, not a fee that was paid. The three Phase A no-SBOM receipts validate the fee arithmetic using their own gasUsed.",
  "window": {
   "from": "2025-08-13T10:41:46Z",
   "to": "2026-08-12T10:44:09Z",
@@ -20,69 +20,70 @@
   "reproduce": "npm run fees:all",
   "completeness": "365/365 samples on every network, no gaps"
  },
- "anchorGasUnits": { "arbitrumOne": 79708, "opMainnet": 79276, "zkSyncEra": 106249 },
+ "anchorGasUnits": { "arbitrumOne": 100048, "opMainnet": 99524, "zkSyncEra": 106722 },
  "anchorCalldataBytes": 228,
  "ethUsdApprox": 1900,
 
  "networks": {
   "arbitrumOne": {
-   "feeModel": "Nitro prices the L1 posting cost as extra gas units inside gasUsed. The Phase A anchor spent 432 of its 79,708 units on L1 posting, so holding units fixed understates cost when L1 posting is expensive. Figures below are therefore a floor at the tail, not a point estimate.",
+   "feeModel": "Nitro prices the L1 posting cost as extra gas units inside gasUsed. The Phase A no-SBOM receipt spent 432 of its 79,708 units on L1 posting and validates the multiplication. Historical release pricing holds the v0.5.4 100,048-gas shape fixed, so it understates cost when L1 posting is expensive. Figures below are therefore a floor at the tail, not a point estimate.",
    "senderTip": "none observed; effectiveGasPrice equalled the block base fee exactly",
    "anchorCostEth": {
-    "min": 7.971e-7,
-    "p50": 1.594e-6,
-    "p90": 1.609e-6,
-    "p99": 6.144e-6,
-    "max": 1.747e-5
+    "min": 1.000505103628243e-6,
+    "p50": 2.000759170974055e-6,
+    "p90": 2.0195868921563707e-6,
+    "p99": 7.711834596276408e-6,
+    "max": 2.192801927033673e-5
    },
    "anchorCostUsdApprox": {
-    "p50": 0.00303,
-    "p90": 0.00306,
-    "p99": 0.01167,
-    "max": 0.03319
+    "p50": 0.003801442424850705,
+    "p90": 0.0038372150950971044,
+    "p99": 0.014652485732925175,
+    "max": 0.04166323661363979
    },
    "maxOverP50": 10.96,
    "p99OverP50": 3.85,
    "worstDays": [
-    { "date": "2025-12-25", "eth": 1.747e-5 },
-    { "date": "2025-09-27", "eth": 8.488e-6 },
-    { "date": "2025-10-14", "eth": 7.32e-6 },
-    { "date": "2025-12-24", "eth": 6.144e-6 },
-    { "date": "2025-12-10", "eth": 4.24e-6 }
+    { "date": "2025-12-25", "eth": 2.192801927033673e-5 },
+    { "date": "2025-09-27", "eth": 1.0653979826366237e-5 },
+    { "date": "2025-10-14", "eth": 9.187927936969941e-6 },
+    { "date": "2025-12-24", "eth": 7.711834596276408e-6 },
+    { "date": "2025-12-10", "eth": 5.321969187534501e-6 }
    ],
    "monthlyMedianEth": {
-    "2025-08": 7.971e-7, "2025-09": 7.971e-7, "2025-10": 7.971e-7,
-    "2025-11": 7.971e-7, "2025-12": 7.971e-7, "2026-01": 1.598e-6,
-    "2026-02": 1.599e-6, "2026-03": 1.595e-6, "2026-04": 1.597e-6,
-    "2026-05": 1.596e-6, "2026-06": 1.595e-6, "2026-07": 1.597e-6,
-    "2026-08": 1.595e-6
+    "2025-08": 1.000505103628243e-6, "2025-09": 1.000505103628243e-6, "2025-10": 1.000505103628243e-6,
+    "2025-11": 1.000505103628243e-6, "2025-12": 1.000505103628243e-6, "2026-01": 2.005779896622673e-6,
+    "2026-02": 2.007035078034827e-6, "2026-03": 2.0020143523862098e-6, "2026-04": 2.004524715210518e-6,
+    "2026-05": 2.003269533798364e-6, "2026-06": 2.0020143523862098e-6, "2026-07": 2.004524715210518e-6,
+    "2026-08": 2.0020143523862098e-6
    },
    "note": "The monthly medians show a floor change, not congestion: the network's minimum base fee moved from 0.01 to 0.02 gwei around January 2026. Congestion appears in the tail, not the median."
   },
 
   "opMainnet": {
    "feeModel": "OP Stack splits the fee. gasUsed x effectiveGasPrice covers L2 execution, and a separate l1Fee on the receipt covers posting to L1. The recorded fee in mainnet.md omits l1Fee because ethers' receipt.fee does not include it.",
-   "senderTip": "1 gwei priority fee observed in Phase A, against a block base fee of 534 wei",
-   "baseFeeWei": { "p50": 477, "p99": 166669, "max": 240889 },
-   "reconstructionBasis": "units x (base fee + observed 1 gwei tip) + observed l1Fee of 1.862429623e9 wei",
+   "senderTip": "Historical reconstruction holds the Phase A priority fee fixed at 1,000,000 wei (0.001 gwei), derived from the 1,000,534 wei effective gas price minus the 534 wei block base fee.",
+   "baseFeeWei": { "min": 272, "p50": 477, "p90": 4688, "p99": 166669, "max": 240889 },
+   "reconstructionBasis": "units x (base fee + observed 1,000,000 wei tip) + observed l1Fee of 1.862429623e9 wei",
    "anchorCostEth": {
-    "min": 8.116e-8,
-    "p50": 8.118e-8,
-    "p90": 8.151e-8,
-    "p99": 9.435e-8,
-    "max": 1.002e-7
+    "min": 1.01413500151e-7,
+    "p50": 1.01433902571e-7,
+    "p90": 1.01852998135e-7,
+    "p99": 1.17973995179e-7,
+    "max": 1.25360666459e-7
    },
-   "anchorCostUsdApprox": { "p50": 0.000154, "p99": 0.000179, "max": 0.00019 },
-   "maxOverP50": 1.23,
-   "note": "OP's base fee is negligible, so the cost of an anchor is set almost entirely by the priority fee the sender chooses and by the L1 posting fee. Congestion is close to irrelevant here; the sender's own tip policy is the dominant term. The l1Fee is held at its observed value, so variation in L1 conditions is not reflected."
+   "anchorCostUsdApprox": { "p50": 0.0001927244148849, "p99": 0.0002241505908401, "max": 0.0002381852662721 },
+   "maxOverP50": 1.2358852738733201,
+   "p99OverP50": 1.1630627649017304,
+   "note": "The priority fee and l1Fee are held at their Phase A values. Variation comes only from the retained base-fee aggregates, so historical changes in either fixed input are not reflected."
   },
 
   "zkSyncEra": {
    "feeModel": "EraVM prices execution and published data together through its own gas model. Units are not comparable with the EVM chains.",
    "senderTip": "none; effectiveGasPrice equalled the block base fee",
    "baseFeeWei": { "distinctValuesObserved": 1, "value": 45250000 },
-   "anchorCostEth": { "min": 4.808e-6, "p50": 4.808e-6, "p90": 4.808e-6, "p99": 4.808e-6, "max": 4.808e-6 },
-   "anchorCostUsdApprox": { "p50": 0.00914 },
+   "anchorCostEth": { "min": 4.8291705e-6, "p50": 4.8291705e-6, "p90": 4.8291705e-6, "p99": 4.8291705e-6, "max": 4.8291705e-6 },
+   "anchorCostUsdApprox": { "p50": 0.00917542395 },
    "maxOverP50": 1.0,
    "note": "The base fee was identical in all 365 samples across the year, at 0.04525 gwei. zkSync Era holds its L2 gas price at a floor rather than letting it float with demand, so the anchor cost has no observed distribution at daily resolution. This is a property of the network's pricing policy, not a measurement artefact."
   },
@@ -119,7 +120,9 @@
    "l1BlobBaseFeeWei": 5710381,
    "totalPaidEth": 8.118077e-8,
    "l1ShareOfTotalPct": 2.29,
-   "note": "mainnet.md records 7.9e-8, the L2 component only. The true total is 8.118e-8."
+   "reconstructedEth": 8.1180763007e-8,
+   "errorPct": 0.0,
+   "note": "mainnet.md records 7.9e-8, the L2 component only. The true paid total is 8.118e-8. The receipt's 1,000,000 wei priority fee is the fixed value used by the historical reconstruction."
   },
   {
    "network": "zkSyncEra",
@@ -135,9 +138,9 @@
 
  "limitations": [
   "Daily resolution can miss intraday peaks. A dense pass over the worst days would tighten the tail: npm run fees:history -- --days 30 --interval 2 --out fee-history-dense.json",
-  "Arbitrum figures hold gas units fixed, so they understate the tail, where L1 posting consumes more units than the 432 observed in Phase A.",
-  "OP's l1Fee is held at its single observed value rather than reconstructed across time.",
-  "The per-sample raw series is not archived in this file. It regenerates exactly with npm run fees:history.",
+  "Arbitrum release-anchor figures hold gas units fixed, so they understate the tail, where L1 posting can consume more units than in the priced v0.5.4 transaction shape.",
+  "OP holds the observed 1,000,000 wei priority fee and l1Fee fixed rather than reconstructing either across time.",
+  "The original per-sample raw series is not archived. A pinned collection rerun reconstructs a compatible series but cannot prove the exact original block identifiers.",
   "USD figures use a single approximate rate of $1900/ETH and are illustrative only."
  ]
 }

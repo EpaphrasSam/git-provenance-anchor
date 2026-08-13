@@ -11,26 +11,35 @@ documented barrier, not a claim of zero friction.
 
 ## Integration effort
 
+The line counts below are from the current corrected post-`v0.5.4` files. They do
+not describe the frozen tag.
+
 | Measure | Value |
 | --- | --- |
 | New files a project must add | 2 (one workflow file, one manifest) |
 | Existing project files that must change | 0 |
-| Lines of CI configuration added | 53 effective, 76 including comments |
+| GitHub Actions anchor template | 62 nonblank, non-comment lines; 73 nonblank lines |
+| GitLab CI anchor template | 32 nonblank, non-comment lines; 36 nonblank lines |
 | Lines of manifest for a project with no build extras | 7 |
 | Repository secrets required | 1 (`ANCHOR_DEPLOYER_KEY`) |
 | Repository variables required | 1 (`GPA_NETWORKS`) |
-| One-time on-chain transactions | 2 (`registerProject`, `allowlistAdd`) |
+| One-time registry transactions | 2 per network (`registerProject`, `allowlistAdd`); 6 for the evaluated three-network configuration |
+| Funding or bridging | Separate operation per network where the submitting account needs funds; not included in the registry count |
 | Time from tag push to verified anchor | 49 s on this repository, of which ~12 s is submission to three chains. Not constant: see below |
 
-Adding the optional mechanisms from `rq2-strategies.md` costs a further 55
-effective lines for weekly snapshots and 33 for daily re-verification, plus one
-variable (`GPA_SNAPSHOT_REF`). Neither is required.
+The optional GitHub templates contain 54 nonblank, non-comment lines for weekly
+snapshots and 25 for daily re-verification, plus one snapshot variable
+(`GPA_SNAPSHOT_REF`). Their GitLab twins contain 19 and 13.
+Neither mechanism is required.
 
 ## What is fixed and what varies
 
-The workflow, secret, variable and transaction counts are properties of the
-reference template. They do not depend on repository size or language because
-the anchoring path does not invoke the project's build. The seven-line manifest
+The workflow, secret and variable counts are properties of the reference
+template. Transaction count scales with the number of networks: registration and
+allowlisting each require one transaction on every registry. Funding or bridging
+the account is a separate operation on each network where it is needed. The other counts do
+not depend on repository size or language because the anchoring path does not
+invoke the project's build. The seven-line manifest
 is only the baseline for a project with no generated extras. A project that
 publishes generated files needs additional, project-specific declarations.
 
@@ -65,19 +74,19 @@ Adoption adds one more alongside them and leaves the rest untouched.
 | --- | --- |
 | New manual steps per release | 0. The workflow triggers on tag push. |
 | Must a release wait for anchor confirmation? | No. Anchoring runs alongside the release and blocks nothing. |
-| Noise burden | Zero false positives on two real release tarballs and ten constructed controls, per `tarball-sweep.md` |
+| Noise burden | Not established end to end. Precise manifests cleared all added paths in two published tarballs, but legitimate omissions remained |
 
 The asynchrony point is load-bearing and is supported by `latency.md` rather than
 asserted here. An anchor reaches Ethereum in about three minutes on the optimistic
-networks and settles over days, but a maintainer waits for none of it: inclusion on
-the L2 is bounded by block time, and the release itself never depends on the
-anchor at all.
+networks and settles over days, but a maintainer waits for none of it because the
+release itself never depends on the anchor. The observed combined testnet submit
+step took about 12 seconds; per-chain mainnet inclusion was not instrumented.
 
-Noise burden reuses the false-positive result rather than measuring separately,
-as Chapter 3 specifies, since a checker that cries wolf is precisely what would
-impose friction. Two real distributions that ship build products, curl and
-libarchive, produce zero undeclared extras once a precise manifest is written, and
-neither manifest needed a blanket wildcard.
+The tarball sweep supports a narrower statement about added paths. Curl and
+libarchive produce zero undeclared extras once a precise manifest is written, and
+neither manifest needs a blanket wildcard. Both archives still omit legitimate
+tree paths and differ from the anchors. The experiment therefore does not
+establish an end-to-end noise rate.
 
 ## Against the comparator
 
@@ -88,7 +97,9 @@ What their respondents found hard was making an existing build reproducible, whi
 means changing how a project builds. Nothing here asks that. A project keeps its
 build exactly as it is, adds a workflow that does not touch it, and declares any
 files its build legitimately adds. The starting point is two files and two
-one-off transactions. The manifest grows when a project has generated extras.
+one-off registry transactions per network, which is six registry transactions for
+the evaluated three-network configuration. Funding or bridging is separate where
+needed. The manifest grows when a project has generated extras.
 
 The structural comparison is that this workflow avoids the hermetic-build
 requirement. It is not a measured maintainer-adoption result, and it does not

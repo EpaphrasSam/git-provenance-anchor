@@ -1,7 +1,8 @@
+import * as crypto from "crypto";
+import * as fs from "fs";
 import {
   bytes32ToTreeHashHex,
   hashArtifact,
-  hashDirectory,
   hashGitRef,
   treeHashToBytes32,
   type TreeHashResult,
@@ -22,6 +23,7 @@ export interface NetworkAnchorResult {
   chainId: number;
   anchor: AnchorView;
   matchesComputed: boolean | null;
+  matchesSbom: boolean | null;
 }
 
 export interface VerifyReport {
@@ -30,6 +32,8 @@ export interface VerifyReport {
   tag: string;
   computedTreeHash: string;
   computedBytes32: string;
+  sbomPath: string | null;
+  computedSbomHash: string | null;
   usedExtras: string[];
   lfsPointers: string[];
   networks: NetworkAnchorResult[];
@@ -45,6 +49,8 @@ export async function verifyArtifact(options: {
   repoRoot: string;
   manifest?: ProvenanceManifest | null;
   networks?: string[];
+  sbomPath?: string;
+  fetchAnchor?: typeof fetchAnchor;
 }): Promise<VerifyReport> {
   const manifest =
     options.manifest === undefined
@@ -61,6 +67,10 @@ export async function verifyArtifact(options: {
     throw new Error("No networks to query: add deployments/ records or pass --network");
   }
 
+  const resolvedSbomPath = options.sbomPath ? fs.realpathSync(options.sbomPath) : null;
+  const computedSbomHash = resolvedSbomPath
+    ? `0x${crypto.createHash("sha256").update(fs.readFileSync(resolvedSbomPath)).digest("hex")}`
+    : null;
   const full = options.gitRef
     ? await hashGitRef(options.gitRepo ?? options.repoRoot, options.gitRef)
     : await hashArtifact(options.artifact!);
@@ -73,7 +83,7 @@ export async function verifyArtifact(options: {
 
     const networkResults: NetworkAnchorResult[] = [];
     for (const network of networks) {
-      const anchor = await fetchAnchor(
+      const anchor = await (options.fetchAnchor ?? fetchAnchor)(
         options.repoRoot,
         network,
         options.projectId,
@@ -86,6 +96,9 @@ export async function verifyArtifact(options: {
         chainId: anchor.chainId,
         anchor,
         matchesComputed: null,
+        matchesSbom: anchor.present && computedSbomHash !== null
+          ? anchor.sbomHash.toLowerCase() === computedSbomHash
+          : null,
       });
     }
 
@@ -97,6 +110,8 @@ export async function verifyArtifact(options: {
         tag: options.tag,
         computedTreeHash: full.treeHashHex,
         computedBytes32: fullBytes32,
+        sbomPath: resolvedSbomPath,
+        computedSbomHash,
         usedExtras: [],
         lfsPointers: full.lfsPointers,
         networks: networkResults,
@@ -107,6 +122,8 @@ export async function verifyArtifact(options: {
     const expectedHexes = new Set(
       present.map((n) => bytes32ToTreeHashHex(n.anchor.treeHash))
     );
+    const missing = networkResults.filter((n) => !n.anchor.present);
+    const sbomMismatch = present.filter((n) => n.matchesSbom === false);
 
     const matchFull = expectedHexes.has(full.treeHashHex);
     if (matchFull) {
@@ -120,17 +137,22 @@ export async function verifyArtifact(options: {
         (n) => bytes32ToTreeHashHex(n.anchor.treeHash) !== full.treeHashHex
       );
       return {
-        status: disagree ? "fail" : "pass",
+        status: disagree || missing.length > 0 || sbomMismatch.length > 0 ? "fail" : "pass",
         projectId: options.projectId,
         tag: options.tag,
         computedTreeHash: full.treeHashHex,
         computedBytes32: fullBytes32,
+        sbomPath: resolvedSbomPath,
+        computedSbomHash,
         usedExtras: [],
         lfsPointers: full.lfsPointers,
         networks: networkResults,
-        message: disagree
-          ? "Networks disagree on the anchored tree hash"
-          : "Artifact tree hash matches the on-chain anchor",
+        message: verificationMessage({
+          disagree,
+          missing,
+          sbomMismatch,
+          success: "Artifact tree hash matches the on-chain anchor",
+        }),
       };
     }
 
@@ -142,8 +164,14 @@ export async function verifyArtifact(options: {
           exclude.add(p);
         }
       }
-      computed = await hashDirectory(full.contentRoot, { excludePaths: exclude });
+      const adjusted = options.gitRef
+        ? await hashGitRef(options.gitRepo ?? options.repoRoot, options.gitRef, {
+            excludePaths: exclude,
+          })
+        : await hashArtifact(options.artifact!, { excludePaths: exclude });
+      computed = adjusted;
       usedExtras = excludeResolved.matched;
+      if (adjusted.cleanup) await adjusted.cleanup();
     }
 
     const matchStripped = expectedHexes.has(computed.treeHashHex);
@@ -159,17 +187,25 @@ export async function verifyArtifact(options: {
         (n) => bytes32ToTreeHashHex(n.anchor.treeHash) !== computed.treeHashHex
       );
       return {
-        status: disagree ? "fail" : "pass_with_extras",
+        status:
+          disagree || missing.length > 0 || sbomMismatch.length > 0
+            ? "fail"
+            : "pass_with_extras",
         projectId: options.projectId,
         tag: options.tag,
         computedTreeHash: computed.treeHashHex,
         computedBytes32: treeHashToBytes32(computed.treeHashHex),
+        sbomPath: resolvedSbomPath,
+        computedSbomHash,
         usedExtras,
         lfsPointers: full.lfsPointers,
         networks: networkResults,
-        message: disagree
-          ? "Networks disagree on the anchored tree hash"
-          : `Artifact matches after allowing ${usedExtras.length} declared extra path(s)`,
+        message: verificationMessage({
+          disagree,
+          missing,
+          sbomMismatch,
+          success: `Artifact matches after allowing ${usedExtras.length} declared extra path(s)`,
+        }),
       };
     }
 
@@ -179,6 +215,8 @@ export async function verifyArtifact(options: {
       tag: options.tag,
       computedTreeHash: computed.treeHashHex,
       computedBytes32: treeHashToBytes32(computed.treeHashHex),
+      sbomPath: resolvedSbomPath,
+      computedSbomHash,
       usedExtras,
       lfsPointers: full.lfsPointers,
       networks: networkResults,
@@ -190,13 +228,30 @@ export async function verifyArtifact(options: {
   }
 }
 
+function verificationMessage(options: {
+  disagree: boolean;
+  missing: NetworkAnchorResult[];
+  sbomMismatch: NetworkAnchorResult[];
+  success: string;
+}): string {
+  const failures: string[] = [];
+  if (options.disagree) failures.push("Networks disagree on the anchored tree hash");
+  if (options.missing.length > 0) {
+    failures.push(`Missing anchor on configured network(s): ${options.missing.map((n) => n.network).join(", ")}`);
+  }
+  if (options.sbomMismatch.length > 0) {
+    failures.push(`SBOM hash mismatch on configured network(s): ${options.sbomMismatch.map((n) => n.network).join(", ")}`);
+  }
+  return failures.length > 0 ? failures.join("; ") : options.success;
+}
+
 export interface ReverifyItem {
   network: string;
   kind: number;
   ref: string;
   anchoredTreeHash: string;
   currentTreeHash: string | null;
-  status: "ok" | "moved" | "missing_ref" | "network_error";
+  status: "ok" | "moved" | "missing_ref" | "missing_anchor" | "network_error";
   detail?: string;
 }
 
@@ -212,6 +267,13 @@ export async function reverifyProject(options: {
   const deployments = loadDeployments(options.repoRoot);
   const networks = options.networks ?? [...deployments.keys()];
   const items: ReverifyItem[] = [];
+  const anchorsByNetwork = new Map<string, Map<string, {
+    network: string;
+    kind: number;
+    ref: string;
+    treeHash: string;
+    revision: number;
+  }>>();
 
   for (const network of networks) {
     let listed: Array<{
@@ -242,8 +304,33 @@ export async function reverifyProject(options: {
       const prev = latest.get(key);
       if (!prev || a.revision >= prev.revision) latest.set(key, a);
     }
+    anchorsByNetwork.set(network, latest);
+  }
 
-    for (const a of latest.values()) {
+  const expectedKeys = new Set<string>();
+  for (const latest of anchorsByNetwork.values()) {
+    for (const key of latest.keys()) expectedKeys.add(key);
+  }
+
+  for (const network of networks) {
+    const latest = anchorsByNetwork.get(network);
+    if (!latest) continue;
+    const keys = expectedKeys.size > 0 ? expectedKeys : new Set(["0:*"]);
+    for (const key of keys) {
+      const a = latest.get(key);
+      if (!a) {
+        const separator = key.indexOf(":");
+        items.push({
+          network,
+          kind: Number(key.slice(0, separator)),
+          ref: key.slice(separator + 1),
+          anchoredTreeHash: "",
+          currentTreeHash: null,
+          status: "missing_anchor",
+          detail: "Configured network has no corresponding anchor",
+        });
+        continue;
+      }
       try {
         const current = gitTreeHash(options.gitRepo, a.ref, "windows");
         const anchored = bytes32ToTreeHashHex(a.treeHash);

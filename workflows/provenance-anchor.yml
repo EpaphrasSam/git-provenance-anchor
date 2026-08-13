@@ -36,7 +36,7 @@ jobs:
           node-version: "20"
 
       - name: Install published gpa
-        run: npm install -g git-provenance-anchor@0.1.1
+        run: npm install -g git-provenance-anchor@1.0.0
 
       - name: Compute tree hash
         id: tree
@@ -49,6 +49,8 @@ jobs:
 
       - name: Install Syft
         uses: anchore/sbom-action/download-syft@v0
+        with:
+          syft-version: v1.51.0
 
       - name: Generate CycloneDX SBOM
         id: sbom
@@ -72,3 +74,12 @@ jobs:
             --tag "${{ steps.tree.outputs.tag }}" \
             --tree-hash "${{ steps.tree.outputs.tree }}" \
             --sbom-hash "${{ steps.sbom.outputs.hash }}"
+
+      - name: Verify the anchor we just wrote
+        env:
+          GPA_NETWORKS: ${{ vars.GPA_NETWORKS }}
+        run: |
+          gpa verify \
+            --ref "${{ steps.tree.outputs.tag }}" \
+            --tag "${{ steps.tree.outputs.tag }}" \
+            --sbom sbom.cdx.json

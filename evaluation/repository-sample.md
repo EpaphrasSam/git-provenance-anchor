@@ -2,9 +2,9 @@
 
 Run 2026-08-12. Raw figures: `data/sample-results.json`.
 
-Every measurement before this one came from this repository, which is small, tidy,
-and written by the same person who wrote the tool. This record runs the tree-hash
-reconstruction against twelve widely used projects that know nothing about it.
+Every measurement before this one came from this repository, which is small,
+tidy, and written by the same person who wrote the tool. This record runs
+Git-reference tree-hash reconstruction against twelve widely used projects.
 
 The first run found a correctness defect. It has since been fixed, and the sample
 re-run. Both results are below, because the defect is the more interesting of the
@@ -73,9 +73,8 @@ a submodule or an `export-ignore` line.
 `git rev-parse "${TAG}^{tree}"`, straight from the object store, so every anchor
 ever written is correct. The defect was on the verification side, in `reverify`,
 which would have reported a healthy tag as `moved` on roughly a quarter of the
-sample. It also contradicted, in the field, the zero-false-positive property
-Chapter 3's validation test 2 claims, which had passed only because its fixtures
-lack the attributes that trigger it.
+sample. It exposed a false-positive case missed by fixtures that lacked the
+attributes that trigger it. Chapter 3 did not promise a zero-false-positive rate.
 
 ## The fix
 
@@ -90,7 +89,7 @@ Three regression tests were added, one per cause: an `export-ignore` fixture, an
 `eol=crlf` fixture, and a real submodule. All three fail against the previous
 implementation and pass against this one. The existing suite still passes.
 
-## Results after the fix
+## Git-reference reconstruction results after the fix
 
 **Twelve of twelve match.** The reconstruction now agrees with `git rev-parse`
 on every project, including the three that previously failed.
@@ -115,23 +114,26 @@ wrote a tar of the entire tree to disk, extracted it, and re-hashed every byte,
 where the new one reads object ids that Git has already computed and only touches
 content for blobs small enough to be LFS pointers.
 
-**Scaling.** Verification is close to linear in file count and largely indifferent
-to bytes. Two projects make the point. curl and godot-demo-projects both sit near
-4,100 files, but godot carries eighteen times the bytes and takes about the same
-time. Across the set the cost is roughly 15 to 17 microseconds per file, and the
-118,432-file project verifies in under two seconds, having exceeded a
-178-second measurement ceiling under the old implementation.
+These timings cover `hashGitRef()` only: they exclude artifact extraction,
+manifest comparison, network access and the rest of `gpa verify`. The environment
+recorded in the raw data is the Cowork Linux sandbox with local disk and Node 20.
 
-For the usability claim this supports, the answer is that verification is not a
-constraint at any scale in this sample.
+The 66-to-234-file repositories all take 13 to 17 ms, which shows fixed startup
+and process overhead. Above that range, time rises mainly with file count. curl
+and godot-demo-projects both contain about 4,100 files; godot carries eighteen
+times the bytes, yet both complete in about 60 ms. The 118,432-file repository
+takes 1,967 ms. A single 15-to-17-microsecond per-file rate does not fit the whole
+sample because fixed overhead dominates the smaller rows. This is an absolute
+characterisation of Git-reference reconstruction in one sandbox, not an
+end-to-end usability result.
 
 ## Limitations
 
-- Timings come from sandbox hardware, not a developer machine. The figures
-  describe relative scaling more reliably than absolute duration.
-- The false-positive sweep against **published** release tarballs is recorded in
-  `tarball-sweep.md`. Both autotools projects (curl, libarchive) clear every
-  undeclared extra with precise manifests; generated-archive rows are controls.
+- Timings come from the Cowork Linux sandbox, not a developer machine. The
+  figures describe `hashGitRef()` scaling more reliably than absolute duration.
+- The manifest-extra sweep against published release tarballs is recorded in
+  `tarball-sweep.md`. Both autotools projects clear every undeclared addition
+  with precise manifests, but legitimate omissions remain.
 - No Git LFS project and no yearly-cadence project, as described above.
 - `agreement` compares reconstruction against the object store. It does not
   exercise the on-chain path, which is covered separately.
