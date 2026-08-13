@@ -198,12 +198,9 @@ export async function getWriteContract(repoRoot: string, network: string): Promi
   }
   const { provider, deployment } = getReadContract(repoRoot, network);
   await provider.getNetwork();
-  const signer = new ethers.Wallet(key, provider);
-  const wallet = new ethers.NonceManager(signer);
-  await wallet.getNonce("pending");
-  Object.defineProperty(wallet, "address", { value: signer.address });
+  const wallet = new ethers.Wallet(key, provider);
   const contract = new ethers.Contract(deployment.address, ANCHOR_REGISTRY_ABI, wallet);
-  return { contract, wallet: wallet as unknown as ethers.Wallet, deployment };
+  return { contract, wallet, deployment };
 }
 
 export interface AnchorView {

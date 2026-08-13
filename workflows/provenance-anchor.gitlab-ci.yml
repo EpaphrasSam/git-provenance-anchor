@@ -31,7 +31,7 @@ provenance-anchor:
       echo "Tree hash for ${TAG}: ${TREE}"
       syft dir:. -o cyclonedx-json=sbom.cdx.json
       SBOM_HASH=$(sha256sum sbom.cdx.json | awk '{print $1}')
-      npm install -g git-provenance-anchor@1.0.0
+      npm install -g git-provenance-anchor@1.0.1
       gpa anchor --tag "$TAG" --tree-hash "$TREE" --sbom-hash "$SBOM_HASH"
       gpa verify --ref "$TAG" --tag "$TAG" --sbom sbom.cdx.json
   artifacts:

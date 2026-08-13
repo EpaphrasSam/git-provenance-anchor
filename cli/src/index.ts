@@ -17,6 +17,7 @@ import {
 import { hashArtifact, hashGitRef, treeHashToBytes32 } from "./lib/git-tree";
 import { toJson } from "./lib/json";
 import { gitTreeHash } from "./lib/git-exec";
+import { submitWithNonceRetry } from "./lib/nonce-retry";
 import {
   loadManifest,
   tryLoadManifest,
@@ -32,7 +33,7 @@ const program = new Command();
 program
   .name("gpa")
   .description("Git Provenance Anchor verifier and maintainer CLI")
-  .version("1.0.0");
+  .version("1.0.1");
 
 program
   .command("tree-hash")
@@ -367,8 +368,10 @@ program
       for (const network of networks) {
         const { contract, wallet, deployment } = await getWriteContract(root, network);
         console.log(`anchoring on ${network} (${deployment.address})...`);
-        const nonce = await wallet.getNonce("pending");
-        const tx = await contract.anchor(projectId, kind, ref, treeBytes32, sbom, { nonce });
+        const tx = await submitWithNonceRetry(
+          () => wallet.getNonce("pending"),
+          (nonce) => contract.anchor(projectId, kind, ref, treeBytes32, sbom, { nonce })
+        );
         const receipt = await tx.wait();
         console.log(`  tx=${receipt.hash} status=${receipt.status}`);
       }

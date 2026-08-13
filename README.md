@@ -123,7 +123,7 @@ gpa --help
 Without a global install:
 
 ```bash
-npx --yes --package git-provenance-anchor@1.0.0 -- gpa --help
+npx --yes --package git-provenance-anchor@1.0.1 -- gpa --help
 ```
 
 This is a research prototype, not a production product. Clone this repository to reproduce the
@@ -149,9 +149,9 @@ npm run gpa -- --help  # verifier / maintainer CLI
 ```bash
 npm run gpa -- init
 npm run gpa -- register
-npm run gpa -- anchor --tag v1.0.0
+npm run gpa -- anchor --tag v1.0.1
 # Prefer --ref on Windows so core.autocrlf cannot rewrite archive bytes:
-npm run gpa -- verify --ref v1.0.0 --tag v1.0.0
+npm run gpa -- verify --ref v1.0.1 --tag v1.0.1
 npm run gpa -- reverify
 ```
 

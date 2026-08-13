@@ -35,7 +35,7 @@ jobs:
           node-version: "20"
 
       - name: Install published gpa
-        run: npm install -g git-provenance-anchor@1.0.0
+        run: npm install -g git-provenance-anchor@1.0.1
 
       - name: Re-verify anchored refs
         env:

@@ -65,7 +65,7 @@ jobs:
           path: sbom.cdx.json
 
       - name: Install published gpa
-        run: npm install -g git-provenance-anchor@1.0.0
+        run: npm install -g git-provenance-anchor@1.0.1
 
       - name: Submit anchors
         env:

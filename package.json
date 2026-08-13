@@ -1,6 +1,6 @@
 {
   "name": "git-provenance-anchor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Trust-minimized software provenance for Git using selective Layer-2 blockchain anchoring",
   "license": "Apache-2.0",
   "author": "EpaphrasSam",
