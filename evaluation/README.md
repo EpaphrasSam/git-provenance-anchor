@@ -5,9 +5,11 @@ command to reproduce each one. Where a figure came from an event that cannot be
 re-run, such as a transaction already mined or a CI run already finished, the
 transaction hash or run URL is recorded so it can be checked independently.
 
-Tag `v0.5.4` freezes the mainnet deployment and dual-platform anchoring evidence.
-The corrected verifier, current templates, scripts and updated records are
-post-`v0.5.4` working-tree material unless a record says otherwise.
+The final freeze is npm `git-provenance-anchor@1.0.1`, tag `v1.0.1`, commit
+`505671a747ad353ca197401ed845fa472ac728df`, and tree
+`c292e36f7a3a2455432b4a3670807f4e133ed559`. It contains the released verifier
+and templates. The evidence records on this branch were completed after the tag
+ran and identify that frozen tree through the CI runs and transaction hashes.
 
 In the current verifier, `gpa verify --sbom` checks both the reconstructed tree
 hash and the supplied SBOM hash against every configured network. Aggregate
@@ -28,7 +30,7 @@ operator tooling, not just documentation of this deployment.
 | `ci-end-to-end.md` | A tag push anchors on-chain with no human in the loop | push a `v*` tag; run URL recorded |
 | `tag-retargeting.md` | Force-moving an anchored tag is flagged as `moved` by `gpa reverify` | retarget locally, then `gpa reverify` |
 | `gas-and-cost.md` | Gas per operation, why anchoring with an SBOM costs ~20k more, and how these differ from the test-suite figures | `npm run evidence` |
-| `mainnet.md` | Live registries on Arbitrum One, OP Mainnet, and zkSync Era, with fees actually paid for deploy / register / allowlist / smoke anchor | `gpa verify --tag v0.4.0-m4 --ref v0.4.0-m4 --network arbitrumOne --network opMainnet --network zkSyncEra` |
+| `mainnet.md` | Live registries on Arbitrum One, OP Mainnet, and zkSync Era, with final dual-platform anchors and earlier smoke transactions identified by type | `gpa verify --tag v1.0.1 --ref v1.0.1 --network arbitrumOne --network opMainnet --network zkSyncEra` |
 | `fee-distribution.md` | Retained aggregate costs for 365 points across a year, with arithmetic validated against Phase A receipts; original block-level samples were not archived | `npm run fees:history -- --end 2026-08-12T10:44:09Z`, then `npm run fees:analyse` reconstructs a new raw-compatible series |
 | `latency.md` | How long after a release the anchor is readable, posted to L1, and settled, on each production network | `zks_getBlockDetails` and Blockscout batch fields, recorded in the file |
 | `ladisa-coverage.md` | Coverage across the maintained Ladisa tree: 117 non-root node instances, 114 of which receive classifications | `python3 evaluation/ladisa-classify.py` |

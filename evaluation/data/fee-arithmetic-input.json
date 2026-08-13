@@ -1,19 +1,19 @@
 {
   "collectedAt": "2026-08-12T10:50:00Z",
-  "method": "Historical release-anchor pricing uses v0.5.4 first-write gas units with non-zero SBOM hashes. The Phase A no-SBOM receipts validate fee arithmetic using each receipt's own gasUsed.",
+  "method": "Historical release-anchor pricing uses v1.0.1 revision-1 gas units with non-zero SBOM hashes. The revision-1 receipts validate fee arithmetic using each receipt's own gasUsed.",
   "window": {
     "samplesPerNetwork": 1,
     "intervalHours": 24,
     "end": "2026-08-12T10:50:00Z"
   },
   "anchorGasUnits": {
-    "arbitrumOne": 100048,
-    "opMainnet": 99524,
-    "zkSyncEra": 106722
+    "arbitrumOne": 100095,
+    "opMainnet": 99512,
+    "zkSyncEra": 125161
   },
   "feeModelNotes": {
     "arbitrumOne": "Gas units include the observed L1 posting share.",
-    "opMainnet": "The formula adds the observed 0.001 gwei priority fee and fixed 1,862,429,623 wei l1Fee.",
+    "opMainnet": "The formula adds the observed 0.001 gwei priority fee and fixed 2,257,258,350 wei l1Fee.",
     "zkSyncEra": "EraVM units are not comparable with EVM units."
   },
   "networks": [
@@ -64,36 +64,33 @@
     }
   ],
   "phaseAReceipts": {
-    "note": "Archived Phase A no-SBOM receipt fields used to check the reconstruction formula. Validation uses each receipt's gasUsed, not anchorGasUnits.",
+    "note": "Archived v1.0.1 revision-1 receipt fields used to check the reconstruction formula. Validation uses each receipt's gasUsed.",
     "receipts": [
       {
         "network": "arbitrumOne",
         "label": "anchor",
-        "hash": "0xee5213bd9b25d014aa56734202f486cff2f2e1b3e59e38ba70f599eb8808b248",
-        "blockIso": "2026-08-12T10:50:00Z",
-        "gasUsed": "79708",
-        "effectiveGasPrice": "20004000",
-        "blockBaseFeePerGas": "20004000",
+        "hash": "0x100a342fa6383ab540cb5da85c90a7d5dda2db382b4ac381bedb0ce8099ad654",
+        "gasUsed": "100095",
+        "effectiveGasPrice": "20036000",
+        "blockBaseFeePerGas": "20036000",
         "l1Fee": null,
-        "gasUsedForL1": "432"
+        "gasUsedForL1": null
       },
       {
         "network": "opMainnet",
         "label": "anchor",
-        "hash": "0x560c03a0f69878623de2d71c71bc54ee5bc5868226c404c45e236756185645a2",
-        "blockIso": "2026-08-12T10:50:00Z",
-        "gasUsed": "79276",
-        "effectiveGasPrice": "1000534",
-        "blockBaseFeePerGas": "534",
-        "l1Fee": "1862429623",
+        "hash": "0x46f8761006ee59236ed579469b5b46873efd3db086d6039dc6ba5758c95ab3ba",
+        "gasUsed": "99512",
+        "effectiveGasPrice": "1000366",
+        "blockBaseFeePerGas": "366",
+        "l1Fee": "2257258350",
         "gasUsedForL1": null
       },
       {
         "network": "zkSyncEra",
         "label": "anchor",
-        "hash": "0x485190f0fb7965d1c047d6f846f50e69023fdbb3bdc0e9f17c113440f053cf9e",
-        "blockIso": "2026-08-12T10:50:00Z",
-        "gasUsed": "106249",
+        "hash": "0x57a58f76c90cfe99efdd1977461567113b9a8c2c4fc0eb66f3abd3654e85b1a3",
+        "gasUsed": "125161",
         "effectiveGasPrice": "45250000",
         "blockBaseFeePerGas": "45250000",
         "l1Fee": null,

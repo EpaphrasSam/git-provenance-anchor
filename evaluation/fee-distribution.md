@@ -8,9 +8,9 @@ To reconstruct a new raw-compatible series over the same window, run
 
 The archived arithmetic fixture can be checked without network access:
 `npm run fees:analyse -- --in fee-arithmetic-input.json --out fee-arithmetic-output.json`.
-It reproduces the Phase A OP receipt total of 8.1180763007e-8 ETH from 79,276 gas,
-the 534-wei block base fee, the observed 0.001-gwei priority fee, and the
-separate 1,862,429,623-wei `l1Fee`.
+It reproduces the v1.0.1 revision-1 OP receipt total of 1.01805679742e-7 ETH from
+99,512 gas, the 366-wei block base fee, the observed 0.001-gwei priority fee, and
+the separate 2,257,258,350-wei `l1Fee`.
 
 `mainnet.md` records what four transactions cost on one afternoon. That is a
 single observation, and a single observation says nothing about the tail. This
@@ -20,9 +20,9 @@ anecdote.
 
 ## Method
 
-A release anchor's gas units are a property of the code and calldata. The
-v0.5.4 first-write receipts with non-zero SBOM hashes used 100,048 gas on
-Arbitrum One, 99,524 on OP Mainnet and 106,722 on zkSync Era. Those are the
+A release anchor's gas units are a property of the code and calldata. The v1.0.1
+revision-1 receipts with non-zero SBOM hashes used 100,095 gas on Arbitrum One,
+99,512 on OP Mainnet and 125,161 on zkSync Era. Those are the
 transaction shapes priced here. The gas price is a property of the moment.
 Every historical price is still readable from block headers, so the distribution
 is recovered backwards rather than accumulated forwards.
@@ -35,23 +35,22 @@ records rather than independently inspectable sample rows.
 
 **These figures are counterfactual.** They are what a first-write release anchor
 with a non-zero SBOM hash would have cost had it been submitted at that moment,
-not a fee anyone paid. The earlier Phase A smoke transactions omitted the SBOM
-hash. They validate the fee arithmetic below using their own gas usage; they do
-not validate the SBOM surcharge.
+not a fee anyone paid. The v1.0.1 revision-1 receipts validate the fee arithmetic
+below using their own gas usage.
 
-## Validation against Phase A transactions that were actually paid for
+## Validation against v1.0.1 revision-1 transactions
 
 | Network | Paid | Reconstructed from that block's base fee | Error |
 | --- | --- | --- | --- |
-| Arbitrum One | 1.594478832e-6 ETH | 1.594478832e-6 ETH | 0.00% |
-| zkSync Era | 4.80776725e-6 ETH | 4.80776725e-6 ETH | 0.00% |
-| OP Mainnet | 8.1180763007e-8 ETH total | 8.1180763007e-8 ETH | 0.00% |
+| Arbitrum One | 2.00550342e-6 ETH | 2.00550342e-6 ETH | 0.00% |
+| zkSync Era | 5.66353525e-6 ETH | 5.66353525e-6 ETH | 0.00% |
+| OP Mainnet | 1.01805679742e-7 ETH total | 1.01805679742e-7 ETH | 0.00% |
 
-These checks retain the Phase A no-SBOM gas values: 79,708, 79,276 and 106,249.
+These checks use the final revision-1 gas values: 100,095, 99,512 and 125,161.
 On Arbitrum and zkSync the sender paid exactly the block's base fee. OP used an
-effective gas price of 1,000,534 wei against a 534-wei block base fee, giving a
+effective gas price of 1,000,366 wei against a 366-wei block base fee, giving a
 1,000,000-wei priority fee. Adding the separate `l1Fee` reproduces the total:
-`79276 * (534 + 1000000) + 1862429623 = 81180763007` wei.
+`99512 * (366 + 1000000) + 2257258350 = 101805679742` wei.
 
 ## Results
 
@@ -60,10 +59,10 @@ effective gas price of 1,000,534 wei against a 534-wei block base fee, giving a
 | | ETH | USD approx |
 | --- | --- | --- |
 | Minimum | 1.001e-6 | $0.0019 |
-| p50 | 2.001e-6 | $0.0038 |
-| p90 | 2.020e-6 | $0.0038 |
-| p99 | 7.712e-6 | $0.0147 |
-| Worst observed | 2.193e-5 | $0.0417 |
+| p50 | 2.002e-6 | $0.0038 |
+| p90 | 2.021e-6 | $0.0038 |
+| p99 | 7.715e-6 | $0.0147 |
+| Worst observed | 2.194e-5 | $0.0417 |
 
 The worst day in the year was 25 December 2025, at roughly eleven times the
 median. The tail is where congestion shows: p50 and p90 are almost identical,
@@ -77,33 +76,28 @@ setting that changes, and a figure quoted without its date has a shelf life.
 
 ### OP Mainnet
 
-The historical reconstruction uses 99,524 gas from the v0.5.4 first write, the
-Phase A priority fee of 1,000,000 wei
-(0.001 gwei) and the observed `l1Fee` of 1,862,429,623 wei. Both are fixed across
+The historical reconstruction uses 99,512 gas from the v1.0.1 revision-1 write,
+the observed priority fee of 1,000,000 wei
+(0.001 gwei) and the observed `l1Fee` of 2,257,258,350 wei. Both are fixed across
 the series. The retained block base fees vary from 272 to 240,889 wei, with a
 median of 477 wei.
 
 | | ETH | USD approx |
 | --- | --- | --- |
-| Minimum | 1.0141350e-7 | $0.000193 |
-| p50 | 1.0143390e-7 | $0.000193 |
-| p90 | 1.0185300e-7 | $0.000194 |
-| p99 | 1.1797400e-7 | $0.000224 |
-| Worst observed | 1.2536067e-7 | $0.000238 |
+| Minimum | 1.0179633e-7 | $0.000193 |
+| p50 | 1.0181673e-7 | $0.000193 |
+| p90 | 1.0223577e-7 | $0.000194 |
+| p99 | 1.1835482e-7 | $0.000225 |
+| Worst observed | 1.2574060e-7 | $0.000239 |
 
-Worst over median is 1.24. This spread reflects the archived base-fee aggregates
+Worst over median is 1.23. This spread reflects the archived base-fee aggregates
 only. The fixed `l1Fee` means the result does not capture historical variation
 in OP's Layer-1 posting charge.
 
-**A correction to `mainnet.md`.** The 7.9e-8 ETH recorded there is the L2
-execution component only. ethers' `receipt.fee` is `gasUsed x gasPrice`, which on
-OP Stack omits the separate `l1Fee` field covering the cost of posting to L1.
-Reading the raw receipt gives `l1Fee` = 1.862429623e9 wei, so the true total is
-8.118e-8 ETH and the L1 share is 2.29%. Small in absolute terms, but the earlier
-figure was structurally incomplete rather than merely imprecise. The receipt's
-effective gas price was 1,000,534 wei against a 534 wei base fee, so its priority
-fee was 1,000,000 wei, or 0.001 gwei. This is the fixed priority fee used in the
-historical counterfactual.
+The OP receipt's `l1Fee` is 2.257258350e9 wei, so the true total is
+1.01805679742e-7 ETH and the L1 share is 2.22%. Its effective gas price was
+1,000,366 wei against a 366-wei base fee, so its priority fee was 1,000,000 wei,
+or 0.001 gwei. These are the fixed inputs used in the historical counterfactual.
 
 ### zkSync Era
 
@@ -112,7 +106,7 @@ gwei, every day for a year. One distinct value across the whole window.
 
 | | ETH | USD approx |
 | --- | --- | --- |
-| Every sample | 4.8291705e-6 | $0.0092 |
+| Every sample | 5.66353525e-6 | $0.0108 |
 
 zkSync Era holds its L2 gas price at a floor rather than letting it float with
 demand, so at daily resolution an anchor has no cost distribution at all. This is
@@ -138,7 +132,7 @@ published wrong.
 ## What this settles
 
 Release anchoring costs about 0.019 cents at the median on OP Mainnet, 0.38 cents
-on Arbitrum One, and 0.92 cents on zkSync Era. The worst sampled Arbitrum day
+on Arbitrum One, and 1.08 cents on zkSync Era. The worst sampled Arbitrum day
 prices the transaction at approximately 4.17 cents. The daily series is not
 evidence about unsampled intraday peaks.
 
@@ -147,7 +141,7 @@ evidence about unsampled intraday peaks.
 - Daily resolution can miss intraday peaks. A dense pass over the worst days
   would tighten the tail:
   `npm run fees:history -- --days 30 --interval 2 --out fee-history-dense.json`
-- Arbitrum's figures hold the v0.5.4 100,048-gas release shape fixed. Nitro
+- Arbitrum's figures hold the v1.0.1 100,095-gas release shape fixed. Nitro
   charges L1 posting as extra gas units inside `gasUsed`. When L1 posting is
   expensive the real transaction burns more units, so the Arbitrum tail here is
   a floor rather than a point estimate.

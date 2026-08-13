@@ -254,7 +254,7 @@ Solidity 0.8.28, optimizer enabled, 200 runs. Figures from the local test suite
 | Operation | Gas |
 |-----------|-----|
 | Deployment | 879,549 |
-| First anchor | 99,524 |
+| First anchor (`v1.0.1`, OP Mainnet revision 1) | 99,512 |
 | Re-anchor (supersede) | 45,424 |
 | `registerProject` | 94,558 |
 | `allowlistAdd` | 48,679 |

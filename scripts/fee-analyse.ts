@@ -3,7 +3,7 @@
  * cost claim needs, and checks the reconstruction against transactions that were
  * actually paid for.
  *
- * The validation applies the reconstruction formula to each Phase A receipt's
+ * The validation applies the reconstruction formula to each revision-1 receipt's
  * own gasUsed and reports the error against the fee that was charged. Distribution
  * pricing separately uses the release-anchor units stored in anchorGasUnits.
  *
@@ -26,7 +26,7 @@ function arg(name: string, fallback?: string): string | undefined {
 
 const WEI_PER_ETH = 1e18;
 const OP_PRIORITY_FEE_WEI = 1_000_000n;
-const OP_L1_FEE_WEI = 1_862_429_623n;
+const OP_L1_FEE_WEI = 2_257_258_350n;
 
 function reconstructedCostWei(network: string, gasUnits: number, baseFeeWei: bigint): bigint {
   if (network === "opMainnet") {
@@ -222,7 +222,7 @@ function main() {
     ethUsdAssumed: ethUsd,
     method:
       `${raw.method} OP Mainnet adds the observed 0.001 gwei priority fee and the observed ` +
-      `1,862,429,623 wei l1Fee to each reconstructed sample.`,
+      `2,257,258,350 wei l1Fee to each reconstructed sample.`,
     window: raw.window,
     feeModelNotes: raw.feeModelNotes,
     networks: perNetwork,
@@ -235,7 +235,7 @@ function main() {
   console.log(`\nAnchor cost distribution (ETH at ~$${ethUsd}/ETH):\n`);
   lines.forEach((l) => console.log("  " + l));
 
-  console.log(`\nValidation against Phase A no-SBOM receipts:\n`);
+  console.log(`\nValidation against v1.0.1 revision-1 receipts:\n`);
   for (const v of validation as any[]) {
     if (v.reconstructionErrorPct === null) continue;
     console.log(

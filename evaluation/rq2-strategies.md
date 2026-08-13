@@ -186,7 +186,7 @@ only where the release cadence is slow.
   [`0x5fb9a342…1a73`](https://optimistic.etherscan.io/tx/0x5fb9a3421140f4d07e64e3c366d05958c3e6de2f3019ab82a36ab04690aa1a73),
   `KIND_SNAPSHOT` on ref `main`, 79,216 gas against the Phase A no-SBOM tag smoke
   anchor's 79,276, with identical 228-byte calldata. That confirms the cost basis
-  this record uses. It does not price the 99,524-gas OP release anchor carrying a
+  this record uses. It does not price the 99,512-gas OP release anchor carrying a
   non-zero SBOM hash. No schedule is running, so the cadence figures remain
   arithmetic over historical release gaps rather than observed snapshot activity.
   Both templates exist (`workflows/provenance-snapshot.yml`, weekly, and

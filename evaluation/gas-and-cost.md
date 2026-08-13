@@ -87,11 +87,11 @@ Live deploy, register, allowlist and no-SBOM smoke-anchor fees paid on Arbitrum
 One, OP Mainnet and zkSync Era are recorded in `mainnet.md` and
 `data/mainnet-phase-a.json` (2026-08-12). Those smoke anchors used 79,708,
 79,276 and 106,249 gas. They validate fee arithmetic, not the SBOM surcharge.
-The v0.5.4 first-write release anchors carried non-zero SBOM hashes and used
-100,048, 99,524 and 106,722 gas respectively.
+The v1.0.1 revision-1 release anchors carried non-zero SBOM hashes and used
+100,095, 99,512 and 125,161 gas respectively.
 
 A **distribution** over time is no longer open. `fee-distribution.md` prices the
-v0.5.4 first-write, with-SBOM release shape at 365 daily points across a year on
+v1.0.1 revision-1, with-SBOM release shape at 365 daily points across a year on
 each production network. The Phase A no-SBOM receipts validate the arithmetic
 using their own gas usage. The original block-level samples were not archived.
 `npm run fees:history -- --end 2026-08-12T10:44:09Z` reconstructs a new 365-point
@@ -103,11 +103,10 @@ units without transacting, is what that record does and is implemented in
 `scripts/fee-history.ts` and `scripts/fee-analyse.ts`.
 
 One caveat that belongs with any OP figure quoted from a receipt: ethers'
-`receipt.fee` is `gasUsed x gasPrice` and omits OP Stack's separate `l1Fee`, so an
-Phase A OP smoke anchor's true total is 8.118e-8 ETH rather than the 7.9e-8 the
-L2 component alone suggests, with L1 at 2.29%. Arbitrum and zkSync price L1 costs
-inside `gasUsed`, so their receipt figures are already complete. The historical
-OP release formula applies 99,524 gas and fixes the priority fee at the observed
-1,000,000 wei, or 0.001 gwei, and `l1Fee` at the observed 1,862,429,623 wei. The
-Phase A receipt validates this arithmetic with its own 79,276 gas, but historical
-variation in either fixed input is not reconstructed.
+`receipt.fee` is `gasUsed x gasPrice` and omits OP Stack's separate `l1Fee`.
+The v1.0.1 revision-1 total is 1.01805679742e-7 ETH, with L1 at 2.22%.
+Arbitrum and zkSync price L1 costs inside `gasUsed`, so their receipt figures are
+already complete. The historical OP release formula applies 99,512 gas and fixes
+the priority fee at the observed 1,000,000 wei, or 0.001 gwei, and `l1Fee` at the
+observed 2,257,258,350 wei. Historical variation in either fixed input is not
+reconstructed.

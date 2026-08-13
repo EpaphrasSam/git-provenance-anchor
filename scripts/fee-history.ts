@@ -32,14 +32,11 @@ import { findRepoRoot, loadDeployments, rpcFor } from "../cli/src/lib/chain";
 
 dotenv.config();
 
-/**
- * Gas units observed in the v0.5.4 first-write mainnet release anchors, each with
- * a non-zero SBOM hash.
- */
+/** Gas units observed in the v1.0.1 revision-1 mainnet release anchors. */
 const ANCHOR_GAS_UNITS: Record<string, number> = {
-  arbitrumOne: 100048,
-  opMainnet: 99524,
-  zkSyncEra: 106722,
+  arbitrumOne: 100095,
+  opMainnet: 99512,
+  zkSyncEra: 125161,
 };
 
 /** Approximate block times, used only to seed the search for a block. */
@@ -59,7 +56,7 @@ const FEE_MODEL_NOTE: Record<string, string> = {
   arbitrumOne:
     "Nitro charges the L1 posting cost as additional gas units inside gasUsed, so gasUsed x effectiveGasPrice is the whole fee. Holding gas units fixed therefore understates cost when L1 posting is expensive: the real transaction would have burned more units, not just paid a higher price.",
   opMainnet:
-    "OP Stack splits the fee: gasUsed x effectiveGasPrice covers L2 execution, and a separate l1Fee field on the receipt covers posting to L1. Analysis adds the observed 1,000,000 wei priority fee and 1,862,429,623 wei l1Fee. Historical variation in those fixed inputs is not reconstructed.",
+    "OP Stack splits the fee: gasUsed x effectiveGasPrice covers L2 execution, and a separate l1Fee field on the receipt covers posting to L1. Analysis adds the observed 1,000,000 wei priority fee and 2,257,258,350 wei l1Fee. Historical variation in those fixed inputs is not reconstructed.",
   zkSyncEra:
     "EraVM prices execution and published data together through its own gas model, so gasUsed x effectiveGasPrice is the whole fee. Units are not comparable with the EVM chains.",
 };
@@ -252,45 +249,39 @@ async function sampleNetwork(
   return result;
 }
 
-/**
- * Re-reads the Phase A transactions as raw receipts. ethers' convenience `fee`
- * omits the OP Stack l1Fee, so the raw JSON is what the validation step needs.
- */
-async function collectReceipts(repoRoot: string, delayMs: number) {
-  const phaseAPath = path.join(repoRoot, "evaluation", "data", "mainnet-phase-a.json");
-  if (!fs.existsSync(phaseAPath)) return { note: "mainnet-phase-a.json not found", receipts: [] };
-
-  const phaseA = JSON.parse(fs.readFileSync(phaseAPath, "utf8"));
+/** Re-reads the v1.0.1 revision-1 transactions as raw receipts. */
+async function collectReceipts(delayMs: number) {
+  const transactions: Record<string, string> = {
+    arbitrumOne: "0x100a342fa6383ab540cb5da85c90a7d5dda2db382b4ac381bedb0ce8099ad654",
+    opMainnet: "0x46f8761006ee59236ed579469b5b46873efd3db086d6039dc6ba5758c95ab3ba",
+    zkSyncEra: "0x57a58f76c90cfe99efdd1977461567113b9a8c2c4fc0eb66f3abd3654e85b1a3",
+  };
   const receipts: Record<string, unknown>[] = [];
 
-  for (const [network, entry] of Object.entries<any>(phaseA.networks ?? {})) {
+  for (const [network, hash] of Object.entries(transactions)) {
     const provider = new ethers.JsonRpcProvider(rpcFor(network));
-    for (const [label, tx] of Object.entries<any>(entry.txs ?? {})) {
-      try {
-        const raw = await provider.send("eth_getTransactionReceipt", [tx.hash]);
-        const block = await getBlock(provider, Number(BigInt(raw.blockNumber)));
-        receipts.push({
-          network,
-          label,
-          hash: tx.hash,
-          blockNumber: Number(BigInt(raw.blockNumber)),
-          blockIso: new Date(Number(BigInt(block.timestamp)) * 1000).toISOString(),
-          gasUsed: BigInt(raw.gasUsed).toString(),
-          effectiveGasPrice: raw.effectiveGasPrice ? BigInt(raw.effectiveGasPrice).toString() : null,
-          blockBaseFeePerGas: block.baseFeePerGas ? BigInt(block.baseFeePerGas).toString() : null,
-          // OP Stack extras. Absent on other chains, which is itself informative.
-          l1Fee: raw.l1Fee ? BigInt(raw.l1Fee).toString() : null,
-          l1GasUsed: raw.l1GasUsed ? BigInt(raw.l1GasUsed).toString() : null,
-          l1GasPrice: raw.l1GasPrice ? BigInt(raw.l1GasPrice).toString() : null,
-          l1BlobBaseFee: raw.l1BlobBaseFee ? BigInt(raw.l1BlobBaseFee).toString() : null,
-          // Arbitrum reports the L1 share of gasUsed here when present.
-          gasUsedForL1: raw.gasUsedForL1 ? BigInt(raw.gasUsedForL1).toString() : null,
-        });
-      } catch (error) {
-        receipts.push({ network, label, hash: tx.hash, error: (error as Error).message });
-      }
-      await sleep(delayMs);
+    try {
+      const raw = await provider.send("eth_getTransactionReceipt", [hash]);
+      const block = await getBlock(provider, Number(BigInt(raw.blockNumber)));
+      receipts.push({
+        network,
+        label: "v1.0.1 revision 1",
+        hash,
+        blockNumber: Number(BigInt(raw.blockNumber)),
+        blockIso: new Date(Number(BigInt(block.timestamp)) * 1000).toISOString(),
+        gasUsed: BigInt(raw.gasUsed).toString(),
+        effectiveGasPrice: raw.effectiveGasPrice ? BigInt(raw.effectiveGasPrice).toString() : null,
+        blockBaseFeePerGas: block.baseFeePerGas ? BigInt(block.baseFeePerGas).toString() : null,
+        l1Fee: raw.l1Fee ? BigInt(raw.l1Fee).toString() : null,
+        l1GasUsed: raw.l1GasUsed ? BigInt(raw.l1GasUsed).toString() : null,
+        l1GasPrice: raw.l1GasPrice ? BigInt(raw.l1GasPrice).toString() : null,
+        l1BlobBaseFee: raw.l1BlobBaseFee ? BigInt(raw.l1BlobBaseFee).toString() : null,
+        gasUsedForL1: raw.gasUsedForL1 ? BigInt(raw.gasUsedForL1).toString() : null,
+      });
+    } catch (error) {
+      receipts.push({ network, label: "v1.0.1 revision 1", hash, error: (error as Error).message });
     }
+    await sleep(delayMs);
   }
   return { note: "raw receipts, including fields ethers' receipt.fee omits", receipts };
 }
@@ -343,8 +334,8 @@ async function main() {
   const l1 = await sampleNetwork("ethereum", ETHEREUM_RPC, targets, delayMs);
   results.push(l1);
 
-  console.log("Re-reading Phase A receipts for validation ...");
-  const receipts = await collectReceipts(repoRoot, delayMs);
+  console.log("Re-reading v1.0.1 revision-1 receipts for validation ...");
+  const receipts = await collectReceipts(delayMs);
 
   const outPath = path.join(repoRoot, "evaluation", "data", outName);
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
@@ -354,10 +345,10 @@ async function main() {
       {
         collectedAt: new Date().toISOString(),
         method:
-          "Release-anchor gas units are held at the values observed in the v0.5.4 first-write mainnet " +
+          "Release-anchor gas units are held at the values observed in the v1.0.1 revision-1 mainnet " +
           "receipts with non-zero SBOM hashes and priced at historical block base fees. Figures are " +
           "counterfactual: what a release anchor would have cost had it been submitted at that moment, " +
-          "not a fee that was paid. Phase A no-SBOM receipts validate the fee arithmetic only.",
+          "not a fee that was paid. The revision-1 receipts validate the fee arithmetic.",
         window: {
           days,
           intervalHours,

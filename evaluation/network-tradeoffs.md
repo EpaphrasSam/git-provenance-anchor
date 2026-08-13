@@ -9,12 +9,12 @@ each network's finality. Cost detail is in `fee-distribution.md`, timing in
 
 | | Arbitrum One | OP Mainnet | zkSync Era |
 | --- | --- | --- | --- |
-| Median release-anchor cost | 2.0007592e-6 ETH (~$0.0038) | 1.0143390e-7 ETH (~$0.000193) | 4.8291705e-6 ETH (~$0.0092) |
-| Worst observed in a year | 2.1928019e-5 ETH (~11× median) | 1.2536067e-7 ETH (~1.24× median) | 4.8291705e-6 ETH (no variation) |
+| Median release-anchor cost | 2.0016991e-6 ETH (~$0.0038) | 1.0181673e-7 ETH (~$0.000193) | 5.6635353e-6 ETH (~$0.0108) |
+| Worst observed in a year | 2.1938320e-5 ETH (~11× median) | 1.2574060e-7 ETH (~1.23× median) | 5.6635353e-6 ETH (no variation) |
 | To L1 data availability | 2 min 56 s | 2 min 38 s | 32 min 38 s |
 | Validity proof verified | n/a | n/a | 45 min 35 s |
 | Full settlement | ~7 day challenge window | ~7 day challenge window | proof plus execution |
-| First-write release-anchor gas | 100,048 (EVM) | 99,524 (EVM) | 106,722 (EraVM) |
+| First-write release-anchor gas | 100,095 (EVM) | 99,512 (EVM) | 125,161 (EraVM) |
 | Proof system | fraud proofs | fraud proofs | validity proofs |
 
 ## Throughput evidence gap

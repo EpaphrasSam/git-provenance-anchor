@@ -11,8 +11,8 @@ documented barrier, not a claim of zero friction.
 
 ## Integration effort
 
-The line counts below are from the current corrected post-`v0.5.4` files. They do
-not describe the frozen tag.
+The line counts below are from the current files contained in the `v1.0.1` final
+freeze.
 
 | Measure | Value |
 | --- | --- |

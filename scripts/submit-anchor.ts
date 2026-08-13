@@ -3,9 +3,9 @@
  * configured deployment. Intended for the workflow templates under workflows/.
  *
  * Usage:
- *   npx ts-node scripts/submit-anchor.ts --tag v1.0.0 --tree-hash <40hex> [--sbom-hash <64hex>]
+ *   npx ts-node scripts/submit-anchor.ts --tag v1.0.1 --tree-hash <40hex> [--sbom-hash <64hex>]
  *   npx ts-node scripts/submit-anchor.ts --ref main --kind snapshot --tree-hash <40hex>
- *   npx ts-node scripts/submit-anchor.ts --tag v1.0.0 --tree-hash <40hex> --dry-run
+ *   npx ts-node scripts/submit-anchor.ts --tag v1.0.1 --tree-hash <40hex> --dry-run
  */
 import * as path from "path";
 import * as dotenv from "dotenv";
