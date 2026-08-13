@@ -12,7 +12,13 @@ provenance-anchor:
     - if: $CI_COMMIT_TAG
   before_script:
     - apt-get update && apt-get install -y curl ca-certificates git
-    - curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+    - |
+      for i in 1 2 3 4 5; do
+        curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin v1.51.0 && break
+        echo "syft install attempt ${i} failed"
+        sleep 8
+      done
+      command -v syft
   script:
     - |
       TAG="$CI_COMMIT_TAG"
