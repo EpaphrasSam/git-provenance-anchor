@@ -26,36 +26,35 @@ Adding the optional mechanisms from `rq2-strategies.md` costs a further 55
 effective lines for weekly snapshots and 33 for daily re-verification, plus one
 variable (`GPA_SNAPSHOT_REF`). Neither is required.
 
-## Almost none of this varies, and the exception is worth naming
+## What is fixed and what varies
 
-Every figure above except the last is a constant. Files added, files modified,
-configuration lines, secrets, variables and one-off transactions are the same for
-spf13/cobra at 66 files and 0.7 MB as for microsoft/fluentui-system-icons at
-118,432 files and 239 MB, and the same for a Go project as for a C project using
-autotools. The design adds two files and modifies none, so there is nothing for a
-project's size, language, build system or existing CI to interact with.
+The workflow, secret, variable and transaction counts are properties of the
+reference template. They do not depend on repository size or language because
+the anchoring path does not invoke the project's build. The seven-line manifest
+is only the baseline for a project with no generated extras. A project that
+publishes generated files needs additional, project-specific declarations.
 
-**Time is the exception, and the SBOM step is why.** `sbom-coverage.md` measured
+Runtime also varies. `sbom-coverage.md` measured
 Syft over the same sample and it ranges across three orders of magnitude: 2.7 s
 for cobra, 59.5 s for curl, and 15 minutes for fluentui-system-icons, where
 `syft dir:.` as the shipped workflow writes it did not finish at all. Excluding
 `*.svg` brought that to roughly four minutes.
 
-So the honest form of the claim is that **adoption effort is constant and
-adoption runtime is not**. Everything a maintainer has to do is fixed; how long
-the pipeline then takes is dominated by scanning, and on a repository of many
-generated assets the reference workflow needs an exclusion or it will hang. That
-is a defect in the template rather than in the design, and it is recorded in
-`sbom-coverage.md` rather than smoothed over here.
+The core workflow configuration is fixed, but manifest work and pipeline runtime
+are not. Scanning dominates runtime, and the reference workflow needs an
+exclusion option on repositories with many generated assets. `sbom-coverage.md`
+records that template defect.
 
 That is worth stating plainly because it is the specific contrast with the
 comparator. Tamanna et al.'s respondents struggled with hermetic builds, and a
 hermetic build is hard in a way that depends entirely on what a project builds and
 how: its toolchain, its dependencies, its assumptions about the machine. The
-integration cost measured here has no such dependency. It does not read the
-project's build, and it deliberately never invokes it, which is the same isolation
-property that closes the XZ Utils foothold in `repository-sample.md`'s design
-discussion.
+integration cost measured here has no such dependency. The anchoring workflow
+does not invoke the project's build. This isolates commitment generation from
+project build scripts, but it does not close every part of the XZ Utils attack.
+Artifact verification still permits manifest-declared generated paths, and
+schema version 1 does not authenticate the contents of those paths. See
+`ladisa-coverage.md` for the resulting conditional classification.
 
 The sampled repositories carry between 2 and 16 existing workflow files each.
 Adoption adds one more alongside them and leaves the rest untouched.
@@ -66,7 +65,7 @@ Adoption adds one more alongside them and leaves the rest untouched.
 | --- | --- |
 | New manual steps per release | 0. The workflow triggers on tag push. |
 | Must a release wait for anchor confirmation? | No. Anchoring runs alongside the release and blocks nothing. |
-| Noise burden | Zero false positives on the sample, per `tarball-sweep.md` |
+| Noise burden | Zero false positives on two real release tarballs and ten constructed controls, per `tarball-sweep.md` |
 
 The asynchrony point is load-bearing and is supported by `latency.md` rather than
 asserted here. An anchor reaches Ethereum in about three minutes on the optimistic
@@ -88,12 +87,12 @@ report adoption difficulty rather than a line count.
 What their respondents found hard was making an existing build reproducible, which
 means changing how a project builds. Nothing here asks that. A project keeps its
 build exactly as it is, adds a workflow that does not touch it, and declares any
-files its build legitimately adds. The cost is two files and two one-off
-transactions, and it does not grow with the project.
+files its build legitimately adds. The starting point is two files and two
+one-off transactions. The manifest grows when a project has generated extras.
 
-That is the claim: measured integration cost compares favourably against a
-documented complexity barrier. It is not a claim that adoption is free, and the
-figures above are what a maintainer would actually have to do.
+The structural comparison is that this workflow avoids the hermetic-build
+requirement. It is not a measured maintainer-adoption result, and it does not
+show that adoption is free.
 
 ## Limitations
 
@@ -108,6 +107,5 @@ figures above are what a maintainer would actually have to do.
 - Line counts are of the reference templates. A project could write a shorter or
   longer equivalent.
 - The reference workflow's `syft dir:.` has no exclusions and did not complete
-  within 15 minutes on a 118,432-file asset repository. Adoption effort stays
-  constant, but pipeline runtime does not, and the template needs an exclusion
-  option before it is safe to recommend for asset-heavy projects.
+  within 15 minutes on a 118,432-file asset repository. The template needs an
+  exclusion option before it is safe to recommend for asset-heavy projects.

@@ -22,7 +22,7 @@ operator tooling, not just documentation of this deployment.
 | `mainnet.md` | Live registries on Arbitrum One, OP Mainnet, and zkSync Era, with fees actually paid for deploy / register / allowlist / smoke anchor | `gpa verify --tag v0.4.0-m4 --ref v0.4.0-m4 --network arbitrumOne --network opMainnet --network zkSyncEra` |
 | `fee-distribution.md` | What an anchor would have cost at 365 points across a year on each production network, validated against the Phase A receipts | `npm run fees:all` |
 | `latency.md` | How long after a release the anchor is readable, posted to L1, and settled, on each production network | `zks_getBlockDetails` and Blockscout batch fields, recorded in the file |
-| `ladisa-coverage.md` | Which of the 117 attack vectors in the Ladisa et al. taxonomy this system would detect, and which it would not | `python3 evaluation/ladisa-classify.py` |
+| `ladisa-coverage.md` | Coverage across the maintained Ladisa tree: 117 non-root node instances, 114 of which receive classifications | `python3 evaluation/ladisa-classify.py` |
 | `repository-sample.md` | Tree-hash reconstruction and verification time across twelve widely used projects, and the archive-based reconstruction defect it exposed | `npm run sample:clone`, then compare `hashGitRef` against `git rev-parse HEAD^{tree}` |
 | `tarball-sweep.md` | Published release artifacts versus the anchored tree; curl/libarchive manifests clear undeclared extras; Windows `hashArtifact` mode loss on tarball verify | `npm run sample:tarballs`; diagnosis in `data/control-row-diagnosis.json` |
 | `functional-validation.md` | The four properties Chapter 3 promises, as one table: unexpected content, no false positives, allowlist enforcement, tag retargeting | per-row records listed in the file |

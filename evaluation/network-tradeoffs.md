@@ -58,9 +58,10 @@ believe different things, and this is where the choice actually bites.
 being willing and able to submit a fraud proof during the challenge window. The
 assumption is economic and adversarial: at least one honest, funded watcher exists.
 Neiheiser et al.'s concern about sequencer centralisation applies directly, and it
-shows in what this system measures. A censoring sequencer cannot forge an anchor,
-but it can refuse to include one, which is why the Ladisa rubric classifies
-denial-of-anchoring as detectable by absence rather than as prevented.
+shows in the network-layer design. A censoring sequencer cannot forge an anchor,
+but it can refuse to include one. An expected anchor can be noticed as absent, but
+this is not a Ladisa classification: the rubric's CSV contains no
+denial-of-anchoring row.
 
 **zkSync Era.** Finality rests on a validity proof verified on L1, which is a
 cryptographic assumption rather than a game-theoretic one, and is stronger in
@@ -93,9 +94,11 @@ Anchoring to several networks at once is the intended configuration, and these
 results support it for a reason beyond redundancy: the three fail differently. An
 optimistic rollup's weak point is a sequencer that will not include your
 transaction. A validity rollup's weak point is a proof system that can be paused.
-A verifier who finds the same tree hash anchored on all three does not need to
-resolve which trust model is better, because all three would have to fail in
-different ways at the same time.
+When the same tree hash is anchored on all three, all three network trust models
+would need to fail for the verifier to receive a network-layer contradiction.
+Compromise of the shared submitting key remains outside that redundancy because it
+can place the same false record on every network without any network trust model
+failing.
 
 If a project must choose one, the measurements suggest OP Mainnet on cost and
 latency, Arbitrum One if the priority is the deepest activity and the most mature

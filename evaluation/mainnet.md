@@ -135,3 +135,28 @@ npm run deploy:op-mainnet
 npx hardhat compile --network zkSyncEra --force --no-typechain
 npm run deploy:zksync-era
 ```
+
+## The v0.5.4 freeze: dual-platform anchors on all three mainnets
+
+The tagged version this repository cites as its freeze, `v0.5.4` (tree
+`aad7d6a1daac99b3f8eb90ef925b8111ef078e37`), was anchored to all three production
+networks by both CI platforms: GitHub Actions
+([run 31660362483](https://github.com/EpaphrasSam/git-provenance-anchor/actions/runs/31660362483))
+wrote revision 1 from CI key `0x1318dA3655688daeFc4DA89ABAeDA33eA4A6e341`, and
+GitLab CI
+([pipeline 2756003177](https://gitlab.com/EpaphrasSam/git-provenance-anchor/-/pipelines/2756003177))
+wrote revision 2 from its own key
+`0x62b7531A4b6Ebd0d478f81dB8BcB1115D2aEc011`, same tree on every network.
+
+| Network | GitHub (rev 1) | GitLab (rev 2) |
+| --- | --- | --- |
+| Arbitrum One | `0x57a664319a9da806b9a7a9ae37f26329985a8f47838966f792774fcb23a8e67d` | `0xd449dfe09669394b4358844202e9e6ede7a076d7b3f87dbca2a427b151058e3b` |
+| OP Mainnet | `0x8020754e293c799622a037e54283e6b55b5c86e2ca6a08278953ba3ef2676e16` | `0xc0e9fcc737a36b37eb7bd68a8d41623741a1db168efbd2fc9ba7517d63d1e582` |
+| zkSync Era | `0x9b621d43c8db1bea363460b2028d5ef1f68d3b5855283472769e8ef07874ba03` | `0xa3b8e79eda2c973af102c9f0c4bfad4d821e71e43ba163e8967002c3d0358c47` |
+
+Gas confirms the storage economics in `gas-and-cost.md`: the revision-2 writes
+cost 45,947 (Arbitrum) and 45,424 (OP) against the first anchors' 100,048 and
+99,524, because re-anchoring overwrites already-non-zero slots. zkSync's EraVM
+column moves the other way (124,823 vs 106,722) and should not be ratioed against
+EVM. Decoded and verified independently from the receipts; on zkSync the
+`AnchorSubmitted` event is not `logs[0]`, so find it by topic.

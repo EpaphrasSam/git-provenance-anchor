@@ -41,8 +41,10 @@ was true, not only that it was true.
 The rubric's third step classifies at the highest node where the answer is uniform
 across everything beneath it, following Ladisa et al.'s own least-possible-depth
 convention for assigning safeguards. **Eleven decision points cover all 117
-vectors.** Four nodes are internal categories whose children genuinely diverge, so
-the rubric descends through them without classifying them.
+non-root node instances.** Three further internal category nodes receive no
+classification, leaving 114 classified nodes as the denominator for the coverage
+percentages. Four nodes including the root are internal categories whose children
+genuinely diverge, so the rubric descends through them without classifying them.
 
 | Decided at | Vector | Classification |
 | --- | --- | --- |
@@ -65,37 +67,44 @@ Internal, descended through: AV-000, AV-001, AV-300, AV-500.
 | Classification | Node instances | Share of 114 classified |
 | --- | --- | --- |
 | Detectable | 48 | 42.1% |
-| Detectable, conditional on artifact type | 31 | 27.2% |
+| Detectable, conditional on artifact type and manifest boundary | 31 | 27.2% |
 | Partially detectable | 1 | 0.9% |
 | Out of scope | 34 | 29.8% |
 
-Read conservatively, treating the conditional group as undetected, **43% of the
-tree is detectable**. Read at its most generous, counting the conditional group,
-**70%**. The honest figure is the conservative one, and the reason the two differ
-by so much is worth more than either number.
+These figures assume tag anchoring plus scheduled re-verification, matching the
+recommended policy. Read conservatively, treating the conditional group as
+undetected, **42.1% of the 114 classified nodes is detectable**. The tag-only
+baseline is **29.8%**. Counting the conditional group under the recommended policy
+gives **69.3%**. The conservative figure is the honest one, and the reason the two
+differ by so much is worth more than either number.
 
 ## The conditional group, and where the taxonomy and the system disagree
 
-Everything under AV-400, injection during the build, splits on a distinction the
-taxonomy does not model: what kind of artifact the build produces.
+Everything under AV-400, injection during the build, is conditional on two
+distinctions the taxonomy does not model: what kind of artifact the build produces
+and whether the changed content crosses the manifest boundary.
 
-A build that alters a **source-level distributed artifact** produces a tarball
-that no longer matches the anchored tree, so comparison flags it. That is the XZ
-Utils shape, and it is detected. A build that alters only a **compiled binary**
-produces no mismatch, because nothing verifies that a binary corresponds to its
-source. That is the SolarWinds shape, and it is not detected; it needs
-reproducible builds or build attestation, both out of scope by Chapter 1.
+Source-level build tampering is detectable when it changes tracked content or
+introduces an undeclared path, because the distributed artifact then conflicts
+with the anchored tree and its manifest. This covers an XZ Utils-shaped attack
+only under that condition. Schema v1 does not authenticate content substituted at
+a manifest-declared generated-extra path, so that case can pass comparison even
+when the distributed artifact is source-level. A build that alters only a
+**compiled binary** also produces no mismatch, because nothing verifies that a
+binary corresponds to its source. That is the SolarWinds shape, and it is not
+detected; it needs reproducible builds or build attestation, both out of scope by
+Chapter 1.
 
 Ladisa et al. organise the tree by attacker action. This system's detection
 boundary is drawn by artifact type. The two axes cross rather than align, which is
-why 31 vectors cannot be resolved to a single answer without adding a distinction
+why 31 node instances cannot be resolved to a single answer without adding distinctions
 the taxonomy does not carry. Stating that is more useful than picking whichever
 number flatters the system.
 
 ## Reference-weighted coverage
 
 Step 5 of the rubric asks for a weighted figure alongside the raw count, because
-catching 43% of the tree means something different depending on which 43%.
+catching 42% of the tree means something different depending on which 42%.
 
 The taxonomy ships 269 references mapped to vectors, 371 vector-to-reference
 links. Fifteen shared identifiers classify differently depending on which parent
@@ -119,23 +128,24 @@ not by oversight. A system that verifies a project's releases against that
 project's own history cannot help someone who installed a different package
 entirely. Nothing anchored is contradicted, because nothing anchored was involved.
 
-That is the honest limitation to state in Chapter 4: this system addresses
-subversion of a legitimate package, which is the smaller share of documented
-incidents but the harder one to detect by other means, and it says nothing about
-package selection, which is the larger share and is addressed by other controls.
+The limitation for Chapter 4 is narrower: this system can address some forms of
+subversion within a legitimate project's release history, subject to the manifest
+boundary above. It says nothing about selecting the correct package in the first
+place, which requires different controls.
 
 ## What it does catch, stated plainly
 
 Tampering with version control after a release is anchored, including the
 force-moved tag pattern of the tj-actions incident, which is demonstrated working
-on three live networks in `tag-retargeting.md`. Interception, DNS poisoning, URL
-tampering and dependency-resolution abuse, because each delivers an artifact that
-does not match the anchored tree. Malicious publication by someone holding
-registry credentials, and substitution inside the hosting system, for the same
-reason. Source-level build injection. And, partially, update-blocking: a consumer
-frozen on an older genuine release sees no hash mismatch, but the anchor history
-is public and append-only, so a newer release is visible on chain even when a
-registry hides it.
+on Arbitrum Sepolia, OP Sepolia and zkSync Sepolia in `tag-retargeting.md`.
+Interception, DNS poisoning, URL tampering and dependency-resolution abuse,
+because each delivers an artifact that does not match the anchored tree. Malicious
+publication by someone holding registry credentials, and substitution inside the
+hosting system, for the same reason. Source-level build injection when it changes
+tracked content or introduces an undeclared path. And, partially, update-blocking:
+a consumer frozen on an older genuine release sees no hash mismatch, but the
+anchor history is public and append-only, so a newer release is visible on chain
+even when a registry hides it.
 
 ## Against Sigstore, which RQ4 names directly
 
@@ -165,8 +175,8 @@ either system.
   proxy for prevalence rather than severity. The paper's own severity data is not
   in the machine-readable export.
 - The 31 conditional vectors are reported as a single group. Splitting them would
-  require classifying each project's release artifact type, which belongs to the
-  repository sample rather than to the taxonomy.
-- Vectors are classified against the system as built, three L2 networks with tag
-  and snapshot anchoring. The RQ2 comparison re-runs this rubric under the three
-  anchoring strategies and is not part of this record.
+  require classifying each project's release artifact type and manifest boundary,
+  which belong to the repository sample rather than to the taxonomy.
+- The 42.1% result describes tag anchoring plus scheduled re-verification, the
+  recommended policy. The RQ2 comparison re-runs this rubric under three anchoring
+  strategies and reports the 29.8% tag-only baseline.

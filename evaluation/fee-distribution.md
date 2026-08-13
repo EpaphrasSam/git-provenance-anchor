@@ -113,11 +113,11 @@ published wrong.
 
 ## What this settles
 
-An anchor costs a fraction of a cent on all three networks at the median, and
-still a fraction of a cent on the worst day observed in a year. On Arbitrum, the
-network with a real fee market among the three, the worst day of the year was
-about three cents. For an event that happens a handful of times a year per
-project, the cost question is closed.
+An anchor costs a fraction of a cent at the median on Arbitrum One and OP
+Mainnet. The zkSync Era median is just under one cent. The worst sampled
+Arbitrum day prices the transaction at approximately 3.3 cents. These remain
+small absolute costs for an event submitted a handful of times per year, but the
+daily series is not evidence about unsampled intraday peaks.
 
 ## Limitations
 
