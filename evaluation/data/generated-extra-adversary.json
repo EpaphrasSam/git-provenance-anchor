@@ -1,0 +1,42 @@
+{
+  "collectedAt": "2026-09-16T17:05:11.884Z",
+  "method": "Local Git fixture with hello.txt tracked. Schema v1 manifest declares payload.txt. Two artifacts differ only at that path. Stubbed on-chain tree hash. No live network.",
+  "gitTree": "aaa96ced2d9a1c8e72c56b253a0e2fe78393feb7",
+  "extraPath": "payload.txt",
+  "extraA": {
+    "body": "payload-one\\n",
+    "sha256": "0xd1c45e9e0a9b1710f41918f7f12a4316812dfaf0984612f0d176eb8f84b6b019"
+  },
+  "extraB": {
+    "body": "payload-TWO\\n",
+    "sha256": "0x8a97baacc203526216dfca7758ce2a4a39a4c331672f10364b1ea8c283498fe0"
+  },
+  "artifactA": {
+    "status": "pass_with_extras",
+    "computedTreeHash": "aaa96ced2d9a1c8e72c56b253a0e2fe78393feb7",
+    "usedExtras": [
+      "payload.txt"
+    ],
+    "message": "Artifact matches after allowing 1 declared extra path(s)"
+  },
+  "artifactB": {
+    "status": "pass_with_extras",
+    "computedTreeHash": "aaa96ced2d9a1c8e72c56b253a0e2fe78393feb7",
+    "usedExtras": [
+      "payload.txt"
+    ],
+    "message": "Artifact matches after allowing 1 declared extra path(s)"
+  },
+  "undeclaredExtra": {
+    "status": "fail",
+    "message": "Artifact tree hash does not match any on-chain anchor (undeclared extras or content mismatch)"
+  },
+  "trackedContentSwap": {
+    "status": "fail",
+    "message": "Artifact tree hash does not match any on-chain anchor (undeclared extras or content mismatch)"
+  },
+  "schemaV1AcceptsBothDeclaredPayloads": true,
+  "schemaV1RejectsUndeclaredExtra": true,
+  "schemaV1RejectsTrackedSwap": true,
+  "schemaV2NotImplemented": true
+}

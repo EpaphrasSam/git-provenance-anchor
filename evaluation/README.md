@@ -46,6 +46,7 @@ operator tooling, not just documentation of this deployment.
 | `throughput.md` | Ten sequential production snapshot anchors per L2, reported as confirmed inclusions per minute for this client, not network saturation | `npm run throughput:send` |
 | `sha256-compat.md` | SHA-1 fixture passes reconstruction; a SHA-256 Git repo can store its id on the contract while `hashGitRef` / artifact verify do not match Git | `npm run sha256:compat` |
 | `lfs-supplement.md` | One public LFS repo, labelled extra, not in the original twelve; `hashGitRef` matches Git and sees the pointer, not the LFS object | `npx ts-node --transpile-only scripts/lfs-supplement.ts` |
+| `generated-extra-adversary.md` | Schema v1 accepts two different files at the same declared extra path; schema v2 (path plus digest) is specified, not implemented | `npm run extras:adversary` |
 | `workflow-tamper-protection.md` | Which GitHub branch protection configuration actually prevents the anchoring workflow being edited, and which only appears to | manual `gh api` calls, recorded in the file |
 
 ## Raw data
@@ -65,6 +66,7 @@ operator tooling, not just documentation of this deployment.
 | `data/throughput-burst.json` | Sequential production burst behind `throughput.md` |
 | `data/sha256-compat.json` | SHA-1 vs SHA-256 object-format steps behind `sha256-compat.md` |
 | `data/lfs-supplement.json` | Supplementary LFS clone measurement behind `lfs-supplement.md` |
+| `data/generated-extra-adversary.json` | Two-contents extra-path run behind `generated-extra-adversary.md` |
 | `data/ladisa-classification.csv` | `python3 evaluation/ladisa-classify.py`, one row per attack-tree node instance |
 | `data/sample-results.json` | per-repository measurements behind `repository-sample.md` |
 | `data/rq2-ablation.csv` and `data/rq2-ablation.json` | `python3 evaluation/rq2-ablation.py`, one row per vector per policy |

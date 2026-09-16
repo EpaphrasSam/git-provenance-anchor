@@ -91,7 +91,9 @@ introduces an undeclared path, because the distributed artifact then conflicts
 with the anchored tree and its manifest. This covers an XZ Utils-shaped attack
 only under that condition. Schema v1 does not authenticate content substituted at
 a manifest-declared generated-extra path, so that case can pass comparison even
-when the distributed artifact is source-level. A build that alters only a
+when the distributed artifact is source-level. The two-contents run in
+`generated-extra-adversary.md` is that case: both payloads returned
+`pass_with_extras`. A build that alters only a
 **compiled binary** also produces no mismatch, because nothing verifies that a
 binary corresponds to its source. That is the SolarWinds shape, and it is not
 detected; it needs reproducible builds or build attestation, both out of scope by

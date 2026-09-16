@@ -83,7 +83,8 @@
     "throughput:dry-run": "ts-node --transpile-only scripts/throughput-burst.ts --dry-run",
     "throughput:send": "ts-node --transpile-only scripts/throughput-burst.ts --send --count 10",
     "sha256:compat": "hardhat run scripts/sha256-compat.ts --network hardhat",
-    "lfs:supplement": "ts-node --transpile-only scripts/lfs-supplement.ts"
+    "lfs:supplement": "ts-node --transpile-only scripts/lfs-supplement.ts",
+    "extras:adversary": "ts-node --transpile-only scripts/generated-extra-adversary.ts"
   },
   "dependencies": {
     "ajv": "8.20.0",

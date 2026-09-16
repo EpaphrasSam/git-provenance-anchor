@@ -45,11 +45,12 @@ aggregate verification failure.
 
 ## What this table does not cover
 
-Row 1b replaces content at a path that exists in the anchored Git tree. It does
-not test replacement at a manifest-declared generated-extra path. Schema version
-1 authorises those extras by path or glob and does not record an expected content
-hash, so content substituted at an already declared extra path is outside the
-same-name result above.
+Row 1b replaces content at a path that exists in the anchored Git tree. The
+generated-extra substitution that row left open is in
+`generated-extra-adversary.md`: two different files at the same schema v1
+declared extra path both returned `pass_with_extras`. Schema version 1
+authorises those extras by path or glob and does not record an expected content
+hash. Schema v2 is specified in that record and is not implemented.
 
 Both published tarballs legitimately omit paths that are present in the Git tree,
 including export-ignored files. The current verifier has no separate
