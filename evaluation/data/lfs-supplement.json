@@ -1,0 +1,36 @@
+{
+  "collectedAt": "2026-09-16T16:56:53.168Z",
+  "role": "supplementary; not a member of the 12-repository sample",
+  "eligibility": {
+    "publicHttps": true,
+    "gitattributesLfs": "*.pdf filter=lfs diff=lfs merge=lfs -text",
+    "pointerInTree": true,
+    "skipSmudgeClone": true,
+    "notInOriginalTwelve": true,
+    "pinnedCommit": "42222296478b15c48bcb72cbf06db68606269bbb"
+  },
+  "repo": "cbeams/lfs-test",
+  "cloneUrl": "https://github.com/cbeams/lfs-test.git",
+  "commit": "42222296478b15c48bcb72cbf06db68606269bbb",
+  "gitTree": "2349eeb201ceeacfc86a3c4de7a57158aea5f5f7",
+  "hashGitRef": "2349eeb201ceeacfc86a3c4de7a57158aea5f5f7",
+  "hashGitRefMatch": true,
+  "hashDirectory": "2aa27d4192a0d69b97779035d14ccfcf43c220be",
+  "hashDirectoryMatch": false,
+  "lfsPointersFromRef": [
+    "sample.pdf"
+  ],
+  "lfsPointersFromDir": [
+    "sample.pdf"
+  ],
+  "pointerPath": "sample.pdf",
+  "pointerBytesOnDisk": 131,
+  "pointerDeclaredSize": 184292,
+  "pointerOid": "sha256:b1674191a88ec5cdd733e4240a81803105dc412d6c6708d53ab94fc248f4f553",
+  "pointerHead": [
+    "version https://git-lfs.github.com/spec/v1",
+    "oid sha256:b1674191a88ec5cdd733e4240a81803105dc412d6c6708d53ab94fc248f4f553",
+    "size 184292"
+  ],
+  "note": "hashGitRef reads the object store and matches git. hashDirectory hashed the Windows checkout, where README.md has CRLF; that mismatch is core.autocrlf, not LFS. The tree hash covers the 131-byte pointer, not the 184292-byte PDF."
+}

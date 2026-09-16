@@ -34,11 +34,11 @@ al.'s precedent, then verified live.
 
 Two axes are not covered, and saying so matters more than filling them badly.
 
-**Git LFS.** No repository in the candidate pool used it. LFS turns out to be rare
-in the widely used source projects this system targets, which is itself worth
-reporting: the exclusion Chapter 1 states has a smaller practical footprint than
-its prominence suggests. The mechanism is still covered by a unit test, but not by
-a real project here.
+**Git LFS.** No repository in this candidate pool used it. That is a fact about
+this purposive sample, not a prevalence claim. A unit test covers pointer
+detection. A separate public repository (`cbeams/lfs-test`) was measured later as
+labelled extra evidence; see `lfs-supplement.md`. It is not a thirteenth sample
+member.
 
 **Slow release cadence.** The slowest project in the set tags every 98 days.
 Nothing here releases yearly, which limits what RQ2 can say about wide blind
@@ -134,6 +134,7 @@ end-to-end usability result.
 - The manifest-extra sweep against published release tarballs is recorded in
   `tarball-sweep.md`. Both autotools projects clear every undeclared addition
   with precise manifests, but legitimate omissions remain.
-- No Git LFS project and no yearly-cadence project, as described above.
+- The original twelve include no Git LFS project and no yearly-cadence project.
+  A labelled LFS extra is in `lfs-supplement.md`. Yearly cadence remains unobserved.
 - `agreement` compares reconstruction against the object store. It does not
   exercise the on-chain path, which is covered separately.

@@ -45,6 +45,7 @@ operator tooling, not just documentation of this deployment.
 | `network-tradeoffs.md` | Cost, latency and finality-security assumptions across the three production networks; a bounded client throughput burst is in `throughput.md` | figures drawn from `fee-distribution.md`, `latency.md`, and `throughput.md` |
 | `throughput.md` | Ten sequential production snapshot anchors per L2, reported as confirmed inclusions per minute for this client, not network saturation | `npm run throughput:send` |
 | `sha256-compat.md` | SHA-1 fixture passes reconstruction; a SHA-256 Git repo can store its id on the contract while `hashGitRef` / artifact verify do not match Git | `npm run sha256:compat` |
+| `lfs-supplement.md` | One public LFS repo, labelled extra, not in the original twelve; `hashGitRef` matches Git and sees the pointer, not the LFS object | `npx ts-node --transpile-only scripts/lfs-supplement.ts` |
 | `workflow-tamper-protection.md` | Which GitHub branch protection configuration actually prevents the anchoring workflow being edited, and which only appears to | manual `gh api` calls, recorded in the file |
 
 ## Raw data
@@ -63,6 +64,7 @@ operator tooling, not just documentation of this deployment.
 | `data/latency-series.json` | Repeated timing probes under `latency-protocol.md` |
 | `data/throughput-burst.json` | Sequential production burst behind `throughput.md` |
 | `data/sha256-compat.json` | SHA-1 vs SHA-256 object-format steps behind `sha256-compat.md` |
+| `data/lfs-supplement.json` | Supplementary LFS clone measurement behind `lfs-supplement.md` |
 | `data/ladisa-classification.csv` | `python3 evaluation/ladisa-classify.py`, one row per attack-tree node instance |
 | `data/sample-results.json` | per-repository measurements behind `repository-sample.md` |
 | `data/rq2-ablation.csv` and `data/rq2-ablation.json` | `python3 evaluation/rq2-ablation.py`, one row per vector per policy |
@@ -118,8 +120,9 @@ Listed so the gaps are visible rather than discovered late.
 - **Verification latency.** Anchor settlement timing is in `latency.md`.
   `repository-sample.md` times Git-reference reconstruction only; end-to-end
   `gpa verify` timing remains open.
-- **Git LFS in the field.** Covered by a unit test, but no project in the sample
-  used it, so real-world behaviour is unobserved.
+- **Git LFS in the field.** The original twelve still have none. A labelled extra
+  clone (`lfs-supplement.md`) shows `hashGitRef` matching Git on a real pointer
+  file. LFS object bytes remain outside the commitment.
 - **Slow release cadences.** Nothing in the sample tags less often than every 98
   days, which is the case where periodic snapshots would matter most for RQ2.
 - **Throughput capacity.** A bounded client burst is in `throughput.md` (10
