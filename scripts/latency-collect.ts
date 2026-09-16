@@ -271,19 +271,35 @@ export async function fetchSettlement(
   if (!txHash) return {};
   const base = BLOCKSCOUT[network];
   if (!base) return {};
-  const body = await jsonGet(`${base}/transactions/${txHash}`);
-  if (!body) return {};
-  const l1 =
-    (body.arbitrum as { commitment_transaction?: { hash?: string; timestamp?: string } } | undefined)
-      ?.commitment_transaction ??
-    (body.optimism as { l1_batch?: { transaction?: { hash?: string; timestamp?: string } } } | undefined)
-      ?.l1_batch?.transaction;
-  const posted = isoOrNull(l1?.timestamp);
-  return {
-    l1TxHash: l1?.hash ?? null,
-    l1PostedAt: posted,
-    secondsToL1DataAvailability: secondsBetween(l2BlockIso, posted),
-  };
+
+  if (network === "arbitrumOne") {
+    const body = await jsonGet(`${base}/transactions/${txHash}`);
+    const commit = (
+      body?.arbitrum as { commitment_transaction?: { hash?: string; timestamp?: string } } | undefined
+    )?.commitment_transaction;
+    const posted = isoOrNull(commit?.timestamp);
+    return {
+      l1TxHash: commit?.hash ?? null,
+      l1PostedAt: posted,
+      secondsToL1DataAvailability: secondsBetween(l2BlockIso, posted),
+    };
+  }
+
+  if (network === "opMainnet") {
+    if (l2Block == null) return {};
+    const block = await jsonGet(`${base}/blocks/${l2Block}`);
+    const optimism = block?.optimism as
+      | { l1_timestamp?: string; l1_transaction_hashes?: string[] }
+      | undefined;
+    const posted = isoOrNull(optimism?.l1_timestamp);
+    return {
+      l1TxHash: optimism?.l1_transaction_hashes?.[0] ?? null,
+      l1PostedAt: posted,
+      secondsToL1DataAvailability: secondsBetween(l2BlockIso, posted),
+    };
+  }
+
+  return {};
 }
 
 async function receiptFeeWei(

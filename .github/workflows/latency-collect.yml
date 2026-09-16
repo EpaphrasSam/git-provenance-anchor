@@ -76,4 +76,5 @@ jobs:
             exit 0
           fi
           git commit -m "chore: record latency observation $(date -u +%Y%m%dT%H%M%SZ)"
+          git pull --rebase origin main
           git push
