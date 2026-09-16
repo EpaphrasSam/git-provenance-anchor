@@ -1,0 +1,79 @@
+name: latency-collect
+
+on:
+  schedule:
+    - cron: "0 8,14,20 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Collector mode
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - preflight
+          - probe
+          - collect
+          - settle
+
+concurrency:
+  group: gpa-ci-wallet
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  latency:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install
+        run: npm ci
+
+      - name: Resolve mode
+        id: mode
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "mode=${{ github.event.inputs.mode }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=collect" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run collector
+        env:
+          ANCHOR_DEPLOYER_KEY: ${{ secrets.ANCHOR_DEPLOYER_KEY }}
+          GPA_LATENCY_LIVE: ${{ vars.GPA_LATENCY_LIVE }}
+          GPA_NETWORKS: "arbitrumOne opMainnet zkSyncEra"
+        run: npx ts-node --transpile-only scripts/latency-collect.ts --mode "${{ steps.mode.outputs.mode }}"
+
+      - name: Upload ledger
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: latency-series-${{ github.run_id }}
+          path: evaluation/data/latency-series.json
+          if-no-files-found: ignore
+
+      - name: Commit ledger
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evaluation/data/latency-series.json
+          if git diff --cached --quiet; then
+            echo "No ledger changes"
+            exit 0
+          fi
+          git commit -m "chore: record latency observation $(date -u +%Y%m%dT%H%M%SZ)"
+          git push

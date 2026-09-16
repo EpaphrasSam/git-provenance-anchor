@@ -6,6 +6,7 @@
   "include": [
     "scripts/sbom-coverage.ts",
     "scripts/tarball-sweep.ts",
+    "scripts/latency-collect.ts",
     "test/evaluation-scripts.test.ts",
     "cli/src/**/*.ts"
   ]

@@ -73,7 +73,12 @@
     "sample:tarballs": "ts-node --transpile-only scripts/tarball-sweep.ts --sample ./sample",
     "sample:sbom": "ts-node --transpile-only scripts/sbom-coverage.ts --sample ./sample",
     "check:access-control": "ts-node --transpile-only scripts/check-access-control.ts",
-    "verify:bytecode": "hardhat run scripts/verify-deployed-bytecode.ts"
+    "verify:bytecode": "hardhat run scripts/verify-deployed-bytecode.ts",
+    "latency:dry-run": "ts-node --transpile-only scripts/latency-collect.ts --mode dry-run",
+    "latency:preflight": "ts-node --transpile-only scripts/latency-collect.ts --mode preflight",
+    "latency:probe": "ts-node --transpile-only scripts/latency-collect.ts --mode probe",
+    "latency:collect": "ts-node --transpile-only scripts/latency-collect.ts --mode collect",
+    "latency:settle": "ts-node --transpile-only scripts/latency-collect.ts --mode settle"
   },
   "dependencies": {
     "ajv": "8.20.0",

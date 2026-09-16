@@ -1,0 +1,16 @@
+{
+ "schemaVersion": 1,
+ "label": "gpa-latency-eval-2026",
+ "projectId": "0xd2b1379c5d52861068eb3c6ab0290f45322abf572df7d99bffc0acbdee050d16",
+ "status": "not-started",
+ "caps": {
+  "maxEthPerRun": "0.001",
+  "maxEthSeries": "0.01",
+  "maxRevertsPerRun": 2,
+  "plannedDays": 5,
+  "txsPerNetworkPerWindow": 1
+ },
+ "seriesSpentEth": "0",
+ "setup": [],
+ "observations": []
+}

@@ -13,6 +13,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: gpa-ci-wallet
+  cancel-in-progress: false
+
 jobs:
   anchor:
     runs-on: ubuntu-latest

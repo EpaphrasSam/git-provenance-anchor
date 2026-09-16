@@ -33,6 +33,7 @@ operator tooling, not just documentation of this deployment.
 | `mainnet.md` | Live registries on Arbitrum One, OP Mainnet, and zkSync Era, with final dual-platform anchors and earlier smoke transactions identified by type | `gpa verify --tag v1.0.1 --ref v1.0.1 --network arbitrumOne --network opMainnet --network zkSyncEra` |
 | `fee-distribution.md` | Retained aggregate costs for 365 points across a year, with arithmetic validated against Phase A receipts; original block-level samples were not archived | `npm run fees:history -- --end 2026-08-12T10:44:09Z`, then `npm run fees:analyse` reconstructs a new raw-compatible series |
 | `latency.md` | How long after a release the anchor is readable, posted to L1, and settled, on each production network | `zks_getBlockDetails` and Blockscout batch fields, recorded in the file |
+| `latency-protocol.md` | Multi-day production latency series in progress; probes use a separate project id and the CI key | `npm run latency:preflight`, then `npm run latency:collect` when `GPA_LATENCY_LIVE=true` |
 | `ladisa-coverage.md` | Coverage across the maintained Ladisa tree: 117 non-root node instances, 114 of which receive classifications | `python3 evaluation/ladisa-classify.py` |
 | `repository-sample.md` | Git-reference tree-hash reconstruction across twelve widely used projects, including fixed overhead, large-repository scaling and the archive-based reconstruction defect | `npm run sample:clone`, then compare `hashGitRef` against `git rev-parse HEAD^{tree}` |
 | `tarball-sweep.md` | Published release artifacts versus the anchored tree; curl/libarchive manifests clear undeclared additions, while legitimate omission gaps remain | `npm run sample:tarballs`; diagnosis in `data/control-row-diagnosis.json` |
@@ -53,6 +54,7 @@ operator tooling, not just documentation of this deployment.
 | `data/fee-distribution.json` | Retained aggregate distribution and receipt validation. `npm run fees:history -- --end 2026-08-12T10:44:09Z` reconstructs a new 365-point raw-compatible input; it does not reproduce the unarchived original block IDs |
 | `data/fee-arithmetic-input.json` | Archived raw-compatible fixture for checking the Arbitrum, OP and zkSync arithmetic without network access |
 | `data/latency.json` | settlement timing read from each network's own batch records (see `latency.md`) |
+| `data/latency-series.json` | Repeated timing probes under `latency-protocol.md`; empty until the first live run |
 | `data/ladisa-classification.csv` | `python3 evaluation/ladisa-classify.py`, one row per attack-tree node instance |
 | `data/sample-results.json` | per-repository measurements behind `repository-sample.md` |
 | `data/rq2-ablation.csv` and `data/rq2-ablation.json` | `python3 evaluation/rq2-ablation.py`, one row per vector per policy |

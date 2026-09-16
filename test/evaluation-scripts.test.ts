@@ -2,8 +2,22 @@ import { expect } from "chai";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
+import { ethers } from "ethers";
 import { parseTimeoutMs } from "../scripts/sbom-coverage";
 import { comparisonVerdict, manifestForRepo } from "../scripts/tarball-sweep";
+import {
+  assertSignerAllowed,
+  CI_ADDRESS,
+  DEPLOYER_ADDRESS,
+  experimentProjectId,
+  LATENCY_LABEL,
+  liveWritesEnabled,
+  observationRef,
+  paidWeiFromRpcReceipt,
+  parseMode,
+  probeTreeHash,
+  spendWouldExceed,
+} from "../scripts/latency-collect";
 
 describe("evaluation sample scripts", function () {
   it("uses a 900-second SBOM timeout by default", function () {
@@ -52,5 +66,44 @@ describe("evaluation sample scripts", function () {
       "0 undeclared extra file(s), 2 missing path(s); aggregate mismatch"
     );
     expect(verdict).not.to.include("every extra file is declared");
+  });
+});
+
+describe("latency collector", function () {
+  it("derives a stable experiment project id from the label", function () {
+    expect(experimentProjectId()).to.equal(ethers.id(LATENCY_LABEL));
+    expect(experimentProjectId()).to.match(/^0x[0-9a-f]{64}$/);
+    expect(experimentProjectId()).to.not.equal(
+      "0xd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e"
+    );
+  });
+
+  it("names observations from UTC timestamps", function () {
+    expect(observationRef(new Date("2026-09-16T14:00:00.000Z"))).to.equal(
+      "lat-20260916T140000Z"
+    );
+  });
+
+  it("uses a 20-byte probe hash rather than a release tree", function () {
+    const hex = probeTreeHash("arbitrumOne:lat-20260916T140000Z");
+    expect(hex).to.match(/^[0-9a-f]{40}$/);
+    expect(hex).to.not.equal("bfc4700b1f0376c4a19722440a3c132fea20681b");
+  });
+
+  it("refuses the deployer and keeps the live gate closed by default", function () {
+    expect(() => assertSignerAllowed(DEPLOYER_ADDRESS)).to.throw("deployer");
+    expect(() => assertSignerAllowed(CI_ADDRESS)).to.not.throw();
+    expect(liveWritesEnabled({})).to.equal(false);
+    expect(liveWritesEnabled({ GPA_LATENCY_LIVE: "true" })).to.equal(true);
+    expect(parseMode("preflight")).to.equal("preflight");
+    expect(() => parseMode("broadcast")).to.throw("dry-run");
+  });
+
+  it("stops a run before the ETH cap is crossed", function () {
+    expect(spendWouldExceed(8n, 3n, 10n)).to.equal(true);
+    expect(spendWouldExceed(8n, 2n, 10n)).to.equal(false);
+    expect(paidWeiFromRpcReceipt({ gasUsed: "100", effectiveGasPrice: "2", l1Fee: "5" })).to.equal(
+      205n
+    );
   });
 });
