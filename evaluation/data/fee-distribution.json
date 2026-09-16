@@ -136,7 +136,7 @@
   "Daily resolution can miss intraday peaks. A dense pass over the worst days would tighten the tail: npm run fees:history -- --days 30 --interval 2 --out fee-history-dense.json",
   "Arbitrum release-anchor figures hold gas units fixed, so they understate the tail, where L1 posting can consume more units than in the priced v1.0.1 transaction shape.",
   "OP holds the observed 1,000,000 wei priority fee and l1Fee fixed rather than reconstructing either across time.",
-  "The original per-sample raw series is not archived. A pinned collection rerun reconstructs a compatible series but cannot prove the exact original block identifiers.",
+  "The 12 August 2026 aggregates in this file do not identify the original 365 blocks. The inspectable series is evaluation/data/fee-history.json, collected 16 September 2026 over the same pinned window. That series is a reconstruction, not a proof of the original block identifiers.",
   "USD figures use a single approximate rate of $1900/ETH and are illustrative only."
  ]
 }

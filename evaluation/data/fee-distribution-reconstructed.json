@@ -1,0 +1,286 @@
+{
+ "generatedAt": "2026-09-16T16:36:25.258Z",
+ "source": "fee-history.json",
+ "sourceCollectedAt": "2026-09-16T16:33:04.804Z",
+ "ethUsdAssumed": 1900,
+ "method": "Release-anchor gas units are held at the values observed in the v1.0.1 revision-1 mainnet receipts with non-zero SBOM hashes and priced at historical block base fees. Figures are counterfactual: what a release anchor would have cost had it been submitted at that moment, not a fee that was paid. The revision-1 receipts validate the fee arithmetic. OP Mainnet adds the observed 0.001 gwei priority fee and the observed 2,257,258,350 wei l1Fee to each reconstructed sample.",
+ "window": {
+  "days": 365,
+  "intervalHours": 24,
+  "samplesPerNetwork": 365,
+  "end": "2026-08-12T10:44:09.000Z"
+ },
+ "feeModelNotes": {
+  "arbitrumOne": "Nitro charges the L1 posting cost as additional gas units inside gasUsed, so gasUsed x effectiveGasPrice is the whole fee. Holding gas units fixed therefore understates cost when L1 posting is expensive: the real transaction would have burned more units, not just paid a higher price.",
+  "opMainnet": "OP Stack splits the fee: gasUsed x effectiveGasPrice covers L2 execution, and a separate l1Fee field on the receipt covers posting to L1. Analysis adds the observed 1,000,000 wei priority fee and 2,257,258,350 wei l1Fee. Historical variation in those fixed inputs is not reconstructed.",
+  "zkSyncEra": "EraVM prices execution and published data together through its own gas model, so gasUsed x effectiveGasPrice is the whole fee. Units are not comparable with the EVM chains."
+ },
+ "networks": {
+  "arbitrumOne": {
+   "network": "arbitrumOne",
+   "chainId": 42161,
+   "collected": 365,
+   "requested": 365,
+   "failures": 0,
+   "windowFrom": "2025-08-13T10:43:19.000Z",
+   "windowTo": "2026-08-12T10:47:54.000Z",
+   "baseFeeGwei": {
+    "n": 365,
+    "min": 0.01,
+    "p50": 0.02,
+    "p90": 0.020192,
+    "p99": 0.087365,
+    "max": 0.209961,
+    "mean": 0.018398923287671242
+   },
+   "anchorGasUnits": 100095,
+   "anchorCostEth": {
+    "n": 365,
+    "min": 0.00000100095,
+    "p50": 0.0000020019,
+    "p90": 0.00000202111824,
+    "p99": 0.000008744799675,
+    "max": 0.000021016046295,
+    "mean": 0.0000018416402264794523
+   },
+   "anchorCostUsd": {
+    "n": 365,
+    "min": 0.001901805,
+    "p50": 0.00380361,
+    "p90": 0.0038401246560000003,
+    "p99": 0.0166151193825,
+    "max": 0.0399304879605,
+    "mean": 0.003499116430310959
+   },
+   "spikeRatioP99OverP50": 4.368250000000001,
+   "spikeRatioMaxOverP50": 10.498050000000001,
+   "worstSample": {
+    "blockIso": "2025-12-25T10:42:32.000Z",
+    "blockNumber": 414328491,
+    "costEth": 0.000021016046295,
+    "costUsd": 0.0399304879605
+   },
+   "monthlyMedianCostEth": {
+    "2025-08": 0.00000100095,
+    "2025-09": 0.00000100095,
+    "2025-10": 0.00000100095,
+    "2025-11": 0.00000100095,
+    "2025-12": 0.00000100095,
+    "2026-01": 0.00000200230038,
+    "2026-02": 0.00000200750532,
+    "2026-03": 0.00000200630418,
+    "2026-04": 0.00000200290095,
+    "2026-05": 0.00000200250057,
+    "2026-06": 0.00000200430228,
+    "2026-07": 0.00000200510304,
+    "2026-08": 0.00000200250057
+   }
+  },
+  "opMainnet": {
+   "network": "opMainnet",
+   "chainId": 10,
+   "collected": 365,
+   "requested": 365,
+   "failures": 0,
+   "windowFrom": "2025-08-13T10:44:09.000Z",
+   "windowTo": "2026-08-12T10:44:09.000Z",
+   "baseFeeGwei": {
+    "n": 365,
+    "min": 2.76e-7,
+    "p50": 4.79e-7,
+    "p90": 0.000004623,
+    "p99": 0.000167049,
+    "max": 0.000242383,
+    "mean": 0.000005619799999999999
+   },
+   "anchorGasUnits": 99512,
+   "anchorCostEth": {
+    "n": 365,
+    "min": 1.01796723662e-7,
+    "p50": 1.01816924598e-7,
+    "p90": 1.02229302326e-7,
+    "p99": 1.18392638438e-7,
+    "max": 1.25889275446e-7,
+    "mean": 1.0232849588760007e-7
+   },
+   "anchorCostUsd": {
+    "n": 365,
+    "min": 0.0001934137749578,
+    "p50": 0.0001934521567362,
+    "p90": 0.0001942356744194,
+    "p99": 0.0002249460130322,
+    "max": 0.00023918962334739999,
+    "mean": 0.00019442414218644012
+   },
+   "spikeRatioP99OverP50": 1.1627991996953873,
+   "spikeRatioMaxOverP50": 1.2364277937390467,
+   "worstSample": {
+    "blockIso": "2026-02-19T10:44:09.000Z",
+    "blockNumber": 147949536,
+    "costEth": 1.25889275446e-7,
+    "costUsd": 0.00023918962334739999
+   },
+   "monthlyMedianCostEth": {
+    "2025-08": 1.01867675718e-7,
+    "2025-09": 1.0182797043e-7,
+    "2025-10": 1.0181403875e-7,
+    "2025-11": 1.01814834846e-7,
+    "2025-12": 1.01822397758e-7,
+    "2026-01": 1.02090483086e-7,
+    "2026-02": 1.0238772543e-7,
+    "2026-03": 1.01851156726e-7,
+    "2026-04": 1.01833145054e-7,
+    "2026-05": 1.01802694382e-7,
+    "2026-06": 1.01802893406e-7,
+    "2026-07": 1.01806376326e-7,
+    "2026-08": 1.01807271934e-7
+   }
+  },
+  "zkSyncEra": {
+   "network": "zkSyncEra",
+   "chainId": 324,
+   "collected": 365,
+   "requested": 365,
+   "failures": 0,
+   "windowFrom": "2024-06-26T04:37:51.000Z",
+   "windowTo": "2026-03-08T22:20:06.000Z",
+   "baseFeeGwei": {
+    "n": 365,
+    "min": 0.025,
+    "p50": 0.04525,
+    "p90": 0.04525,
+    "p99": 0.04525,
+    "max": 0.04525,
+    "mean": 0.04437397260273943
+   },
+   "anchorGasUnits": 125161,
+   "anchorCostEth": {
+    "n": 365,
+    "min": 0.000003129025,
+    "p50": 0.00000566353525,
+    "p90": 0.00000566353525,
+    "p99": 0.00000566353525,
+    "max": 0.00000566353525,
+    "mean": 0.000005553890784931538
+   },
+   "anchorCostUsd": {
+    "n": 365,
+    "min": 0.0059451475,
+    "p50": 0.010760716975,
+    "p90": 0.010760716975,
+    "p99": 0.010760716975,
+    "max": 0.010760716975,
+    "mean": 0.010552392491369923
+   },
+   "spikeRatioP99OverP50": 1,
+   "spikeRatioMaxOverP50": 1,
+   "worstSample": {
+    "blockIso": "2024-07-13T13:42:18.000Z",
+    "blockNumber": 38992049,
+    "costEth": 0.00000566353525,
+    "costUsd": 0.010760716975
+   },
+   "monthlyMedianCostEth": {
+    "2024-06": 0.000003129025,
+    "2024-07": 0.00000566353525,
+    "2024-08": 0.00000566353525,
+    "2024-09": 0.00000566353525,
+    "2024-10": 0.00000566353525,
+    "2024-11": 0.00000566353525,
+    "2024-12": 0.00000566353525,
+    "2025-01": 0.00000566353525,
+    "2025-02": 0.00000566353525,
+    "2025-03": 0.00000566353525,
+    "2025-04": 0.00000566353525,
+    "2025-05": 0.00000566353525,
+    "2025-06": 0.00000566353525,
+    "2025-07": 0.00000566353525,
+    "2025-08": 0.00000566353525,
+    "2025-09": 0.00000566353525,
+    "2025-10": 0.00000566353525,
+    "2025-11": 0.00000566353525,
+    "2025-12": 0.00000566353525,
+    "2026-01": 0.00000566353525,
+    "2026-02": 0.00000566353525,
+    "2026-03": 0.00000566353525
+   }
+  },
+  "ethereum": {
+   "network": "ethereum",
+   "chainId": 1,
+   "collected": 365,
+   "requested": 365,
+   "failures": 0,
+   "windowFrom": "2025-08-13T10:43:59.000Z",
+   "windowTo": "2026-08-12T10:44:11.000Z",
+   "baseFeeGwei": {
+    "n": 365,
+    "min": 0.021379369,
+    "p50": 0.117504055,
+    "p90": 0.389950077,
+    "p99": 2.038759226,
+    "max": 8.268774455,
+    "mean": 0.2308150790986301
+   },
+   "blobBaseFeeGwei": {
+    "n": 365,
+    "min": 1e-9,
+    "p50": 25146559293623.31,
+    "p90": 4231637151688689.5,
+    "p99": 2067473393460854300,
+    "max": 308471851306544200000,
+    "mean": 921808631103205200
+   }
+  }
+ },
+ "phaseAValidation": [
+  {
+   "network": "arbitrumOne",
+   "label": "v1.0.1 revision 1",
+   "hash": "0x100a342fa6383ab540cb5da85c90a7d5dda2db382b4ac381bedb0ce8099ad654",
+   "blockIso": "2026-08-13T11:17:57.000Z",
+   "gasUsed": 100095,
+   "effectiveGasPriceWei": 20036000,
+   "blockBaseFeePerGasWei": 20036000,
+   "l2FeeEth": 0.00000200550342,
+   "l1FeeEth": null,
+   "totalPaidEth": 0.00000200550342,
+   "reconstructedEth": 0.00000200550342,
+   "reconstructionErrorPct": 0,
+   "l1ShareOfTotalPct": null,
+   "gasUsedForL1": "583"
+  },
+  {
+   "network": "opMainnet",
+   "label": "v1.0.1 revision 1",
+   "hash": "0x46f8761006ee59236ed579469b5b46873efd3db086d6039dc6ba5758c95ab3ba",
+   "blockIso": "2026-08-13T11:18:05.000Z",
+   "gasUsed": 99512,
+   "effectiveGasPriceWei": 1000366,
+   "blockBaseFeePerGasWei": 366,
+   "l2FeeEth": 9.9548421392e-8,
+   "l1FeeEth": 2.25725835e-9,
+   "totalPaidEth": 1.01805679742e-7,
+   "reconstructedEth": 1.01805679742e-7,
+   "reconstructionErrorPct": 0,
+   "l1ShareOfTotalPct": 2.2172224140346923,
+   "gasUsedForL1": null
+  },
+  {
+   "network": "zkSyncEra",
+   "label": "v1.0.1 revision 1",
+   "hash": "0x57a58f76c90cfe99efdd1977461567113b9a8c2c4fc0eb66f3abd3654e85b1a3",
+   "blockIso": "2026-08-13T11:18:05.000Z",
+   "gasUsed": 125161,
+   "effectiveGasPriceWei": 45250000,
+   "blockBaseFeePerGasWei": 45250000,
+   "l2FeeEth": 0.00000566353525,
+   "l1FeeEth": null,
+   "totalPaidEth": 0.00000566353525,
+   "reconstructedEth": 0.00000566353525,
+   "reconstructionErrorPct": 0,
+   "l1ShareOfTotalPct": null,
+   "gasUsedForL1": null
+  }
+ ]
+}

@@ -1,9 +1,11 @@
 # Choosing between the three networks
 
-Run 2026-08-12. Consolidates the retained measurements behind RQ3:
-per-transaction cost, observed finality timing, and the security assumptions under
-each network's finality. Cost detail is in `fee-distribution.md`, timing in
-`latency.md`. The planned throughput evidence was not retained.
+Consolidates the retained measurements behind RQ3: per-transaction cost,
+observed finality timing, a bounded client throughput burst, and the security
+assumptions under each network's finality. Cost detail is in
+`fee-distribution.md`, timing in `latency.md`, the burst in `throughput.md`.
+A paid Ethereum mainnet receipt for the same with-SBOM shape is in
+`ethereum-mainnet.md`.
 
 ## The four dimensions side by side
 
@@ -15,15 +17,21 @@ each network's finality. Cost detail is in `fee-distribution.md`, timing in
 | Validity proof verified | n/a | n/a | 45 min 35 s |
 | Full settlement | ~7 day challenge window | ~7 day challenge window | proof plus execution |
 | First-write release-anchor gas | 100,095 (EVM) | 99,512 (EVM) | 125,161 (EraVM) |
+| Client confirmed/min (10 sequential snapshots) | 9.26 | 12.99 | 14.58 |
 | Proof system | fraud proofs | fraud proofs | validity proofs |
 
-## Throughput evidence gap
+## Throughput
 
-Chapter 3 proposed a capacity question, but no raw block sample, collection script
-or stress-test result was retained. Throughput capacity was therefore not
-delivered. The anchor gas row cannot repair that omission: EraVM and EVM gas
-measure different execution models, so the zkSync value is not cross-network
-comparable with the Arbitrum One and OP Mainnet values.
+Ten sequential snapshot anchors per production L2, collected 2026-09-16, all
+included. Confirmed rates for this client were 9.26/min on Arbitrum One,
+12.99/min on OP Mainnet, and 14.58/min on zkSync Era. Total fees 0.00006640 ETH.
+That is sequential inclusion time under a cap, not a ranking of unused headroom
+or maximum TPS. The spread is mostly how long the script waited for receipts.
+
+EraVM and EVM gas still measure different execution models, so the gas row is
+not a cross-network capacity unit. A 10-transaction burst does not fill these
+networks. For provenance-shaped traffic the three networks did not separate on
+throughput. Cost, posting, and finality remain the selection criteria.
 
 ## Security assumptions behind each finality mechanism
 
@@ -77,13 +85,14 @@ that redundancy because it can place the same false record on every network
 without any network trust model failing.
 
 If a project must choose one, OP Mainnet has the lowest retained median cost and
-the shortest observed L1 posting interval in this single sample. There is no
-capacity ranking.
+the shortest observed L1 posting interval in this single sample. The burst does
+not supply a capacity ranking.
 
 ## Limitations
 
-- Throughput capacity is unresolved because the block-level inputs and collection
-  procedure were not retained and no stress test was run.
+- The throughput figure is this client's confirmed-inclusion rate for ten
+  sequential snapshots. Relative unused capacity and ecosystem-scale saturation
+  were not measured.
 - EraVM gas is not directly comparable with EVM gas.
 - Settlement timings are single observations per network, taken within the same
   half hour, as recorded in `latency.md`.

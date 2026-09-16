@@ -2,9 +2,18 @@
 
 Collected 2026-08-12. Retained aggregate figures:
 `data/fee-distribution.json`.
-To reconstruct a new raw-compatible series over the same window, run
-`npm run fees:history -- --end 2026-08-12T10:44:09Z`, then
-`npm run fees:analyse`.
+
+Raw daily samples with block identifiers, collected 2026-09-16 over the same
+pinned window: `data/fee-history.json`. Analysis of that series:
+`data/fee-distribution-reconstructed.json`.
+Reproduce: `npm run fees:history -- --end 2026-08-12T10:44:09Z --out fee-history.json`,
+then `npm run fees:analyse -- --in fee-history.json --out fee-distribution-reconstructed.json`.
+
+The archived arithmetic fixture can be checked without network access:
+`npm run fees:analyse -- --in fee-arithmetic-input.json --out fee-arithmetic-output.json`.
+It reproduces the v1.0.1 revision-1 OP receipt total of 1.01805679742e-7 ETH from
+99,512 gas, the 366-wei block base fee, the observed 0.001-gwei priority fee, and
+the separate 2,257,258,350-wei `l1Fee`.
 
 The archived arithmetic fixture can be checked without network access:
 `npm run fees:analyse -- --in fee-arithmetic-input.json --out fee-arithmetic-output.json`.
@@ -29,9 +38,11 @@ is recovered backwards rather than accumulated forwards.
 
 One block was sampled per day for 365 days on each network, matched to within ten
 minutes of the target time, plus Ethereum L1 for context. No gaps: 365 of 365
-samples were reported on every network. The original block-level series was not
-archived, so these completeness and distribution figures survive as aggregate
-records rather than independently inspectable sample rows.
+samples were reported on every network. The 2026-08-12 collection kept the
+aggregates below and did not keep the per-sample block identifiers. The 2026-09-16
+rerun archives those identifiers in `data/fee-history.json`. It is a new series
+over the same window, not a proof that the original 365 blocks were selected
+again.
 
 **These figures are counterfactual.** They are what a first-write release anchor
 with a non-zero SBOM hash would have cost had it been submitted at that moment,
@@ -136,6 +147,26 @@ on Arbitrum One, and 1.08 cents on zkSync Era. The worst sampled Arbitrum day
 prices the transaction at approximately 4.17 cents. The daily series is not
 evidence about unsampled intraday peaks.
 
+## Archived reconstruction, 16 September 2026
+
+`data/fee-history.json` holds 365 samples per network (Arbitrum One, OP Mainnet,
+zkSync Era, Ethereum), each with `targetIso`, `blockNumber`, `blockIso`,
+`driftSeconds`, and `baseFeePerGasWei`. Completeness is 365/365 after a retry of
+23 consecutive zkSync points that failed on a DNS blip (`ECONNRESET` then
+`ENOTFOUND` for `mainnet.era.zksync.io` from 23 November to 15 December 2025
+targets). The fill is recorded on the file as `zksyncGapFill`.
+
+`fees:analyse` against that series does not replace the tables above. Those
+remain the 12 August 2026 aggregates. Against the archived blocks, OP and zkSync
+percentiles match to well under 0.2%. Arbitrum p50 and p90 also match. Arbitrum
+p99 is 13% higher (8.745e-6 vs 7.715e-6 ETH) and the worst day is 4% lower
+(2.102e-5 vs 2.194e-5 ETH), still 25 December 2025. Ethereum L1 base-fee p50 is
+0.118 gwei against 0.116. That is the expected effect of picking a nearby block
+rather than the unarchived original. Receipt validation on the rerun is still
+0.00% error on all three L2 revision-1 transactions.
+
+Blob base fee is still omitted. The header derivation was not repaired.
+
 ## Limitations
 
 - Daily resolution can miss intraday peaks. A dense pass over the worst days
@@ -148,7 +179,7 @@ evidence about unsampled intraday peaks.
 - OP's priority fee is fixed at the observed 1,000,000 wei and `l1Fee` is held
   at its single observed value rather than reconstructed across time, so the
   spread does not capture variation in either input.
-- The original per-sample raw series and exact block identifiers were not
-  archived. A pinned `--end` reconstructs a 365-point series over the same window,
-  but it does not independently reproduce the original block selection.
+- The 12 August 2026 aggregates do not identify the original 365 blocks. The
+  16 September 2026 series in `data/fee-history.json` is inspectable and uses
+  the same pinned `--end`. It does not claim to be the original block set.
 - USD figures use one approximate rate of $1900/ETH and are illustrative.

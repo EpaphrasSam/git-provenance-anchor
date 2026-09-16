@@ -93,10 +93,12 @@ The v1.0.1 revision-1 release anchors carried non-zero SBOM hashes and used
 A **distribution** over time is no longer open. `fee-distribution.md` prices the
 v1.0.1 revision-1, with-SBOM release shape at 365 daily points across a year on
 each production network. The Phase A no-SBOM receipts validate the arithmetic
-using their own gas usage. The original block-level samples were not archived.
-`npm run fees:history -- --end 2026-08-12T10:44:09Z` reconstructs a new 365-point
-raw-compatible series over the same window, and `npm run fees:analyse` applies
-the recorded arithmetic; this does not prove the original block IDs.
+using their own gas usage. The 12 August 2026 aggregates remain the published
+table. Daily block identifiers for a reconstruction over the same window are in
+`data/fee-history.json` (collected 16 September 2026).
+`npm run fees:analyse -- --in fee-history.json --out fee-distribution-reconstructed.json`
+applies the recorded arithmetic to that series. It does not prove the original
+block IDs.
 
 Oracle-only pricing, reading historical base fees and multiplying by known gas
 units without transacting, is what that record does and is implemented in
