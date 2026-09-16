@@ -42,7 +42,8 @@ operator tooling, not just documentation of this deployment.
 | `workflow-impact.md` | Current template line counts, files added, manual steps, runtime variation and the unmeasured end-to-end noise burden | counts over the reference templates, plus `ci-end-to-end.md` |
 | `sbom-coverage.md` | What Syft 1.51.0 plus CycloneDX inventories on the twelve sampled source trees, compared with recognised dependency metadata and package manifests | `npm run sample:sbom`, with a 900-second timeout and an automatic SVG-exclusion diagnostic after the fluentui timeout |
 | `rq2-strategies.md` | Tag-only versus tag-plus-snapshots versus tag-plus-re-verification: the rubric re-run three ways, grounded in release cadence and priced from observed fees | `python3 evaluation/rq2-ablation.py` |
-| `network-tradeoffs.md` | Cost, latency and finality-security assumptions across the three production networks; throughput capacity was not delivered | figures drawn from `fee-distribution.md` and `latency.md` |
+| `network-tradeoffs.md` | Cost, latency and finality-security assumptions across the three production networks; a bounded client throughput burst is in `throughput.md` | figures drawn from `fee-distribution.md`, `latency.md`, and `throughput.md` |
+| `throughput.md` | Ten sequential production snapshot anchors per L2, reported as confirmed inclusions per minute for this client, not network saturation | `npm run throughput:send` |
 | `workflow-tamper-protection.md` | Which GitHub branch protection configuration actually prevents the anchoring workflow being edited, and which only appears to | manual `gh api` calls, recorded in the file |
 
 ## Raw data
@@ -56,7 +57,8 @@ operator tooling, not just documentation of this deployment.
 | `data/fee-distribution.json` | Retained aggregate distribution and receipt validation. `npm run fees:history -- --end 2026-08-12T10:44:09Z` reconstructs a new 365-point raw-compatible input; it does not reproduce the unarchived original block IDs |
 | `data/fee-arithmetic-input.json` | Archived raw-compatible fixture for checking the Arbitrum, OP and zkSync arithmetic without network access |
 | `data/latency.json` | settlement timing read from each network's own batch records (see `latency.md`) |
-| `data/latency-series.json` | Repeated timing probes under `latency-protocol.md`; empty until the first live run |
+| `data/latency-series.json` | Repeated timing probes under `latency-protocol.md` |
+| `data/throughput-burst.json` | Sequential production burst behind `throughput.md` |
 | `data/ladisa-classification.csv` | `python3 evaluation/ladisa-classify.py`, one row per attack-tree node instance |
 | `data/sample-results.json` | per-repository measurements behind `repository-sample.md` |
 | `data/rq2-ablation.csv` and `data/rq2-ablation.json` | `python3 evaluation/rq2-ablation.py`, one row per vector per policy |
@@ -116,6 +118,7 @@ Listed so the gaps are visible rather than discovered late.
   used it, so real-world behaviour is unobserved.
 - **Slow release cadences.** Nothing in the sample tags less often than every 98
   days, which is the case where periodic snapshots would matter most for RQ2.
-- **Throughput capacity.** No raw block sample, collection script or stress test
-  was retained. EraVM gas is not directly comparable with EVM gas, so the gas
-  figures do not supply a cross-network capacity result.
+- **Throughput capacity.** A bounded client burst is in `throughput.md` (10
+  sequential anchors per production L2). It reports confirmed inclusions per
+  minute for this submitting setup. It does not saturate the networks, and
+  EraVM gas is still not a cross-network capacity unit.

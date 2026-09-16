@@ -1,0 +1,371 @@
+{
+ "schemaVersion": 1,
+ "label": "gpa-latency-eval-2026",
+ "projectId": "0xd2b1379c5d52861068eb3c6ab0290f45322abf572df7d99bffc0acbdee050d16",
+ "submitter": "0x1318dA3655688daeFc4DA89ABAeDA33eA4A6e341",
+ "startedAt": "2026-09-16T15:37:57.706Z",
+ "countPerNetwork": 10,
+ "capEth": "0.001",
+ "mode": "send",
+ "networks": {
+  "arbitrumOne": {
+   "included": 10,
+   "attempted": 10,
+   "elapsedMs": 64814,
+   "confirmedPerMinute": 9.257259234116086,
+   "spentEth": "0.000016237520434",
+   "observations": [
+    {
+     "i": 0,
+     "ref": "tp-20260916T153757Z-0",
+     "status": "included",
+     "txHash": "0xc45bef219550d180c5da7da0082d5aa4b07e56263b491127742987e14da1b617",
+     "l2Block": 505802216,
+     "l2BlockIso": "2026-09-16T15:37:59.000Z",
+     "inclusionSeconds": 7.204,
+     "feeEth": "0.00000161958",
+     "gasUsed": "80979"
+    },
+    {
+     "i": 1,
+     "ref": "tp-20260916T153757Z-1",
+     "status": "included",
+     "txHash": "0xf59537c53a9ec9106402cd4c9ad0c77f00dc2dba19223cc0561f1fed3530dc8b",
+     "l2Block": 505802245,
+     "l2BlockIso": "2026-09-16T15:38:06.000Z",
+     "inclusionSeconds": 7.232,
+     "feeEth": "0.00000162295434",
+     "gasUsed": "81010"
+    },
+    {
+     "i": 2,
+     "ref": "tp-20260916T153757Z-2",
+     "status": "included",
+     "txHash": "0xdc8411a83cbfdb4b9d1536d978fc0309619187754d089b84095ce33868cb1d32",
+     "l2Block": 505802285,
+     "l2BlockIso": "2026-09-16T15:38:14.000Z",
+     "inclusionSeconds": 7.383,
+     "feeEth": "0.000001628576608",
+     "gasUsed": "80911"
+    },
+    {
+     "i": 3,
+     "ref": "tp-20260916T153757Z-3",
+     "status": "included",
+     "txHash": "0x4f1e18709b5069736058790c870908bcb30cbf1fdb462212a3d4e3cc7b259c72",
+     "l2Block": 505802314,
+     "l2BlockIso": "2026-09-16T15:38:21.000Z",
+     "inclusionSeconds": 7.41,
+     "feeEth": "0.0000016186",
+     "gasUsed": "80930"
+    },
+    {
+     "i": 4,
+     "ref": "tp-20260916T153757Z-4",
+     "status": "included",
+     "txHash": "0xb7a820439a83b83b8968a0815ad8147f610069c2177ecfde5c8bf596688869aa",
+     "l2Block": 505802343,
+     "l2BlockIso": "2026-09-16T15:38:28.000Z",
+     "inclusionSeconds": 2.99,
+     "feeEth": "0.000001638326566",
+     "gasUsed": "80921"
+    },
+    {
+     "i": 5,
+     "ref": "tp-20260916T153757Z-5",
+     "status": "included",
+     "txHash": "0xda17171bf15b9351d65fb993f1a5615b4dbbc3229a04ecfbf66c4fc46c17f318",
+     "l2Block": 505802355,
+     "l2BlockIso": "2026-09-16T15:38:31.000Z",
+     "inclusionSeconds": 7.398,
+     "feeEth": "0.000001618263588",
+     "gasUsed": "80897"
+    },
+    {
+     "i": 6,
+     "ref": "tp-20260916T153757Z-6",
+     "status": "included",
+     "txHash": "0x69822ebd1f977bed045a7d6349524cb841fc19a00edd5a2503fac8908b343d03",
+     "l2Block": 505802384,
+     "l2BlockIso": "2026-09-16T15:38:39.000Z",
+     "inclusionSeconds": 7.28,
+     "feeEth": "0.000001629162744",
+     "gasUsed": "80916"
+    },
+    {
+     "i": 7,
+     "ref": "tp-20260916T153757Z-7",
+     "status": "included",
+     "txHash": "0xc5cea92975a44beaf0de48994550154fa9530b11dfbec9285ef9abd23860be80",
+     "l2Block": 505802413,
+     "l2BlockIso": "2026-09-16T15:38:46.000Z",
+     "inclusionSeconds": 7.352,
+     "feeEth": "0.0000016187",
+     "gasUsed": "80935"
+    },
+    {
+     "i": 8,
+     "ref": "tp-20260916T153757Z-8",
+     "status": "included",
+     "txHash": "0xa5cc8407f2a62735317fc819a4b9fb91f6f05e3a762690ae6e0043dcb56850ba",
+     "l2Block": 505802443,
+     "l2BlockIso": "2026-09-16T15:38:53.000Z",
+     "inclusionSeconds": 7.441,
+     "feeEth": "0.000001625316588",
+     "gasUsed": "80934"
+    },
+    {
+     "i": 9,
+     "ref": "tp-20260916T153757Z-9",
+     "status": "included",
+     "txHash": "0x342ed2cf8031d2d7549630780405186416cc225e4f77f4c705710711555944ae",
+     "l2Block": 505802472,
+     "l2BlockIso": "2026-09-16T15:39:01.000Z",
+     "inclusionSeconds": 3.119,
+     "feeEth": "0.00000161804",
+     "gasUsed": "80902"
+    }
+   ]
+  },
+  "opMainnet": {
+   "included": 10,
+   "attempted": 10,
+   "elapsedMs": 46178,
+   "confirmedPerMinute": 12.993200225215471,
+   "spentEth": "0.00000084781149191",
+   "observations": [
+    {
+     "i": 0,
+     "ref": "tp-20260916T153757Z-0",
+     "status": "included",
+     "txHash": "0xb27da34b0fc4039369dfcc425be3138f408a1193c02042bd1a793a672165066b",
+     "l2Block": 156987184,
+     "l2BlockIso": "2026-09-16T15:39:05.000Z",
+     "inclusionSeconds": 6.094,
+     "feeEth": "0.000000084952399236",
+     "gasUsed": "79432"
+    },
+    {
+     "i": 1,
+     "ref": "tp-20260916T153757Z-1",
+     "status": "included",
+     "txHash": "0x415daf54cfefbc5d0c00602a6b6f9bebbefb63293341bf60897c2da060ca92b7",
+     "l2Block": 156987187,
+     "l2BlockIso": "2026-09-16T15:39:11.000Z",
+     "inclusionSeconds": 2.247,
+     "feeEth": "0.000000084952478668",
+     "gasUsed": "79432"
+    },
+    {
+     "i": 2,
+     "ref": "tp-20260916T153757Z-2",
+     "status": "included",
+     "txHash": "0x63667903711dd6fa80cd8c598bcdad1c0514415223d14a27af87186c842fdfee",
+     "l2Block": 156987188,
+     "l2BlockIso": "2026-09-16T15:39:13.000Z",
+     "inclusionSeconds": 1.962,
+     "feeEth": "0.000000084894501929",
+     "gasUsed": "79432"
+    },
+    {
+     "i": 3,
+     "ref": "tp-20260916T153757Z-3",
+     "status": "included",
+     "txHash": "0x4ac510bf00958419a3129eb0cb59a66456a76ad3f2b3d3a0a506d6a754609287",
+     "l2Block": 156987189,
+     "l2BlockIso": "2026-09-16T15:39:15.000Z",
+     "inclusionSeconds": 2.041,
+     "feeEth": "0.000000084894581361",
+     "gasUsed": "79432"
+    },
+    {
+     "i": 4,
+     "ref": "tp-20260916T153757Z-4",
+     "status": "included",
+     "txHash": "0xe93b7b27f6f612965aba953fd431886c2826d02558ada2d6c65131d934654a6b",
+     "l2Block": 156987190,
+     "l2BlockIso": "2026-09-16T15:39:17.000Z",
+     "inclusionSeconds": 6.262,
+     "feeEth": "0.000000084894581361",
+     "gasUsed": "79432"
+    },
+    {
+     "i": 5,
+     "ref": "tp-20260916T153757Z-5",
+     "status": "included",
+     "txHash": "0x5da85a37eae9003fddb4463084aa560066874e86a536180f70bd64a3b5634797",
+     "l2Block": 156987194,
+     "l2BlockIso": "2026-09-16T15:39:25.000Z",
+     "inclusionSeconds": 6.358,
+     "feeEth": "0.000000084697524047",
+     "gasUsed": "79432"
+    },
+    {
+     "i": 6,
+     "ref": "tp-20260916T153757Z-6",
+     "status": "included",
+     "txHash": "0x51f01b64bf345697cab3b51197604a589eb3018da0f612cbc7c6b8b2a4340f41",
+     "l2Block": 156987197,
+     "l2BlockIso": "2026-09-16T15:39:31.000Z",
+     "inclusionSeconds": 6.539,
+     "feeEth": "0.000000084697524047",
+     "gasUsed": "79432"
+    },
+    {
+     "i": 7,
+     "ref": "tp-20260916T153757Z-7",
+     "status": "included",
+     "txHash": "0x0efde2ed3026a1997e991110f9c50278805b2034603f99f901cfc52fefa96503",
+     "l2Block": 156987200,
+     "l2BlockIso": "2026-09-16T15:39:37.000Z",
+     "inclusionSeconds": 6.314,
+     "feeEth": "0.000000084697603479",
+     "gasUsed": "79432"
+    },
+    {
+     "i": 8,
+     "ref": "tp-20260916T153757Z-8",
+     "status": "included",
+     "txHash": "0xba735f81286bd5ffeb624ddec5286a696b22feb557b881a7c5e7b1622b86429d",
+     "l2Block": 156987203,
+     "l2BlockIso": "2026-09-16T15:39:43.000Z",
+     "inclusionSeconds": 6.311,
+     "feeEth": "0.000000084697682911",
+     "gasUsed": "79432"
+    },
+    {
+     "i": 9,
+     "ref": "tp-20260916T153757Z-9",
+     "status": "included",
+     "txHash": "0xbe688d2d6b4d0f9c77ed50d8d9d8939935bffda8fb4b06f91a2f7e543ea7e56e",
+     "l2Block": 156987206,
+     "l2BlockIso": "2026-09-16T15:39:49.000Z",
+     "inclusionSeconds": 2.049,
+     "feeEth": "0.000000084432614871",
+     "gasUsed": "79432"
+    }
+   ]
+  },
+  "zkSyncEra": {
+   "included": 10,
+   "attempted": 10,
+   "elapsedMs": 41166,
+   "confirmedPerMinute": 14.575134819997084,
+   "spentEth": "0.00004931512425",
+   "observations": [
+    {
+     "i": 0,
+     "ref": "tp-20260916T153757Z-0",
+     "status": "included",
+     "txHash": "0xec9f15fccbf5bd108dbce84c8733efb6ca9bde3a7a605876add6e19fb749f1a3",
+     "l2Block": 72015427,
+     "l2BlockIso": "2026-09-16T15:39:50.000Z",
+     "inclusionSeconds": 2.245,
+     "feeEth": "0.0000056918165",
+     "gasUsed": "125786"
+    },
+    {
+     "i": 1,
+     "ref": "tp-20260916T153757Z-1",
+     "status": "included",
+     "txHash": "0xd6e9f2729de4bc3ad3d7baf2df0ac7b931780e0af9cea1125e6bc1c323aab915",
+     "l2Block": 72015428,
+     "l2BlockIso": "2026-09-16T15:39:53.000Z",
+     "inclusionSeconds": 2.424,
+     "feeEth": "0.000004847542",
+     "gasUsed": "107128"
+    },
+    {
+     "i": 2,
+     "ref": "tp-20260916T153757Z-2",
+     "status": "included",
+     "txHash": "0xde2f1312e7d50722bf70bca804a73f9ac94e1ed27317f90784b95e89ca4a6afc",
+     "l2Block": 72015430,
+     "l2BlockIso": "2026-09-16T15:39:55.000Z",
+     "inclusionSeconds": 2.218,
+     "feeEth": "0.0000048478135",
+     "gasUsed": "107134"
+    },
+    {
+     "i": 3,
+     "ref": "tp-20260916T153757Z-3",
+     "status": "included",
+     "txHash": "0xd25064ee2b5aab48b84fe5f3708ffc333980531e0c210291934e38ef308780e4",
+     "l2Block": 72015431,
+     "l2BlockIso": "2026-09-16T15:39:58.000Z",
+     "inclusionSeconds": 6.905,
+     "feeEth": "0.000004847542",
+     "gasUsed": "107128"
+    },
+    {
+     "i": 4,
+     "ref": "tp-20260916T153757Z-4",
+     "status": "included",
+     "txHash": "0x8a17a7b852fb9f9ef7f6614c5b6847c0c82fa147608bed9722e71efd68d88afa",
+     "l2Block": 72015434,
+     "l2BlockIso": "2026-09-16T15:40:05.000Z",
+     "inclusionSeconds": 2.251,
+     "feeEth": "0.000004847542",
+     "gasUsed": "107128"
+    },
+    {
+     "i": 5,
+     "ref": "tp-20260916T153757Z-5",
+     "status": "included",
+     "txHash": "0x458582acb50dd6e4054f7d7d620a67c8e31b18bf0d4f27bf65c3d42f28fd51a1",
+     "l2Block": 72015436,
+     "l2BlockIso": "2026-09-16T15:40:07.000Z",
+     "inclusionSeconds": 2.242,
+     "feeEth": "0.000004847542",
+     "gasUsed": "107128"
+    },
+    {
+     "i": 6,
+     "ref": "tp-20260916T153757Z-6",
+     "status": "included",
+     "txHash": "0xa97ed58f4de2c33fc84006957d59a6621b003e104843e8216d4aeb942ec403b8",
+     "l2Block": 72015437,
+     "l2BlockIso": "2026-09-16T15:40:09.000Z",
+     "inclusionSeconds": 6.896,
+     "feeEth": "0.00000484242875",
+     "gasUsed": "107015"
+    },
+    {
+     "i": 7,
+     "ref": "tp-20260916T153757Z-7",
+     "status": "included",
+     "txHash": "0xf6d475744aa6b52dc019995e0519f154a99de23f1596e1a4e952debaa071ae3e",
+     "l2Block": 72015439,
+     "l2BlockIso": "2026-09-16T15:40:16.000Z",
+     "inclusionSeconds": 6.907,
+     "feeEth": "0.000004847542",
+     "gasUsed": "107128"
+    },
+    {
+     "i": 8,
+     "ref": "tp-20260916T153757Z-8",
+     "status": "included",
+     "txHash": "0x33c6743b0e8cb7585c78adbdb03496e1bf5619673ccfd4b8c9315bdc233aaa8b",
+     "l2Block": 72015441,
+     "l2BlockIso": "2026-09-16T15:40:23.000Z",
+     "inclusionSeconds": 6.899,
+     "feeEth": "0.000004847542",
+     "gasUsed": "107128"
+    },
+    {
+     "i": 9,
+     "ref": "tp-20260916T153757Z-9",
+     "status": "included",
+     "txHash": "0xc286ea988c6c64b4f5a1d4532f9c33efed36f851f4a6d9aa5cf446d631c3519c",
+     "l2Block": 72015442,
+     "l2BlockIso": "2026-09-16T15:40:29.000Z",
+     "inclusionSeconds": 2.179,
+     "feeEth": "0.0000048478135",
+     "gasUsed": "107134"
+    }
+   ]
+  }
+ },
+ "finishedAt": "2026-09-16T15:40:32.016Z",
+ "seriesSpentEth": "0.00006640045617591"
+}
