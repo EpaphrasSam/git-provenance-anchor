@@ -2,7 +2,7 @@
  "schemaVersion": 1,
  "label": "gpa-latency-eval-2026",
  "projectId": "0xd2b1379c5d52861068eb3c6ab0290f45322abf572df7d99bffc0acbdee050d16",
- "status": "not-started",
+ "status": "collecting",
  "caps": {
   "maxEthPerRun": "0.001",
   "maxEthSeries": "0.01",
@@ -10,7 +10,99 @@
   "plannedDays": 5,
   "txsPerNetworkPerWindow": 1
  },
- "seriesSpentEth": "0",
- "setup": [],
- "observations": []
+ "seriesSpentEth": "0.00001394528579506",
+ "setup": [
+  {
+   "network": "arbitrumOne",
+   "action": "registerProject",
+   "txHash": "0x39a91b882acd72ba181d31ca4588c0bb98d0fa7c1960d976ccb04a852b0df0b1",
+   "at": "2026-09-16T14:04:02.874Z",
+   "feeEth": "0.000001908995362"
+  },
+  {
+   "network": "opMainnet",
+   "action": "registerProject",
+   "txHash": "0x5c9f331eded0f42c32288bb9a63bc63eef404ac7c121cdb4a4f46737ce4d59ed",
+   "at": "2026-09-16T14:04:10.616Z",
+   "feeEth": "0.000000097434555774"
+  },
+  {
+   "network": "zkSyncEra",
+   "action": "registerProject",
+   "txHash": "0x6c0214b97ab6f6c28088caf69653573591f91b21096bd289dc4d67bbb6fb4d01",
+   "at": "2026-09-16T14:04:15.904Z",
+   "feeEth": "0.00000542262425"
+  }
+ ],
+ "observations": [
+  {
+   "id": "lat-20260916T140357Z-arbitrumOne",
+   "mode": "probe",
+   "network": "arbitrumOne",
+   "ref": "lat-20260916T140357Z",
+   "projectId": "0xd2b1379c5d52861068eb3c6ab0290f45322abf572df7d99bffc0acbdee050d16",
+   "submitter": "0x1318dA3655688daeFc4DA89ABAeDA33eA4A6e341",
+   "submittedAt": "2026-09-16T14:04:16.149Z",
+   "txHash": "0xc48d1d35e80e3b0a9d5bcd45e2b47a0d546ccdec3c69d19d693c6d05decfb58f",
+   "l2Block": 505779749,
+   "l2BlockIso": "2026-09-16T14:04:17.000Z",
+   "inclusionSeconds": 5.422,
+   "feeEth": "0.000001609348338",
+   "gasUsed": "80379",
+   "l1PostedAt": null,
+   "secondsToL1DataAvailability": null,
+   "l1TxHash": null,
+   "zkCommittedAt": null,
+   "zkProvenAt": null,
+   "zkExecutedAt": null,
+   "status": "included",
+   "detail": null
+  },
+  {
+   "id": "lat-20260916T140357Z-opMainnet",
+   "mode": "probe",
+   "network": "opMainnet",
+   "ref": "lat-20260916T140357Z",
+   "projectId": "0xd2b1379c5d52861068eb3c6ab0290f45322abf572df7d99bffc0acbdee050d16",
+   "submitter": "0x1318dA3655688daeFc4DA89ABAeDA33eA4A6e341",
+   "submittedAt": "2026-09-16T14:05:53.255Z",
+   "txHash": "0xc55e33f2da81285c27bc4f08c713f6a34827d275b44872b34c86096267974d14",
+   "l2Block": 156984389,
+   "l2BlockIso": "2026-09-16T14:05:55.000Z",
+   "inclusionSeconds": 6.688,
+   "feeEth": "0.000000083459539286",
+   "gasUsed": "79408",
+   "l1PostedAt": null,
+   "secondsToL1DataAvailability": null,
+   "l1TxHash": null,
+   "zkCommittedAt": null,
+   "zkProvenAt": null,
+   "zkExecutedAt": null,
+   "status": "included",
+   "detail": null
+  },
+  {
+   "id": "lat-20260916T140357Z-zkSyncEra",
+   "mode": "probe",
+   "network": "zkSyncEra",
+   "ref": "lat-20260916T140357Z",
+   "projectId": "0xd2b1379c5d52861068eb3c6ab0290f45322abf572df7d99bffc0acbdee050d16",
+   "submitter": "0x1318dA3655688daeFc4DA89ABAeDA33eA4A6e341",
+   "submittedAt": "2026-09-16T14:07:36.349Z",
+   "txHash": "0x99f311c59c14c80e2c578680200246a0fec3af872a41972a99172846e2250f45",
+   "l2Block": 72013999,
+   "l2BlockIso": "2026-09-16T14:07:36.000Z",
+   "inclusionSeconds": 4.847,
+   "feeEth": "0.00000482342375",
+   "gasUsed": "106595",
+   "l1PostedAt": null,
+   "secondsToL1DataAvailability": null,
+   "l1TxHash": null,
+   "zkCommittedAt": null,
+   "zkProvenAt": null,
+   "zkExecutedAt": null,
+   "status": "included",
+   "detail": null
+  }
+ ]
 }
