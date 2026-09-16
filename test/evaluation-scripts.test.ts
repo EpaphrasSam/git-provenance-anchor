@@ -16,6 +16,7 @@ import {
   paidWeiFromRpcReceipt,
   parseMode,
   probeTreeHash,
+  seriesWindowClosed,
   spendWouldExceed,
 } from "../scripts/latency-collect";
 
@@ -105,5 +106,50 @@ describe("latency collector", function () {
     expect(paidWeiFromRpcReceipt({ gasUsed: "100", effectiveGasPrice: "2", l1Fee: "5" })).to.equal(
       205n
     );
+  });
+
+  it("closes collect after the planned number of days", function () {
+    const ledger = {
+      schemaVersion: 1 as const,
+      label: LATENCY_LABEL,
+      projectId: experimentProjectId(),
+      status: "collecting" as const,
+      caps: {
+        maxEthPerRun: "0.001",
+        maxEthSeries: "0.01",
+        maxRevertsPerRun: 2,
+        plannedDays: 5,
+        txsPerNetworkPerWindow: 1,
+      },
+      seriesSpentEth: "0",
+      setup: [],
+      observations: [
+        {
+          id: "x",
+          mode: "probe" as const,
+          network: "arbitrumOne",
+          ref: "lat-1",
+          projectId: experimentProjectId(),
+          submitter: CI_ADDRESS,
+          submittedAt: "2026-09-16T14:04:16.149Z",
+          txHash: "0x1",
+          l2Block: 1,
+          l2BlockIso: "2026-09-16T14:04:17.000Z",
+          inclusionSeconds: 5,
+          feeEth: "0",
+          gasUsed: "1",
+          l1PostedAt: null,
+          secondsToL1DataAvailability: null,
+          l1TxHash: null,
+          zkCommittedAt: null,
+          zkProvenAt: null,
+          zkExecutedAt: null,
+          status: "included" as const,
+          detail: null,
+        },
+      ],
+    };
+    expect(seriesWindowClosed(ledger, new Date("2026-09-21T14:04:16.149Z"))).to.equal(true);
+    expect(seriesWindowClosed(ledger, new Date("2026-09-20T14:04:16.148Z"))).to.equal(false);
   });
 });

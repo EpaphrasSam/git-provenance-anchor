@@ -130,6 +130,13 @@ export function spendWouldExceed(spentWei: bigint, nextWei: bigint, capWei: bigi
   return spentWei + nextWei > capWei;
 }
 
+export function seriesWindowClosed(ledger: LatencyLedger, now: Date = new Date()): boolean {
+  const first = ledger.observations.find((row) => row.status === "included" && row.submittedAt);
+  if (!first?.submittedAt) return false;
+  const elapsedMs = now.getTime() - Date.parse(first.submittedAt);
+  return elapsedMs >= ledger.caps.plannedDays * 24 * 60 * 60 * 1000;
+}
+
 export function assertSignerAllowed(address: string): void {
   if (address.toLowerCase() === DEPLOYER_ADDRESS.toLowerCase()) {
     throw new Error("Refusing to sign latency probes with the registry deployer");
@@ -573,6 +580,12 @@ async function runLive(root: string, mode: "probe" | "collect"): Promise<number>
     console.log("series cap already reached");
     return 0;
   }
+  if (mode === "collect" && seriesWindowClosed(ledger, new Date())) {
+    ledger.status = "complete";
+    saveLedger(root, ledger);
+    console.log(`planned ${ledger.caps.plannedDays}-day window is closed`);
+    return 0;
+  }
   const settleWaitMs = Number(process.env.LATENCY_SETTLE_WAIT_MS ?? DEFAULT_SETTLE_WAIT_MS);
   const at = new Date();
   const runSpent = { wei: 0n };
@@ -584,7 +597,7 @@ async function runLive(root: string, mode: "probe" | "collect"): Promise<number>
   for (const network of LATENCY_NETWORKS) {
     await ensureProject(root, ledger, network, runCapLeft);
   }
-  runSpent.wei = runCap - runCapLeft.wei
+  runSpent.wei = runCap - runCapLeft.wei;
 
   for (const network of LATENCY_NETWORKS) {
     if (revertCount.n >= ledger.caps.maxRevertsPerRun) {
@@ -605,8 +618,12 @@ async function runLive(root: string, mode: "probe" | "collect"): Promise<number>
     ledger.observations.push(observation);
     ledger.seriesSpentEth = ethers.formatEther(seriesSpentWei(ledger));
     saveLedger(root, ledger);
+    const l1 =
+      observation.secondsToL1DataAvailability == null
+        ? "pending"
+        : `${observation.secondsToL1DataAvailability}s`;
     console.log(
-      `${network} ${observation.status} tx=${observation.txHash ?? "-"} inclusion=${observation.inclusionSeconds ?? "-"}s l1=${observation.secondsToL1DataAvailability ?? "pending"}s fee=${observation.feeEth ?? "-"} ETH`
+      `${network} ${observation.status} tx=${observation.txHash ?? "-"} inclusion=${observation.inclusionSeconds ?? "-"}s l1=${l1} fee=${observation.feeEth ?? "-"} ETH`
     );
     if (observation.detail) console.log(`  ${observation.detail}`);
   }
