@@ -44,6 +44,7 @@ operator tooling, not just documentation of this deployment.
 | `rq2-strategies.md` | Tag-only versus tag-plus-snapshots versus tag-plus-re-verification: the rubric re-run three ways, grounded in release cadence and priced from observed fees | `python3 evaluation/rq2-ablation.py` |
 | `network-tradeoffs.md` | Cost, latency and finality-security assumptions across the three production networks; a bounded client throughput burst is in `throughput.md` | figures drawn from `fee-distribution.md`, `latency.md`, and `throughput.md` |
 | `throughput.md` | Ten sequential production snapshot anchors per L2, reported as confirmed inclusions per minute for this client, not network saturation | `npm run throughput:send` |
+| `sha256-compat.md` | SHA-1 fixture passes reconstruction; a SHA-256 Git repo can store its id on the contract while `hashGitRef` / artifact verify do not match Git | `npm run sha256:compat` |
 | `workflow-tamper-protection.md` | Which GitHub branch protection configuration actually prevents the anchoring workflow being edited, and which only appears to | manual `gh api` calls, recorded in the file |
 
 ## Raw data
@@ -61,6 +62,7 @@ operator tooling, not just documentation of this deployment.
 | `data/latency.json` | settlement timing read from each network's own batch records (see `latency.md`) |
 | `data/latency-series.json` | Repeated timing probes under `latency-protocol.md` |
 | `data/throughput-burst.json` | Sequential production burst behind `throughput.md` |
+| `data/sha256-compat.json` | SHA-1 vs SHA-256 object-format steps behind `sha256-compat.md` |
 | `data/ladisa-classification.csv` | `python3 evaluation/ladisa-classify.py`, one row per attack-tree node instance |
 | `data/sample-results.json` | per-repository measurements behind `repository-sample.md` |
 | `data/rq2-ablation.csv` and `data/rq2-ablation.json` | `python3 evaluation/rq2-ablation.py`, one row per vector per policy |

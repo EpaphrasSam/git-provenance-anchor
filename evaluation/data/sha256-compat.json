@@ -1,0 +1,91 @@
+{
+  "collectedAt": "2026-09-16T16:51:05.042Z",
+  "gitVersion": "git version 2.54.0.windows.1",
+  "method": "Local Git fixtures, one SHA-1 and one SHA-256 object format. Same tree layout. In-process Hardhat AnchorRegistry. No live network, no private key.",
+  "sha1": {
+    "objectFormat": "sha1",
+    "reportedFormat": "sha1",
+    "repo": "C:\\Users\\isine\\AppData\\Local\\Temp\\gpa-sha1-oyJt7t",
+    "treeHex": "5b0a5752fc3490cbc1ed2d0f62a3dc3b6eb67dd6",
+    "steps": [
+      {
+        "label": "workflow hash extraction (git rev-parse <tag>^{tree})",
+        "ok": true,
+        "detail": "5b0a5752fc3490cbc1ed2d0f62a3dc3b6eb67dd6 (len 40) object-format=sha1"
+      },
+      {
+        "label": "bytes32 transport (treeHashToBytes32)",
+        "ok": true,
+        "detail": "0x0000000000000000000000005b0a5752fc3490cbc1ed2d0f62a3dc3b6eb67dd6"
+      },
+      {
+        "label": "CLI decoding (bytes32ToTreeHashHex)",
+        "ok": true,
+        "detail": "5b0a5752fc3490cbc1ed2d0f62a3dc3b6eb67dd6"
+      },
+      {
+        "label": "tree reconstruction (hashGitRef vs rev-parse)",
+        "ok": true,
+        "detail": "5b0a5752fc3490cbc1ed2d0f62a3dc3b6eb67dd6"
+      },
+      {
+        "label": "working-tree hash (hashDirectory vs rev-parse)",
+        "ok": true,
+        "detail": "5b0a5752fc3490cbc1ed2d0f62a3dc3b6eb67dd6"
+      },
+      {
+        "label": "artifact verification (git archive then hashArtifact)",
+        "ok": true,
+        "detail": "5b0a5752fc3490cbc1ed2d0f62a3dc3b6eb67dd6"
+      },
+      {
+        "label": "contract storage (local Hardhat AnchorRegistry.anchor)",
+        "ok": true,
+        "detail": "gas=79252 stored=0x0000000000000000000000005b0a5752fc3490cbc1ed2d0f62a3dc3b6eb67dd6 decoded=5b0a5752fc3490cbc1ed2d0f62a3dc3b6eb67dd6"
+      }
+    ]
+  },
+  "sha256": {
+    "objectFormat": "sha256",
+    "reportedFormat": "sha256",
+    "repo": "C:\\Users\\isine\\AppData\\Local\\Temp\\gpa-sha256-u4h19R",
+    "treeHex": "74ee973ab3d9bc3a9960adc33a77ab809178286dc17b0775bd4f9f27a436135d",
+    "steps": [
+      {
+        "label": "workflow hash extraction (git rev-parse <tag>^{tree})",
+        "ok": true,
+        "detail": "74ee973ab3d9bc3a9960adc33a77ab809178286dc17b0775bd4f9f27a436135d (len 64) object-format=sha256"
+      },
+      {
+        "label": "bytes32 transport (treeHashToBytes32)",
+        "ok": true,
+        "detail": "0x74ee973ab3d9bc3a9960adc33a77ab809178286dc17b0775bd4f9f27a436135d"
+      },
+      {
+        "label": "CLI decoding (bytes32ToTreeHashHex)",
+        "ok": true,
+        "detail": "74ee973ab3d9bc3a9960adc33a77ab809178286dc17b0775bd4f9f27a436135d"
+      },
+      {
+        "label": "tree reconstruction (hashGitRef vs rev-parse)",
+        "ok": false,
+        "detail": "hashGitRef=bc8ecf7ea211a512f15262081956b47866457d36 git=74ee973ab3d9bc3a9960adc33a77ab809178286dc17b0775bd4f9f27a436135d"
+      },
+      {
+        "label": "working-tree hash (hashDirectory vs rev-parse)",
+        "ok": false,
+        "detail": "hashDirectory=5b0a5752fc3490cbc1ed2d0f62a3dc3b6eb67dd6 git=74ee973ab3d9bc3a9960adc33a77ab809178286dc17b0775bd4f9f27a436135d"
+      },
+      {
+        "label": "artifact verification (git archive then hashArtifact)",
+        "ok": false,
+        "detail": "hashArtifact=5b0a5752fc3490cbc1ed2d0f62a3dc3b6eb67dd6 git=74ee973ab3d9bc3a9960adc33a77ab809178286dc17b0775bd4f9f27a436135d"
+      },
+      {
+        "label": "contract storage (local Hardhat AnchorRegistry.anchor)",
+        "ok": true,
+        "detail": "gas=79408 stored=0x74ee973ab3d9bc3a9960adc33a77ab809178286dc17b0775bd4f9f27a436135d decoded=74ee973ab3d9bc3a9960adc33a77ab809178286dc17b0775bd4f9f27a436135d"
+      }
+    ]
+  }
+}
