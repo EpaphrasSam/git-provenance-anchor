@@ -64,6 +64,7 @@
     "deploy:arbitrum-one": "hardhat run scripts/deploy.ts --network arbitrumOne",
     "deploy:op-mainnet": "hardhat run scripts/deploy.ts --network opMainnet",
     "deploy:zksync-era": "ts-node --transpile-only scripts/deploy-zksync.ts --network zkSyncEra",
+    "deploy:ethereum": "hardhat run scripts/deploy.ts --network ethereum",
     "balances": "ts-node --transpile-only scripts/balances.ts",
     "evidence": "ts-node --transpile-only scripts/collect-evidence.ts",
     "fees:history": "ts-node --transpile-only scripts/fee-history.ts",

@@ -67,6 +67,12 @@ const config: HardhatUserConfig = {
       chainId: 324,
       zksync: true,
     },
+    ethereum: {
+      url: process.env.ETHEREUM_RPC_URL || "https://ethereum.publicnode.com",
+      accounts,
+      chainId: 1,
+      zksync: false,
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS === "true",

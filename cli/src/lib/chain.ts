@@ -49,6 +49,10 @@ const DEFAULT_RPC: NetworkEndpoints = {
     chainId: 324,
     rpcUrl: process.env.ZKSYNC_ERA_RPC_URL || "https://mainnet.era.zksync.io",
   },
+  ethereum: {
+    chainId: 1,
+    rpcUrl: process.env.ETHEREUM_RPC_URL || "https://ethereum.publicnode.com",
+  },
 };
 
 export const KIND_TAG = 0;
@@ -163,6 +167,9 @@ export function rpcFor(network: string): string {
   }
   if (network === "zkSyncEra" && process.env.ZKSYNC_ERA_RPC_URL) {
     return process.env.ZKSYNC_ERA_RPC_URL;
+  }
+  if (network === "ethereum" && process.env.ETHEREUM_RPC_URL) {
+    return process.env.ETHEREUM_RPC_URL;
   }
   if (process.env[envKey]) return process.env[envKey]!;
   const fallback = DEFAULT_RPC[network];

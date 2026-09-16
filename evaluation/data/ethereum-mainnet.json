@@ -1,0 +1,59 @@
+{
+ "collectedAt": "2026-09-16T15:31:00Z",
+ "subject": "Live Ethereum mainnet deploy and one with-SBOM release-shaped anchor, for a paid-fee comparator against the three L2 receipts",
+ "network": "ethereum",
+ "chainId": 1,
+ "registry": "0x253F20c2b74dc44B4ea908bE6674EEC8deA72622",
+ "deployer": "0x52eaE29937b149B7a0f3D7516C81aD561B96c043",
+ "projectId": "0xd5a2d84a505835208164492fb3b9cf1331b361eed0e7ad977639f2a7aae6264e",
+ "label": "git-provenance-anchor",
+ "sourceCommit": "d6e43b68fd6a121d46e629749ce30dc7f7fe13b8",
+ "ethUsdApprox": 2500,
+ "caveat": "One live L1 receipt at this moment. It is not a 365-point distribution. Ratios against L2 use the retained v1.0.1 revision-1 receipts, which were paid on a different day.",
+ "anchorShape": {
+  "kind": 0,
+  "ref": "v1.0.1",
+  "treeHash": "c292e36f7a3a2455432b4a3670807f4e133ed559",
+  "sbomHash": "4c21791f4b8c7cc9bb5200cf195309223457207a054c48986199c9a5e333a154",
+  "note": "Non-zero SBOM hash so the gas matches the first-write with-SBOM L2 shape (99,512 on OP)."
+ },
+ "transactions": [
+  {
+   "step": "deploy",
+   "hash": "0x351378041bad33d5a427422ec46bbd97ab1cccaf1309533eaea23fd309a418f8",
+   "block": 25990940,
+   "iso": "2026-09-16T15:29:23.000Z",
+   "gasUsed": 879549,
+   "effectiveGasPriceWei": "277341735",
+   "feeEth": 0.000243935645677515
+  },
+  {
+   "step": "registerProject",
+   "hash": "0xd2a278e88b7b45b0123bc2eb11e2b6c916c59eb593e3722f33ece66c1d921316",
+   "block": 25990942,
+   "iso": "2026-09-16T15:29:47.000Z",
+   "gasUsed": 94630,
+   "effectiveGasPriceWei": "213173786",
+   "feeEth": 0.00002017263536918
+  },
+  {
+   "step": "anchor",
+   "hash": "0x77e6af3367e178c8f7e13e9a553e2f96f7e3102cde8f4e75616da6e848683271",
+   "block": 25990945,
+   "iso": "2026-09-16T15:30:23.000Z",
+   "gasUsed": 99512,
+   "effectiveGasPriceWei": "219771584",
+   "feeEth": 0.000021869909867008
+  }
+ ],
+ "l2Revision1Comparators": {
+  "arbitrumOne": { "hash": "0x100a342fa6383ab540cb5da85c90a7d5dda2db382b4ac381bedb0ce8099ad654", "gasUsed": 100095, "paidEth": 2.00550342e-6 },
+  "opMainnet": { "hash": "0x46f8761006ee59236ed579469b5b46873efd3db086d6039dc6ba5758c95ab3ba", "gasUsed": 99512, "paidEth": 1.01805679742e-7 },
+  "zkSyncEra": { "hash": "0x57a58f76c90cfe99efdd1977461567113b9a8c2c4fc0eb66f3abd3654e85b1a3", "gasUsed": 125161, "paidEth": 5.66353525e-6 }
+ },
+ "anchorFeeRatiosVsThisL1Receipt": {
+  "opMainnet": 214.82,
+  "arbitrumOne": 10.91,
+  "zkSyncEra": 3.86
+ }
+}

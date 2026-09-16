@@ -1,0 +1,18 @@
+{
+  "contract": "AnchorRegistry",
+  "address": "0x253F20c2b74dc44B4ea908bE6674EEC8deA72622",
+  "network": "ethereum",
+  "chainId": 1,
+  "deployer": "0x52eaE29937b149B7a0f3D7516C81aD561B96c043",
+  "transactionHash": "0x351378041bad33d5a427422ec46bbd97ab1cccaf1309533eaea23fd309a418f8",
+  "blockNumber": 25990940,
+  "gasUsed": "879549",
+  "solcVersion": "0.8.28",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200
+  },
+  "deployedAt": "2026-09-16T15:29:26.727Z",
+  "sourceCommit": "d6e43b68fd6a121d46e629749ce30dc7f7fe13b8",
+  "sourceClean": true
+}
