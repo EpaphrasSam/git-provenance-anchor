@@ -376,7 +376,7 @@
    "l1TxHash": "0x6159f638225e81185e8ca0e41c5cad6ba299a9b8734441c2d2fbeeefcd84a2f7",
    "zkCommittedAt": "2026-09-17T20:45:47.919Z",
    "zkProvenAt": "2026-09-17T21:05:06.726Z",
-   "zkExecutedAt": null,
+   "zkExecutedAt": "2026-09-18T00:03:56.492Z",
    "status": "included",
    "detail": null
   }
