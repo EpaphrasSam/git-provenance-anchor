@@ -80,6 +80,7 @@
     "latency:probe": "ts-node --transpile-only scripts/latency-collect.ts --mode probe",
     "latency:collect": "ts-node --transpile-only scripts/latency-collect.ts --mode collect",
     "latency:settle": "ts-node --transpile-only scripts/latency-collect.ts --mode settle",
+    "latency:analyse": "ts-node --transpile-only scripts/latency-analyse.ts",
     "throughput:dry-run": "ts-node --transpile-only scripts/throughput-burst.ts --dry-run",
     "throughput:send": "ts-node --transpile-only scripts/throughput-burst.ts --send --count 10",
     "sha256:compat": "hardhat run scripts/sha256-compat.ts --network hardhat",

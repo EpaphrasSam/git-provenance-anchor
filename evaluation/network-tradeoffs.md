@@ -3,7 +3,8 @@
 Consolidates the retained measurements behind RQ3: per-transaction cost,
 observed finality timing, a bounded client throughput burst, and the security
 assumptions under each network's finality. Cost detail is in
-`fee-distribution.md`, timing in `latency.md`, the burst in `throughput.md`.
+`fee-distribution.md`, repeated timing in `latency-series.md`, and the burst in
+`throughput.md`.
 A paid Ethereum mainnet receipt for the same with-SBOM shape is in
 `ethereum-mainnet.md`.
 
@@ -13,8 +14,10 @@ A paid Ethereum mainnet receipt for the same with-SBOM shape is in
 | --- | --- | --- | --- |
 | Median release-anchor cost | 2.0016991e-6 ETH (~$0.0038) | 1.0181673e-7 ETH (~$0.000193) | 5.6635353e-6 ETH (~$0.0108) |
 | Worst observed in a year | 2.1938320e-5 ETH (~11× median) | 1.2574060e-7 ETH (~1.23× median) | 5.6635353e-6 ETH (no variation) |
-| To L1 data availability | 2 min 56 s | 2 min 38 s | 32 min 38 s |
-| Validity proof verified | n/a | n/a | 45 min 35 s |
+| Median client confirmation (15 observations) | 4.960 s | 6.261 s | 4.856 s |
+| Median to L1 data availability | 1 min 34 s | 1 min 10 s | 37 min 24 s |
+| Observed L1 range | 34 s to 2 min 34 s | 26 s to 3 min 42 s | 24 min 12 s to 44 min 31 s |
+| Median validity proof / execution | n/a | n/a | 53 min 10 s / 3 h 58 min |
 | Full settlement | ~7 day challenge window | ~7 day challenge window | proof plus execution |
 | First-write release-anchor gas | 100,095 (EVM) | 99,512 (EVM) | 125,161 (EraVM) |
 | Client confirmed/min (10 sequential snapshots) | 9.26 | 12.99 | 14.58 |
@@ -85,8 +88,9 @@ that redundancy because it can place the same false record on every network
 without any network trust model failing.
 
 If a project must choose one, OP Mainnet has the lowest retained median cost and
-the shortest observed L1 posting interval in this single sample. The burst does
-not supply a capacity ranking.
+the lowest median L1 posting time in the five-day series. Arbitrum and OP ranges
+overlap, so the timing sample does not establish a stable ordering between them.
+The burst does not supply a capacity ranking.
 
 ## Limitations
 
@@ -94,5 +98,7 @@ not supply a capacity ranking.
   sequential snapshots. Relative unused capacity and ecosystem-scale saturation
   were not measured.
 - EraVM gas is not directly comparable with EVM gas.
-- Settlement timings are single observations per network, taken within the same
-  half hour, as recorded in `latency.md`.
+- Timing covers 15 observations per network over five days. It does not establish
+  annual behaviour, congestion extremes, or direct same-shape Ethereum latency.
+- Client confirmation is submission-to-receipt wall time for this CI and RPC
+  setup, not a pure block-production interval.

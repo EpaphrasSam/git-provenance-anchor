@@ -33,8 +33,9 @@ operator tooling, not just documentation of this deployment.
 | `mainnet.md` | Live registries on Arbitrum One, OP Mainnet, and zkSync Era, with final dual-platform anchors and earlier smoke transactions identified by type | `gpa verify --tag v1.0.1 --ref v1.0.1 --network arbitrumOne --network opMainnet --network zkSyncEra` |
 | `ethereum-mainnet.md` | Live Ethereum mainnet registry and one with-SBOM `v1.0.1` anchor used as a paid L1 cost comparator | `gpa verify --tag v1.0.1 --ref v1.0.1 --network ethereum --sbom-hash 4c21791f4b8c7cc9bb5200cf195309223457207a054c48986199c9a5e333a154` |
 | `fee-distribution.md` | Retained aggregate costs for 365 points across a year, with arithmetic validated against Phase A receipts; inspectable daily blocks for a reconstruction over the same window are in `data/fee-history.json` | `npm run fees:history -- --end 2026-08-12T10:44:09Z --out fee-history.json`, then `npm run fees:analyse -- --in fee-history.json --out fee-distribution-reconstructed.json` |
-| `latency.md` | How long after a release the anchor is readable, posted to L1, and settled, on each production network | `zks_getBlockDetails` and Blockscout batch fields, recorded in the file |
-| `latency-protocol.md` | Multi-day production latency series in progress; probes use a separate project id and the CI key | `npm run latency:preflight`, then `npm run latency:collect` when `GPA_LATENCY_LIVE=true` |
+| `latency.md` | Original 2026-08-12 single-window posting and settlement observation, retained as the baseline | `zks_getBlockDetails` and Blockscout batch fields, recorded in the file |
+| `latency-protocol.md` | Pre-specified five-day production protocol, project isolation, caps, and implemented-metric correction | `npm run latency:preflight`; collection is complete |
+| `latency-series.md` | Fifteen observations per L2: client confirmation, L1 posting, and zkSync commit/prove/execute distributions | `npm run latency:analyse` |
 | `ladisa-coverage.md` | Coverage across the maintained Ladisa tree: 117 non-root node instances, 114 of which receive classifications | `python3 evaluation/ladisa-classify.py` |
 | `repository-sample.md` | Git-reference tree-hash reconstruction across twelve widely used projects, including fixed overhead, large-repository scaling and the archive-based reconstruction defect | `npm run sample:clone`, then compare `hashGitRef` against `git rev-parse HEAD^{tree}` |
 | `tarball-sweep.md` | Published release artifacts versus the anchored tree; curl/libarchive manifests clear undeclared additions, while legitimate omission gaps remain | `npm run sample:tarballs`; diagnosis in `data/control-row-diagnosis.json` |
@@ -42,7 +43,7 @@ operator tooling, not just documentation of this deployment.
 | `workflow-impact.md` | Current template line counts, files added, manual steps, runtime variation and the unmeasured end-to-end noise burden | counts over the reference templates, plus `ci-end-to-end.md` |
 | `sbom-coverage.md` | What Syft 1.51.0 plus CycloneDX inventories on the twelve sampled source trees, compared with recognised dependency metadata and package manifests | `npm run sample:sbom`, with a 900-second timeout and an automatic SVG-exclusion diagnostic after the fluentui timeout |
 | `rq2-strategies.md` | Tag-only versus tag-plus-snapshots versus tag-plus-re-verification: the rubric re-run three ways, grounded in release cadence and priced from observed fees | `python3 evaluation/rq2-ablation.py` |
-| `network-tradeoffs.md` | Cost, latency and finality-security assumptions across the three production networks; a bounded client throughput burst is in `throughput.md` | figures drawn from `fee-distribution.md`, `latency.md`, and `throughput.md` |
+| `network-tradeoffs.md` | Cost, repeated latency and finality-security assumptions across the three production networks; a bounded client throughput burst is in `throughput.md` | figures drawn from `fee-distribution.md`, `latency-series.md`, and `throughput.md` |
 | `throughput.md` | Ten sequential production snapshot anchors per L2, reported as confirmed inclusions per minute for this client, not network saturation | `npm run throughput:send` |
 | `sha256-compat.md` | SHA-1 fixture passes reconstruction; a SHA-256 Git repo can store its id on the contract while `hashGitRef` / artifact verify do not match Git | `npm run sha256:compat` |
 | `lfs-supplement.md` | One public LFS repo, labelled extra, not in the original twelve; `hashGitRef` matches Git and sees the pointer, not the LFS object | `npx ts-node --transpile-only scripts/lfs-supplement.ts` |
@@ -63,6 +64,7 @@ operator tooling, not just documentation of this deployment.
 | `data/fee-arithmetic-input.json` | Archived raw-compatible fixture for checking the Arbitrum, OP and zkSync arithmetic without network access |
 | `data/latency.json` | settlement timing read from each network's own batch records (see `latency.md`) |
 | `data/latency-series.json` | Repeated timing probes under `latency-protocol.md` |
+| `data/latency-series-summary.json` | `npm run latency:analyse` over the completed raw ledger |
 | `data/throughput-burst.json` | Sequential production burst behind `throughput.md` |
 | `data/sha256-compat.json` | SHA-1 vs SHA-256 object-format steps behind `sha256-compat.md` |
 | `data/lfs-supplement.json` | Supplementary LFS clone measurement behind `lfs-supplement.md` |

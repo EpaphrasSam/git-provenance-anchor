@@ -3,6 +3,10 @@
 Collected 2026-08-12 from the Phase A mainnet anchors of `v0.4.0-m4`.
 Raw figures: `data/latency.json`.
 
+This file preserves the original single-window observation. The completed
+five-day series in `latency-series.md` adds 15 observations per network,
+client-observed confirmation time, and complete zkSync execution timing.
+
 Cost is only half of what operational viability means. This record measures the
 other half: how long after a release the anchor is actually recorded, and how
 long until that record is settled on Ethereum.
@@ -81,13 +85,14 @@ the one that affects a release pipeline.
 
 ## Limitations
 
-- One anchor per network, all submitted within the same half hour. These are
-  single observations, not a distribution, and batch posting intervals vary with
-  network activity.
+- This record contains one anchor per network, all submitted within the same
+  half hour. It is retained as the August baseline; `latency-series.md`
+  supplies the later short distribution.
 - The seven-day challenge window is a protocol constant, not something measured
   here.
-- zkSync's execution step was still pending at collection. Re-reading
-  `zks_getBlockDetails` for L2 block 71529888 later would complete the record.
-- Per-chain mainnet inclusion latency was not instrumented. Approximate protocol
-  block intervals are reported only as context, while the combined 12-second
-  submit-step observation came from testnets.
+- zkSync's execution step was still pending in this August record. The
+  repeated series records 15 later executions but does not retroactively
+  fill this transaction.
+- Per-chain mainnet inclusion latency was not instrumented for this August
+  observation. The repeated series later measured client receipt wait for
+  each network. Approximate protocol block intervals remain context only.

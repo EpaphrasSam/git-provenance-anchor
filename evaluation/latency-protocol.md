@@ -1,8 +1,9 @@
 # Repeated production latency protocol
 
-This is the collection protocol for a multi-window production latency series.
-It does not replace `latency.md`. That file still holds the single 2026-08-12
-observation. Thesis wording waits until this series has been validated.
+STATUS: complete. Fifteen references and 45 network observations were
+collected. Results are in `latency-series.md`; the raw ledger is
+`data/latency-series.json`. This protocol does not replace `latency.md`,
+which retains the single 2026-08-12 observation for comparison.
 
 ## What is being measured
 
@@ -10,10 +11,16 @@ Each observation is one `anchor` call of kind `SNAPSHOT` on each of Arbitrum One
 OP Mainnet, and zkSync Era. For every transaction we record:
 
 - wall-clock time at submission
-- L2 inclusion time (block timestamp minus submit time)
+- client-observed confirmation time (submission start until the receipt
+  reaches the collector)
 - L1 data-availability time, when the batch is posted (Blockscout for Arb/OP,
   `zks_getBlockDetails` for zkSync)
 - zkSync prove and execute timestamps when they appear later
+
+The second item corrects the protocol's original wording. The collector
+implemented `(Date.now() - t0) / 1000` after receipt retrieval rather
+than block timestamp minus submit time. `latency-series.md` records this
+deviation and uses the implemented metric.
 
 These probes are not release provenance. The tree hash is `sha1("gpa-latency-probe:" + network + ref)`
 so a later reader cannot mistake them for tag anchors of `git-provenance-anchor`.
@@ -74,6 +81,12 @@ npm run latency:settle
 Raw ledger: `data/latency-series.json`. A follow-up settle job fills L1 fields
 that were still pending when the submit job ended. zkSync posting often takes
 longer than a GitHub Actions step should wait.
+
+Recompute the retained summary without a live key or network write:
+
+```
+npm run latency:analyse
+```
 
 ## What this is not
 

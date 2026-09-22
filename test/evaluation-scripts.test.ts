@@ -5,6 +5,7 @@ import * as path from "path";
 import { ethers } from "ethers";
 import { parseTimeoutMs } from "../scripts/sbom-coverage";
 import { comparisonVerdict, manifestForRepo } from "../scripts/tarball-sweep";
+import { buildSummary, nearestRankPercentile } from "../scripts/latency-analyse";
 import {
   assertSignerAllowed,
   CI_ADDRESS,
@@ -71,6 +72,11 @@ describe("evaluation sample scripts", function () {
 });
 
 describe("latency collector", function () {
+  it("uses nearest-rank percentiles in the latency summary", function () {
+    expect(nearestRankPercentile([1, 2, 3, 4, 5], 50)).to.equal(3);
+    expect(nearestRankPercentile([1, 2, 3, 4, 5], 90)).to.equal(5);
+  });
+
   it("derives a stable experiment project id from the label", function () {
     expect(experimentProjectId()).to.equal(ethers.id(LATENCY_LABEL));
     expect(experimentProjectId()).to.match(/^0x[0-9a-f]{64}$/);
@@ -151,5 +157,27 @@ describe("latency collector", function () {
     };
     expect(seriesWindowClosed(ledger, new Date("2026-09-21T14:04:16.149Z"))).to.equal(true);
     expect(seriesWindowClosed(ledger, new Date("2026-09-20T14:04:16.148Z"))).to.equal(false);
+  });
+
+  it("labels the implemented inclusion metric as client receipt wait", function () {
+    const ledger = {
+      schemaVersion: 1 as const,
+      label: LATENCY_LABEL,
+      projectId: experimentProjectId(),
+      status: "complete" as const,
+      caps: {
+        maxEthPerRun: "0.001",
+        maxEthSeries: "0.01",
+        maxRevertsPerRun: 2,
+        plannedDays: 5,
+        txsPerNetworkPerWindow: 1,
+      },
+      seriesSpentEth: "0.0001",
+      setup: [],
+      observations: [],
+    };
+    const summary = buildSummary(ledger);
+    expect(summary.measurement.clientConfirmation).to.include("transaction receipt");
+    expect(summary.measurement.protocolDeviation).to.include("client receipt wait");
   });
 });

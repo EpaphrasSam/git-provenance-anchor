@@ -76,11 +76,13 @@ Adoption adds one more alongside them and leaves the rest untouched.
 | Must a release wait for anchor confirmation? | No. Anchoring runs alongside the release and blocks nothing. |
 | Noise burden | Not established end to end. Precise manifests cleared all added paths in two published tarballs, but legitimate omissions remained |
 
-The asynchrony point is load-bearing and is supported by `latency.md` rather than
-asserted here. An anchor reaches Ethereum in about three minutes on the optimistic
-networks and settles over days, but a maintainer waits for none of it because the
-release itself never depends on the anchor. The observed combined testnet submit
-step took about 12 seconds; per-chain mainnet inclusion was not instrumented.
+The asynchrony point is load-bearing and is supported by `latency-series.md`
+rather than asserted here. An anchor reaches Ethereum in minutes on the
+optimistic networks and settles over days, but a maintainer waits for none of it because the
+release itself never depends on the anchor. The later five-day production series
+in `latency-series.md` measured median client confirmation of 4.960 seconds on
+Arbitrum, 6.261 seconds on OP, and 4.856 seconds on zkSync. This is
+submission-to-receipt wall time for the collector, not a manual release step.
 
 The tarball sweep supports a narrower statement about added paths. Curl and
 libarchive produce zero undeclared extras once a precise manifest is written, and
