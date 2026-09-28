@@ -1,0 +1,115 @@
+{
+ "collectedAt": "2026-09-28T02:26:12.245Z",
+ "method": "Release-anchor gas units are held at the values observed in the v1.0.1 revision-1 mainnet receipts with non-zero SBOM hashes and priced at historical block base fees. Figures are counterfactual: what a release anchor would have cost had it been submitted at that moment, not a fee that was paid. The revision-1 receipts validate the fee arithmetic.",
+ "window": {
+  "days": 1,
+  "intervalHours": 24,
+  "samplesPerNetwork": 1,
+  "end": "2026-05-12T10:44:09.000Z"
+ },
+ "anchorGasUnits": {
+  "arbitrumOne": 100095,
+  "opMainnet": 99512,
+  "zkSyncEra": 125161
+ },
+ "anchorCalldataBytes": 228,
+ "feeModelNotes": {
+  "arbitrumOne": "Nitro charges the L1 posting cost as additional gas units inside gasUsed, so gasUsed x effectiveGasPrice is the whole fee. Holding gas units fixed therefore understates cost when L1 posting is expensive: the real transaction would have burned more units, not just paid a higher price.",
+  "opMainnet": "OP Stack splits the fee: gasUsed x effectiveGasPrice covers L2 execution, and a separate l1Fee field on the receipt covers posting to L1. Analysis adds the observed 1,000,000 wei priority fee and 2,257,258,350 wei l1Fee. Historical variation in those fixed inputs is not reconstructed.",
+  "zkSyncEra": "EraVM prices execution and published data together through its own gas model, so gasUsed x effectiveGasPrice is the whole fee. Units are not comparable with the EVM chains."
+ },
+ "networks": [
+  {
+   "network": "zkSyncEra",
+   "rpc": "https://mainnet.era.zksync.io",
+   "anchorGasUnits": 125161,
+   "feeModelNote": "EraVM prices execution and published data together through its own gas model, so gasUsed x effectiveGasPrice is the whole fee. Units are not comparable with the EVM chains.",
+   "requested": 1,
+   "collected": 1,
+   "failures": [],
+   "samples": [
+    {
+     "targetIso": "2026-05-12T10:44:09.000Z",
+     "blockNumber": 70036128,
+     "blockIso": "2026-05-12T10:34:23.000Z",
+     "driftSeconds": -586,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "290106",
+     "gasLimit": "1125899906842624"
+    }
+   ],
+   "chainId": 324
+  },
+  {
+   "network": "ethereum",
+   "rpc": "https://ethereum.publicnode.com",
+   "requested": 1,
+   "collected": 1,
+   "failures": [],
+   "samples": [
+    {
+     "targetIso": "2026-05-12T10:44:09.000Z",
+     "blockNumber": 25078535,
+     "blockIso": "2026-05-12T10:47:35.000Z",
+     "driftSeconds": 206,
+     "baseFeePerGasWei": "310451907",
+     "gasUsed": "38405300",
+     "gasLimit": "60000000",
+     "excessBlobGas": "194742624",
+     "blobBaseFeeWei": "21557669889530201635863353"
+    }
+   ],
+   "chainId": 1
+  }
+ ],
+ "phaseAReceipts": {
+  "note": "raw receipts, including fields ethers' receipt.fee omits",
+  "receipts": [
+   {
+    "network": "arbitrumOne",
+    "label": "v1.0.1 revision 1",
+    "hash": "0x100a342fa6383ab540cb5da85c90a7d5dda2db382b4ac381bedb0ce8099ad654",
+    "blockNumber": 494091971,
+    "blockIso": "2026-08-13T11:17:57.000Z",
+    "gasUsed": "100095",
+    "effectiveGasPrice": "20036000",
+    "blockBaseFeePerGas": "20036000",
+    "l1Fee": null,
+    "l1GasUsed": null,
+    "l1GasPrice": null,
+    "l1BlobBaseFee": null,
+    "gasUsedForL1": "583"
+   },
+   {
+    "network": "opMainnet",
+    "label": "v1.0.1 revision 1",
+    "hash": "0x46f8761006ee59236ed579469b5b46873efd3db086d6039dc6ba5758c95ab3ba",
+    "blockNumber": 155510554,
+    "blockIso": "2026-08-13T11:18:05.000Z",
+    "gasUsed": "99512",
+    "effectiveGasPrice": "1000366",
+    "blockBaseFeePerGas": "366",
+    "l1Fee": "2257258350",
+    "l1GasUsed": "2450",
+    "l1GasPrice": "101332049",
+    "l1BlobBaseFee": "6175972",
+    "gasUsedForL1": null
+   },
+   {
+    "network": "zkSyncEra",
+    "label": "v1.0.1 revision 1",
+    "hash": "0x57a58f76c90cfe99efdd1977461567113b9a8c2c4fc0eb66f3abd3654e85b1a3",
+    "blockNumber": 71541063,
+    "blockIso": "2026-08-13T11:18:05.000Z",
+    "gasUsed": "125161",
+    "effectiveGasPrice": "45250000",
+    "blockBaseFeePerGas": "45250000",
+    "l1Fee": null,
+    "l1GasUsed": null,
+    "l1GasPrice": null,
+    "l1BlobBaseFee": null,
+    "gasUsedForL1": null
+   }
+  ]
+ }
+}

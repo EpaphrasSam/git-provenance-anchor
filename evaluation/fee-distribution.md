@@ -7,7 +7,7 @@ Raw daily samples with block identifiers, collected 2026-09-16 over the same
 pinned window: `data/fee-history.json`. Analysis of that series:
 `data/fee-distribution-reconstructed.json`.
 Reproduce: `npm run fees:history -- --end 2026-08-12T10:44:09Z --out fee-history.json`,
-then `npm run fees:analyse -- --in fee-history.json --out fee-distribution-reconstructed.json`.
+then `npm run fees:analyse -- --in fee-history.json --out fee-distribution-reconstructed.json --eth-usd 1900`.
 
 The archived arithmetic fixture can be checked without network access:
 `npm run fees:analyse -- --in fee-arithmetic-input.json --out fee-arithmetic-output.json`.
@@ -42,7 +42,9 @@ samples were reported on every network. The 2026-08-12 collection kept the
 aggregates below and did not keep the per-sample block identifiers. The 2026-09-16
 rerun archives those identifiers in `data/fee-history.json`. It is a new series
 over the same window, not a proof that the original 365 blocks were selected
-again.
+again. On 28 September, the zkSync rows in that archive were corrected because
+the original estimate used an invalid assumed block interval. The replacement
+uses timestamp-interpolated lookup with a maximum 600-second tolerance.
 
 **These figures are counterfactual.** They are what a first-write release anchor
 with a non-zero SBOM hash would have cost had it been submitted at that moment,
@@ -147,23 +149,26 @@ on Arbitrum One, and 1.08 cents on zkSync Era. The worst sampled Arbitrum day
 prices the transaction at approximately 4.17 cents. The daily series is not
 evidence about unsampled intraday peaks.
 
-## Archived reconstruction, 16 September 2026
+## Archived reconstruction, corrected 28 September 2026
 
 `data/fee-history.json` holds 365 samples per network (Arbitrum One, OP Mainnet,
 zkSync Era, Ethereum), each with `targetIso`, `blockNumber`, `blockIso`,
-`driftSeconds`, and `baseFeePerGasWei`. Completeness is 365/365 after a retry of
-23 consecutive zkSync points that failed on a DNS blip (`ECONNRESET` then
-`ENOTFOUND` for `mainnet.era.zksync.io` from 23 November to 15 December 2025
-targets). The fill is recorded on the file as `zksyncGapFill`.
+`driftSeconds`, and `baseFeePerGasWei`. The canonical archive preserves the
+original Arbitrum One, OP Mainnet and Ethereum objects. Its zkSync object contains
+365 corrected rows, including the separately recovered 12 May 2026 target, with
+zero failures and a maximum absolute drift of 586 seconds. The correction and
+its two source files are recorded in `zksyncCorrection`.
 
-`fees:analyse` against that series does not replace the tables above. Those
-remain the 12 August 2026 aggregates. Against the archived blocks, OP and zkSync
-percentiles match to well under 0.2%. Arbitrum p50 and p90 also match. Arbitrum
-p99 is 13% higher (8.745e-6 vs 7.715e-6 ETH) and the worst day is 4% lower
-(2.102e-5 vs 2.194e-5 ETH), still 25 December 2025. Ethereum L1 base-fee p50 is
-0.118 gwei against 0.116. That is the expected effect of picking a nearby block
-rather than the unarchived original. Receipt validation on the rerun is still
-0.00% error on all three L2 revision-1 transactions.
+`fees:analyse` against that series does not replace the tables above. Those remain
+the 12 August 2026 aggregates. The corrected zkSync reconstruction has a base fee
+of 0.04525 gwei in all 365 samples. Its minimum, p50, p90, p99 and maximum anchor
+cost are all 5.66353525e-6 ETH, or $0.010760716975 at $1900/ETH. OP percentiles
+match the retained aggregates to well under 0.2%. Arbitrum p50 and p90 also match.
+Arbitrum p99 is 13% higher (8.745e-6 vs 7.715e-6 ETH) and the worst day is 4%
+lower (2.102e-5 vs 2.194e-5 ETH), still 25 December 2025. Ethereum L1 base-fee
+p50 is 0.118 gwei against 0.116. That is the expected effect of picking a nearby
+block rather than the unarchived original. Receipt validation on the rerun is
+still 0.00% error on all three L2 revision-1 transactions.
 
 Blob base fee is still omitted. The header derivation was not repaired.
 
@@ -180,6 +185,8 @@ Blob base fee is still omitted. The header derivation was not repaired.
   at its single observed value rather than reconstructed across time, so the
   spread does not capture variation in either input.
 - The 12 August 2026 aggregates do not identify the original 365 blocks. The
-  16 September 2026 series in `data/fee-history.json` is inspectable and uses
-  the same pinned `--end`. It does not claim to be the original block set.
+  inspectable series in `data/fee-history.json` uses the same pinned `--end`.
+  Its Arbitrum One, OP Mainnet and Ethereum rows were collected on 16 September;
+  its corrected zkSync rows were collected on 28 September. It does not claim
+  to be the original block set.
 - USD figures use one approximate rate of $1900/ETH and are illustrative.

@@ -39,14 +39,6 @@ const ANCHOR_GAS_UNITS: Record<string, number> = {
   zkSyncEra: 125161,
 };
 
-/** Approximate block times, used only to seed the search for a block. */
-const APPROX_BLOCK_SECONDS: Record<string, number> = {
-  arbitrumOne: 0.25,
-  opMainnet: 2,
-  zkSyncEra: 1,
-  ethereum: 12,
-};
-
 /**
  * How each chain's receipt fee relates to the L1 data cost it ultimately pays.
  * Recorded in the output so the reconstruction is read with the right caveat
@@ -150,40 +142,56 @@ async function getBlock(provider: ethers.JsonRpcProvider, tag: string | number):
   return block as RawBlock;
 }
 
-/**
- * Finds a block near a target timestamp by estimating from the average block
- * time and correcting, rather than binary searching the whole chain. Arbitrum
- * produces blocks four times a second, so a full search would cost far more
- * calls than a public endpoint will tolerate.
- */
 async function findBlockNearTimestamp(
   provider: ethers.JsonRpcProvider,
   targetSeconds: number,
-  blockSeconds: number,
+  lower: RawBlock,
   latest: RawBlock,
   delayMs: number,
-  toleranceSeconds = 300,
+  toleranceSeconds = 600,
 ): Promise<RawBlock> {
-  const latestNumber = Number(BigInt(latest.number));
+  let low = lower;
+  let high = latest;
+  let lowNumber = Number(BigInt(low.number));
+  let highNumber = Number(BigInt(high.number));
+  let lowTs = Number(BigInt(low.timestamp));
   const latestTs = Number(BigInt(latest.timestamp));
   if (targetSeconds >= latestTs) return latest;
+  if (targetSeconds <= lowTs) return low;
 
-  let guess = latestNumber - Math.floor((latestTs - targetSeconds) / blockSeconds);
-  guess = Math.max(1, Math.min(latestNumber, guess));
+  let block = low;
+  for (let probe = 0; probe < 32; probe++) {
+    const highTs = Number(BigInt(high.timestamp));
+    const fraction = (targetSeconds - lowTs) / (highTs - lowTs);
+    let guess = lowNumber + Math.floor((highNumber - lowNumber) * fraction);
+    guess = Math.max(lowNumber + 1, Math.min(highNumber - 1, guess));
 
-  let block = await getBlock(provider, guess);
-  for (let probe = 0; probe < 8; probe++) {
+    await sleep(delayMs);
+    block = await getBlock(provider, guess);
     const ts = Number(BigInt(block.timestamp));
     const drift = ts - targetSeconds;
     if (Math.abs(drift) <= toleranceSeconds) return block;
 
-    const step = Math.trunc(drift / blockSeconds);
-    let next = Number(BigInt(block.number)) - (step === 0 ? (drift > 0 ? 1 : -1) : step);
-    next = Math.max(1, Math.min(latestNumber, next));
-    if (next === Number(BigInt(block.number))) return block;
-
-    await sleep(delayMs);
-    block = await getBlock(provider, next);
+    const blockNumber = Number(BigInt(block.number));
+    if (ts < targetSeconds) {
+      low = block;
+      lowNumber = blockNumber;
+      lowTs = ts;
+    } else {
+      high = block;
+      highNumber = blockNumber;
+    }
+    if (highNumber - lowNumber <= 1) {
+      const lowDrift = Number(BigInt(low.timestamp)) - targetSeconds;
+      const highDrift = Number(BigInt(high.timestamp)) - targetSeconds;
+      block = Math.abs(lowDrift) <= Math.abs(highDrift) ? low : high;
+      break;
+    }
+  }
+  const finalTs = Number(BigInt(block.timestamp));
+  const finalDrift = finalTs - targetSeconds;
+  if (Math.abs(finalDrift) > toleranceSeconds) {
+    throw new Error(`nearest block drift ${finalDrift}s exceeds ${toleranceSeconds}s tolerance`);
   }
   return block;
 }
@@ -214,12 +222,12 @@ async function sampleNetwork(
   }
 
   const latest = await withRetry(`${network} latest block`, () => getBlock(provider, "latest"));
-  const blockSeconds = APPROX_BLOCK_SECONDS[network] ?? 2;
+  let lower = await withRetry(`${network} first block`, () => getBlock(provider, 1));
 
   for (const target of targets) {
     const targetIso = new Date(target * 1000).toISOString();
     try {
-      const block = await findBlockNearTimestamp(provider, target, blockSeconds, latest, delayMs);
+      const block = await findBlockNearTimestamp(provider, target, lower, latest, delayMs);
       const blockTs = Number(BigInt(block.timestamp));
       const sample: Sample = {
         targetIso,
@@ -237,6 +245,7 @@ async function sampleNetwork(
       }
       result.samples.push(sample);
       result.collected += 1;
+      lower = block;
     } catch (error) {
       result.failures.push({ targetIso, error: (error as Error).message });
     }

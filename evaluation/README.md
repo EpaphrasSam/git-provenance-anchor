@@ -32,7 +32,7 @@ operator tooling, not just documentation of this deployment.
 | `gas-and-cost.md` | Gas per operation, why anchoring with an SBOM costs ~20k more, and how these differ from the test-suite figures | `npm run evidence` |
 | `mainnet.md` | Live registries on Arbitrum One, OP Mainnet, and zkSync Era, with final dual-platform anchors and earlier smoke transactions identified by type | `gpa verify --tag v1.0.1 --ref v1.0.1 --network arbitrumOne --network opMainnet --network zkSyncEra` |
 | `ethereum-mainnet.md` | Live Ethereum mainnet registry and one with-SBOM `v1.0.1` anchor used as a paid L1 cost comparator | `gpa verify --tag v1.0.1 --ref v1.0.1 --network ethereum --sbom-hash 4c21791f4b8c7cc9bb5200cf195309223457207a054c48986199c9a5e333a154` |
-| `fee-distribution.md` | Retained aggregate costs for 365 points across a year, with arithmetic validated against Phase A receipts; inspectable daily blocks for a reconstruction over the same window are in `data/fee-history.json` | `npm run fees:history -- --end 2026-08-12T10:44:09Z --out fee-history.json`, then `npm run fees:analyse -- --in fee-history.json --out fee-distribution-reconstructed.json` |
+| `fee-distribution.md` | Retained aggregate costs for 365 points across a year, with arithmetic validated against Phase A receipts; `data/fee-history.json` contains inspectable daily blocks, including the corrected timestamp-interpolated zkSync series | `npm run fees:history -- --end 2026-08-12T10:44:09Z --out fee-history.json`, then `npm run fees:analyse -- --in fee-history.json --out fee-distribution-reconstructed.json --eth-usd 1900` |
 | `latency.md` | Original 2026-08-12 single-window posting and settlement observation, retained as the baseline | `zks_getBlockDetails` and Blockscout batch fields, recorded in the file |
 | `latency-protocol.md` | Pre-specified five-day production protocol, project isolation, caps, and implemented-metric correction | `npm run latency:preflight`; collection is complete |
 | `latency-series.md` | Fifteen observations per L2: client confirmation, L1 posting, and zkSync commit/prove/execute distributions | `npm run latency:analyse` |
@@ -59,8 +59,8 @@ operator tooling, not just documentation of this deployment.
 | `data/mainnet-phase-a.json` | receipt walk after mainnet deploy / smoke (see `mainnet.md`) |
 | `data/ethereum-mainnet.json` | Ethereum L1 deploy, register, and with-SBOM anchor receipts (see `ethereum-mainnet.md`) |
 | `data/fee-distribution.json` | Retained 12 August 2026 aggregate distribution and receipt validation |
-| `data/fee-history.json` | 365 daily samples per network with block identifiers, collected 16 September 2026 over the pinned window ending 2026-08-12T10:44:09Z |
-| `data/fee-distribution-reconstructed.json` | `npm run fees:analyse` over `fee-history.json`; comparison series, not a replacement of the retained aggregates |
+| `data/fee-history.json` | 365 daily samples per network over the pinned window ending 2026-08-12T10:44:09Z; the zkSync rows were corrected on 28 September by timestamp-interpolated lookup with a maximum 600-second tolerance |
+| `data/fee-distribution-reconstructed.json` | `npm run fees:analyse -- --eth-usd 1900` over the corrected `fee-history.json`; comparison series, not a replacement of the retained aggregates |
 | `data/fee-arithmetic-input.json` | Archived raw-compatible fixture for checking the Arbitrum, OP and zkSync arithmetic without network access |
 | `data/latency.json` | settlement timing read from each network's own batch records (see `latency.md`) |
 | `data/latency-series.json` | Repeated timing probes under `latency-protocol.md` |

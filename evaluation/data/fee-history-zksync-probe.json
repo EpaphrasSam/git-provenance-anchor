@@ -1,0 +1,695 @@
+{
+ "collectedAt": "2026-09-28T02:13:27.434Z",
+ "method": "Release-anchor gas units are held at the values observed in the v1.0.1 revision-1 mainnet receipts with non-zero SBOM hashes and priced at historical block base fees. Figures are counterfactual: what a release anchor would have cost had it been submitted at that moment, not a fee that was paid. The revision-1 receipts validate the fee arithmetic.",
+ "window": {
+  "days": 30,
+  "intervalHours": 24,
+  "samplesPerNetwork": 30,
+  "end": "2025-09-11T10:44:09.000Z"
+ },
+ "anchorGasUnits": {
+  "arbitrumOne": 100095,
+  "opMainnet": 99512,
+  "zkSyncEra": 125161
+ },
+ "anchorCalldataBytes": 228,
+ "feeModelNotes": {
+  "arbitrumOne": "Nitro charges the L1 posting cost as additional gas units inside gasUsed, so gasUsed x effectiveGasPrice is the whole fee. Holding gas units fixed therefore understates cost when L1 posting is expensive: the real transaction would have burned more units, not just paid a higher price.",
+  "opMainnet": "OP Stack splits the fee: gasUsed x effectiveGasPrice covers L2 execution, and a separate l1Fee field on the receipt covers posting to L1. Analysis adds the observed 1,000,000 wei priority fee and 2,257,258,350 wei l1Fee. Historical variation in those fixed inputs is not reconstructed.",
+  "zkSyncEra": "EraVM prices execution and published data together through its own gas model, so gasUsed x effectiveGasPrice is the whole fee. Units are not comparable with the EVM chains."
+ },
+ "networks": [
+  {
+   "network": "zkSyncEra",
+   "rpc": "https://mainnet.era.zksync.io",
+   "anchorGasUnits": 125161,
+   "feeModelNote": "EraVM prices execution and published data together through its own gas model, so gasUsed x effectiveGasPrice is the whole fee. Units are not comparable with the EVM chains.",
+   "requested": 30,
+   "collected": 30,
+   "failures": [],
+   "samples": [
+    {
+     "targetIso": "2025-08-13T10:44:09.000Z",
+     "blockNumber": 64000995,
+     "blockIso": "2025-08-13T10:42:05.000Z",
+     "driftSeconds": -124,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "549479",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-14T10:44:09.000Z",
+     "blockNumber": 64028831,
+     "blockIso": "2025-08-14T10:39:18.000Z",
+     "driftSeconds": -291,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "1371373",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-15T10:44:09.000Z",
+     "blockNumber": 64052814,
+     "blockIso": "2025-08-15T10:43:41.000Z",
+     "driftSeconds": -28,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "164641",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-16T10:44:09.000Z",
+     "blockNumber": 64072666,
+     "blockIso": "2025-08-16T10:39:42.000Z",
+     "driftSeconds": -267,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "367684",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-17T10:44:09.000Z",
+     "blockNumber": 64090727,
+     "blockIso": "2025-08-17T10:47:24.000Z",
+     "driftSeconds": 195,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "441051",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-18T10:44:09.000Z",
+     "blockNumber": 64111774,
+     "blockIso": "2025-08-18T10:43:58.000Z",
+     "driftSeconds": -11,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "221290",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-19T10:44:09.000Z",
+     "blockNumber": 64133575,
+     "blockIso": "2025-08-19T10:46:55.000Z",
+     "driftSeconds": 166,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "383313",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-20T10:44:09.000Z",
+     "blockNumber": 64153162,
+     "blockIso": "2025-08-20T10:45:05.000Z",
+     "driftSeconds": 56,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "115552",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-21T10:44:09.000Z",
+     "blockNumber": 64175290,
+     "blockIso": "2025-08-21T10:39:20.000Z",
+     "driftSeconds": -289,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "100335",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-22T10:44:09.000Z",
+     "blockNumber": 64195916,
+     "blockIso": "2025-08-22T10:46:31.000Z",
+     "driftSeconds": 142,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "171429",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-23T10:44:09.000Z",
+     "blockNumber": 64218716,
+     "blockIso": "2025-08-23T10:46:13.000Z",
+     "driftSeconds": 124,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "104845",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-24T10:44:09.000Z",
+     "blockNumber": 64238796,
+     "blockIso": "2025-08-24T10:42:15.000Z",
+     "driftSeconds": -114,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "193543",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-25T10:44:09.000Z",
+     "blockNumber": 64262634,
+     "blockIso": "2025-08-25T10:42:20.000Z",
+     "driftSeconds": -109,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "98586",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-26T10:44:09.000Z",
+     "blockNumber": 64283604,
+     "blockIso": "2025-08-26T10:40:33.000Z",
+     "driftSeconds": -216,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "389136",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-27T10:44:09.000Z",
+     "blockNumber": 64304490,
+     "blockIso": "2025-08-27T10:43:59.000Z",
+     "driftSeconds": -10,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "103640",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-28T10:44:09.000Z",
+     "blockNumber": 64324514,
+     "blockIso": "2025-08-28T10:40:13.000Z",
+     "driftSeconds": -236,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "106882",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-29T10:44:09.000Z",
+     "blockNumber": 64345235,
+     "blockIso": "2025-08-29T10:44:07.000Z",
+     "driftSeconds": -2,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "92319",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-30T10:44:09.000Z",
+     "blockNumber": 64363377,
+     "blockIso": "2025-08-30T10:46:03.000Z",
+     "driftSeconds": 114,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "93424",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-08-31T10:44:09.000Z",
+     "blockNumber": 64380416,
+     "blockIso": "2025-08-31T10:43:16.000Z",
+     "driftSeconds": -53,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "211276",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-09-01T10:44:09.000Z",
+     "blockNumber": 64398953,
+     "blockIso": "2025-09-01T10:42:13.000Z",
+     "driftSeconds": -116,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "266513",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-09-02T10:44:09.000Z",
+     "blockNumber": 64417597,
+     "blockIso": "2025-09-02T10:44:07.000Z",
+     "driftSeconds": -2,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "161995",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-09-03T10:44:09.000Z",
+     "blockNumber": 64435464,
+     "blockIso": "2025-09-03T10:48:29.000Z",
+     "driftSeconds": 260,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "283160",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-09-04T10:44:09.000Z",
+     "blockNumber": 64454531,
+     "blockIso": "2025-09-04T10:42:53.000Z",
+     "driftSeconds": -76,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "93793",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-09-05T10:44:09.000Z",
+     "blockNumber": 64473385,
+     "blockIso": "2025-09-05T10:39:40.000Z",
+     "driftSeconds": -269,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "514838",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-09-06T10:44:09.000Z",
+     "blockNumber": 64489662,
+     "blockIso": "2025-09-06T10:47:14.000Z",
+     "driftSeconds": 185,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "93544",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-09-07T10:44:09.000Z",
+     "blockNumber": 64507542,
+     "blockIso": "2025-09-07T10:46:03.000Z",
+     "driftSeconds": 114,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "193472",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-09-08T10:44:09.000Z",
+     "blockNumber": 64525265,
+     "blockIso": "2025-09-08T10:45:36.000Z",
+     "driftSeconds": 87,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "178129",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-09-09T10:44:09.000Z",
+     "blockNumber": 64543779,
+     "blockIso": "2025-09-09T10:48:42.000Z",
+     "driftSeconds": 273,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "216942",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-09-10T10:44:09.000Z",
+     "blockNumber": 64562484,
+     "blockIso": "2025-09-10T10:47:28.000Z",
+     "driftSeconds": 199,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "93028",
+     "gasLimit": "1125899906842624"
+    },
+    {
+     "targetIso": "2025-09-11T10:44:09.000Z",
+     "blockNumber": 64585366,
+     "blockIso": "2025-09-11T10:40:17.000Z",
+     "driftSeconds": -232,
+     "baseFeePerGasWei": "45250000",
+     "gasUsed": "1207664",
+     "gasLimit": "1125899906842624"
+    }
+   ],
+   "chainId": 324
+  },
+  {
+   "network": "ethereum",
+   "rpc": "https://ethereum.publicnode.com",
+   "requested": 30,
+   "collected": 30,
+   "failures": [],
+   "samples": [
+    {
+     "targetIso": "2025-08-13T10:44:09.000Z",
+     "blockNumber": 23131617,
+     "blockIso": "2025-08-13T10:45:23.000Z",
+     "driftSeconds": 74,
+     "baseFeePerGasWei": "1702405952",
+     "gasUsed": "10437378",
+     "gasLimit": "45000000",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-14T10:44:09.000Z",
+     "blockNumber": 23138773,
+     "blockIso": "2025-08-14T10:44:47.000Z",
+     "driftSeconds": 38,
+     "baseFeePerGasWei": "1299053112",
+     "gasUsed": "24945511",
+     "gasLimit": "45043815",
+     "excessBlobGas": "786432",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-15T10:44:09.000Z",
+     "blockNumber": 23145932,
+     "blockIso": "2025-08-15T10:47:23.000Z",
+     "driftSeconds": 194,
+     "baseFeePerGasWei": "381326804",
+     "gasUsed": "41708720",
+     "gasLimit": "45043944",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-16T10:44:09.000Z",
+     "blockNumber": 23153078,
+     "blockIso": "2025-08-16T10:43:23.000Z",
+     "driftSeconds": -46,
+     "baseFeePerGasWei": "241578836",
+     "gasUsed": "22789797",
+     "gasLimit": "44911983",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-17T10:44:09.000Z",
+     "blockNumber": 23160244,
+     "blockIso": "2025-08-17T10:40:47.000Z",
+     "driftSeconds": -202,
+     "baseFeePerGasWei": "157144970",
+     "gasUsed": "42251457",
+     "gasLimit": "44999871",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-18T10:44:09.000Z",
+     "blockNumber": 23167423,
+     "blockIso": "2025-08-18T10:42:59.000Z",
+     "driftSeconds": -70,
+     "baseFeePerGasWei": "254857972",
+     "gasUsed": "18889377",
+     "gasLimit": "44999957",
+     "excessBlobGas": "131072",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-19T10:44:09.000Z",
+     "blockNumber": 23174591,
+     "blockIso": "2025-08-19T10:42:47.000Z",
+     "driftSeconds": -82,
+     "baseFeePerGasWei": "181499432",
+     "gasUsed": "22422719",
+     "gasLimit": "45000000",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-20T10:44:09.000Z",
+     "blockNumber": 23181760,
+     "blockIso": "2025-08-20T10:41:35.000Z",
+     "driftSeconds": -154,
+     "baseFeePerGasWei": "216256754",
+     "gasUsed": "17720449",
+     "gasLimit": "45000000",
+     "excessBlobGas": "131072",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-21T10:44:09.000Z",
+     "blockNumber": 23188935,
+     "blockIso": "2025-08-21T10:43:59.000Z",
+     "driftSeconds": -10,
+     "baseFeePerGasWei": "302971898",
+     "gasUsed": "6692582",
+     "gasLimit": "44956056",
+     "excessBlobGas": "786432",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-22T10:44:09.000Z",
+     "blockNumber": 23196098,
+     "blockIso": "2025-08-22T10:44:11.000Z",
+     "driftSeconds": 2,
+     "baseFeePerGasWei": "377678792",
+     "gasUsed": "18828224",
+     "gasLimit": "44999914",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-23T10:44:09.000Z",
+     "blockNumber": 23203260,
+     "blockIso": "2025-08-23T10:42:35.000Z",
+     "driftSeconds": -94,
+     "baseFeePerGasWei": "250680423",
+     "gasUsed": "3706942",
+     "gasLimit": "44956056",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-24T10:44:09.000Z",
+     "blockNumber": 23210430,
+     "blockIso": "2025-08-24T10:44:11.000Z",
+     "driftSeconds": 2,
+     "baseFeePerGasWei": "161777169",
+     "gasUsed": "19516843",
+     "gasLimit": "45000000",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-25T10:44:09.000Z",
+     "blockNumber": 23217592,
+     "blockIso": "2025-08-25T10:41:47.000Z",
+     "driftSeconds": -142,
+     "baseFeePerGasWei": "491437990",
+     "gasUsed": "19790411",
+     "gasLimit": "45043944",
+     "excessBlobGas": "2359296",
+     "blobBaseFeeWei": "2"
+    },
+    {
+     "targetIso": "2025-08-26T10:44:09.000Z",
+     "blockNumber": 23224766,
+     "blockIso": "2025-08-26T10:43:23.000Z",
+     "driftSeconds": -46,
+     "baseFeePerGasWei": "340142728",
+     "gasUsed": "20794345",
+     "gasLimit": "45000000",
+     "excessBlobGas": "131072",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-27T10:44:09.000Z",
+     "blockNumber": 23231932,
+     "blockIso": "2025-08-27T10:42:35.000Z",
+     "driftSeconds": -94,
+     "baseFeePerGasWei": "344955199",
+     "gasUsed": "18717242",
+     "gasLimit": "45000000",
+     "excessBlobGas": "393216",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-28T10:44:09.000Z",
+     "blockNumber": 23239102,
+     "blockIso": "2025-08-28T10:44:35.000Z",
+     "driftSeconds": 26,
+     "baseFeePerGasWei": "331712253",
+     "gasUsed": "16521134",
+     "gasLimit": "45043858",
+     "excessBlobGas": "1835008",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-29T10:44:09.000Z",
+     "blockNumber": 23246262,
+     "blockIso": "2025-08-29T10:43:59.000Z",
+     "driftSeconds": -10,
+     "baseFeePerGasWei": "334610202",
+     "gasUsed": "27948777",
+     "gasLimit": "45000000",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-30T10:44:09.000Z",
+     "blockNumber": 23253425,
+     "blockIso": "2025-08-30T10:42:11.000Z",
+     "driftSeconds": -118,
+     "baseFeePerGasWei": "253224589",
+     "gasUsed": "19214213",
+     "gasLimit": "45000000",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-08-31T10:44:09.000Z",
+     "blockNumber": 23260597,
+     "blockIso": "2025-08-31T10:41:47.000Z",
+     "driftSeconds": -142,
+     "baseFeePerGasWei": "160231654",
+     "gasUsed": "17945608",
+     "gasLimit": "44912155",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-09-01T10:44:09.000Z",
+     "blockNumber": 23267771,
+     "blockIso": "2025-09-01T10:45:11.000Z",
+     "driftSeconds": 62,
+     "baseFeePerGasWei": "689368707",
+     "gasUsed": "25812077",
+     "gasLimit": "44956013",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-09-02T10:44:09.000Z",
+     "blockNumber": 23274901,
+     "blockIso": "2025-09-02T10:43:59.000Z",
+     "driftSeconds": -10,
+     "baseFeePerGasWei": "198608586",
+     "gasUsed": "5182794",
+     "gasLimit": "45043901",
+     "excessBlobGas": "393216",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-09-03T10:44:09.000Z",
+     "blockNumber": 23282064,
+     "blockIso": "2025-09-03T10:43:35.000Z",
+     "driftSeconds": -34,
+     "baseFeePerGasWei": "318694044",
+     "gasUsed": "17241712",
+     "gasLimit": "44999914",
+     "excessBlobGas": "393216",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-09-04T10:44:09.000Z",
+     "blockNumber": 23289229,
+     "blockIso": "2025-09-04T10:42:59.000Z",
+     "driftSeconds": -70,
+     "baseFeePerGasWei": "386932720",
+     "gasUsed": "19781224",
+     "gasLimit": "44955970",
+     "excessBlobGas": "1441792",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-09-05T10:44:09.000Z",
+     "blockNumber": 23296397,
+     "blockIso": "2025-09-05T10:45:35.000Z",
+     "driftSeconds": 86,
+     "baseFeePerGasWei": "189683750",
+     "gasUsed": "16689701",
+     "gasLimit": "44999957",
+     "excessBlobGas": "393216",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-09-06T10:44:09.000Z",
+     "blockNumber": 23303552,
+     "blockIso": "2025-09-06T10:46:11.000Z",
+     "driftSeconds": 122,
+     "baseFeePerGasWei": "145393553",
+     "gasUsed": "2032370",
+     "gasLimit": "44868297",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-09-07T10:44:09.000Z",
+     "blockNumber": 23310704,
+     "blockIso": "2025-09-07T10:45:11.000Z",
+     "driftSeconds": 62,
+     "baseFeePerGasWei": "145005867",
+     "gasUsed": "24596050",
+     "gasLimit": "45043858",
+     "excessBlobGas": "524288",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-09-08T10:44:09.000Z",
+     "blockNumber": 23317861,
+     "blockIso": "2025-09-08T10:45:23.000Z",
+     "driftSeconds": 74,
+     "baseFeePerGasWei": "415978087",
+     "gasUsed": "5033635",
+     "gasLimit": "45043815",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-09-09T10:44:09.000Z",
+     "blockNumber": 23325017,
+     "blockIso": "2025-09-09T10:43:35.000Z",
+     "driftSeconds": -34,
+     "baseFeePerGasWei": "327038238",
+     "gasUsed": "28555044",
+     "gasLimit": "44999914",
+     "excessBlobGas": "262144",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-09-10T10:44:09.000Z",
+     "blockNumber": 23332182,
+     "blockIso": "2025-09-10T10:46:35.000Z",
+     "driftSeconds": 146,
+     "baseFeePerGasWei": "207914979",
+     "gasUsed": "27757479",
+     "gasLimit": "44867996",
+     "excessBlobGas": "1048576",
+     "blobBaseFeeWei": "1"
+    },
+    {
+     "targetIso": "2025-09-11T10:44:09.000Z",
+     "blockNumber": 23339300,
+     "blockIso": "2025-09-11T10:43:59.000Z",
+     "driftSeconds": -10,
+     "baseFeePerGasWei": "243154316",
+     "gasUsed": "15013102",
+     "gasLimit": "44999828",
+     "excessBlobGas": "0",
+     "blobBaseFeeWei": "1"
+    }
+   ],
+   "chainId": 1
+  }
+ ],
+ "phaseAReceipts": {
+  "note": "raw receipts, including fields ethers' receipt.fee omits",
+  "receipts": [
+   {
+    "network": "arbitrumOne",
+    "label": "v1.0.1 revision 1",
+    "hash": "0x100a342fa6383ab540cb5da85c90a7d5dda2db382b4ac381bedb0ce8099ad654",
+    "blockNumber": 494091971,
+    "blockIso": "2026-08-13T11:17:57.000Z",
+    "gasUsed": "100095",
+    "effectiveGasPrice": "20036000",
+    "blockBaseFeePerGas": "20036000",
+    "l1Fee": null,
+    "l1GasUsed": null,
+    "l1GasPrice": null,
+    "l1BlobBaseFee": null,
+    "gasUsedForL1": "583"
+   },
+   {
+    "network": "opMainnet",
+    "label": "v1.0.1 revision 1",
+    "hash": "0x46f8761006ee59236ed579469b5b46873efd3db086d6039dc6ba5758c95ab3ba",
+    "blockNumber": 155510554,
+    "blockIso": "2026-08-13T11:18:05.000Z",
+    "gasUsed": "99512",
+    "effectiveGasPrice": "1000366",
+    "blockBaseFeePerGas": "366",
+    "l1Fee": "2257258350",
+    "l1GasUsed": "2450",
+    "l1GasPrice": "101332049",
+    "l1BlobBaseFee": "6175972",
+    "gasUsedForL1": null
+   },
+   {
+    "network": "zkSyncEra",
+    "label": "v1.0.1 revision 1",
+    "hash": "0x57a58f76c90cfe99efdd1977461567113b9a8c2c4fc0eb66f3abd3654e85b1a3",
+    "blockNumber": 71541063,
+    "blockIso": "2026-08-13T11:18:05.000Z",
+    "gasUsed": "125161",
+    "effectiveGasPrice": "45250000",
+    "blockBaseFeePerGas": "45250000",
+    "l1Fee": null,
+    "l1GasUsed": null,
+    "l1GasPrice": null,
+    "l1BlobBaseFee": null,
+    "gasUsedForL1": null
+   }
+  ]
+ }
+}
