@@ -37,6 +37,7 @@ operator tooling, not just documentation of this deployment.
 | `latency-protocol.md` | Pre-specified five-day production protocol, project isolation, caps, and implemented-metric correction | `npm run latency:preflight`; collection is complete |
 | `latency-series.md` | Fifteen observations per L2: client confirmation, L1 posting, and zkSync commit/prove/execute distributions | `npm run latency:analyse` |
 | `ladisa-coverage.md` | Coverage across the maintained Ladisa tree: 117 non-root node instances, 114 of which receive classifications | `python3 evaluation/ladisa-classify.py` |
+| `ladisa-second-rater/` | Independent second classification, the post-briefing revision, the guide supplied beforehand, and the system briefing | the workbooks in that directory |
 | `repository-sample.md` | Git-reference tree-hash reconstruction across twelve widely used projects, including fixed overhead, large-repository scaling and the archive-based reconstruction defect | `npm run sample:clone`, then compare `hashGitRef` against `git rev-parse HEAD^{tree}` |
 | `tarball-sweep.md` | Published release artifacts versus the anchored tree; curl/libarchive manifests clear undeclared additions, while legitimate omission gaps remain | `npm run sample:tarballs`; diagnosis in `data/control-row-diagnosis.json` |
 | `functional-validation.md` | The Chapter 3 properties, with the manifest-extra result separated from unsupported end-to-end false-positive claims | per-row records listed in the file |
