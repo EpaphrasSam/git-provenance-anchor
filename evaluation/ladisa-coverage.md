@@ -42,7 +42,7 @@ was true, not only that it was true.
 
 The rubric's third step classifies at the highest node where the answer is uniform
 across everything beneath it, following Ladisa et al.'s own least-possible-depth
-convention for assigning safeguards. **Eleven decision points cover all 117
+convention for assigning safeguards. **Twelve decision points cover all 117
 non-root node instances.** Three further internal category nodes receive no
 classification, leaving 114 classified nodes as the denominator for the coverage
 percentages. Four nodes including the root are internal categories whose children
@@ -57,10 +57,11 @@ genuinely diverge, so the rubric descends through them without classifying them.
 | AV-303 | Tamper with version control system | **detectable** |
 | AV-400 | Inject during the build | **detectable, conditional** |
 | AV-501 | Dangling reference | out of scope |
-| AV-502 | Mask legitimate package | **detectable** |
+| AV-502 | Mask legitimate package | **detectable, conditional** |
 | AV-503 | Prevent update to non-vulnerable version | partial |
-| AV-504 | Distribute as package maintainer | **detectable** |
-| AV-505 | Inject into hosting system | **detectable** |
+| AV-504 | Distribute as package maintainer | **detectable, conditional** |
+| AV-505 | Inject into hosting system | **detectable, conditional** |
+| AV-509 | Abuse dependency resolution mechanism | out of scope |
 
 Internal, descended through: AV-000, AV-001, AV-300, AV-500.
 
@@ -68,17 +69,23 @@ Internal, descended through: AV-000, AV-001, AV-300, AV-500.
 
 | Classification | Node instances | Share of 114 classified |
 | --- | --- | --- |
-| Detectable | 48 | 42.1% |
-| Detectable, conditional on artifact type and manifest boundary | 31 | 27.2% |
+| Detectable | 14 | 12.3% |
+| Detectable, conditional on artifact type and manifest boundary | 64 | 56.1% |
 | Partially detectable | 1 | 0.9% |
-| Out of scope | 34 | 29.8% |
+| Out of scope | 35 | 30.7% |
 
 These figures assume tag anchoring plus scheduled re-verification, matching the
 recommended policy. Read conservatively, treating the conditional group as
-undetected, **42.1% of the 114 classified nodes is detectable**. The tag-only
-baseline is **29.8%**. Counting the conditional group under the recommended policy
-gives **69.3%**. The conservative figure is the honest one, and the reason the two
-differ by so much is worth more than either number.
+undetected, **12.3% of the 114 classified nodes is detectable**. Tag-only
+anchoring has no unconditional detectable class under the same rules. Counting
+the conditional group under the recommended policy gives **68.4%**. The
+conservative figure is the one defended here.
+
+An earlier sheet labelled 48 positions detectable (42.1%) and 34 of those as the
+tag-only baseline (29.8%). Thirty-three distribution and hosting positions moved
+to conditional because the node does not fix artifact type. AV-509 moved to out
+of scope because it selects a different package. The second-rater comparison
+was scored against that earlier sheet.
 
 ## The conditional group, and where the taxonomy and the system disagree
 
@@ -108,7 +115,7 @@ number flatters the system.
 ## Reference-weighted coverage
 
 Step 5 of the rubric asks for a weighted figure alongside the raw count, because
-catching 42% of the tree means something different depending on which 42%.
+catching 12% of the tree means something different depending on which 12%.
 
 The taxonomy ships 269 references mapped to vectors, 371 vector-to-reference
 links. Fifteen shared identifiers classify differently depending on which parent
@@ -120,13 +127,13 @@ category nodes.
 
 | Classification | Weighted references | Share |
 | --- | --- | --- |
-| Detectable | 72.5 | 24.1% |
-| Detectable, conditional | 63.7 | 21.2% |
+| Detectable | 15.8 | 5.3% |
+| Detectable, conditional | 112.3 | 37.3% |
 | Partially detectable | 5.0 | 1.7% |
-| Out of scope | 123.8 | 41.1% |
+| Out of scope | 131.8 | 43.8% |
 | Internal category nodes | 36.0 | 12.0% |
 
-The five rows sum to 301 weighted units. Internal category nodes account for 36
+Unrounded, the five rows sum to 301 weighted units. The table rounds each row to one decimal place. Internal category nodes account for 36
 units and 12.0%, so omitting that row would leave the weighted percentages without
 their full denominator.
 
@@ -148,11 +155,12 @@ place, which requires different controls.
 Tampering with version control after a release is anchored, including the
 force-moved tag pattern of the tj-actions incident, which is demonstrated working
 on Arbitrum Sepolia, OP Sepolia and zkSync Sepolia in `tag-retargeting.md`.
-Interception, DNS poisoning, URL tampering and dependency-resolution abuse,
-because each delivers an artifact that does not match the anchored tree. Malicious
-publication by someone holding registry credentials, and substitution inside the
-hosting system, for the same reason. Source-level build injection when it changes
-tracked content or introduces an undeclared path. And, partially, update-blocking:
+Interception, DNS poisoning, URL tampering, publication with registry
+credentials, and substitution inside the hosting system are conditional: a
+source archive can mismatch, and a binary or declared generated extra does not.
+Dependency-resolution abuse selects a different package and is out of scope.
+Source-level build injection when it changes tracked content or introduces an
+undeclared path is conditional for the same artifact-type reason. And, partially, update-blocking:
 a consumer frozen on an older genuine release sees no hash mismatch, but the
 anchor history is public and append-only, so a newer release is visible on chain
 even when a registry hides it.
@@ -187,9 +195,9 @@ either system.
 - Reference counts measure how much a vector has been written about, which is a
   proxy for prevalence rather than severity. The paper's own severity data is not
   in the machine-readable export.
-- The 31 conditional vectors are reported as a single group. Splitting them would
+- The conditional vectors are reported as one group. Splitting them would
   require classifying each project's release artifact type and manifest boundary,
   which belong to the repository sample rather than to the taxonomy.
-- The 42.1% result describes tag anchoring plus scheduled re-verification, the
-  recommended policy. The RQ2 comparison re-runs this rubric under three anchoring
-  strategies and reports the 29.8% tag-only baseline.
+- The 12.3% result describes tag anchoring plus scheduled re-verification.
+  Tag-only anchoring has no unconditional detectable class. The earlier 42.1%
+  sheet is the one used in the second-rater comparison.

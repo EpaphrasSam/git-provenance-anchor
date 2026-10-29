@@ -50,14 +50,16 @@ DECIDE = {
    "Detection depends on the artifact type, which the taxonomy does not model. A build that alters a source-level distributed artifact produces a mismatch against the anchored tree, the XZ Utils case. A build that alters only a compiled binary produces no mismatch, the SolarWinds case, and needs reproducible builds or build attestation, both out of scope."),
  "AV-501": ("out-of-scope", "no-counterpart",
    "Claiming an unclaimed or removed reference supplies a package that was never anchored by the legitimate project."),
- "AV-502": ("detectable", "artifact-mismatch",
-   "Interception, DNS poisoning, URL tampering and resolution abuse all deliver an artifact that differs from the anchored tree. Detection requires the consumer to verify against the intended project identifier."),
+ "AV-502": ("detectable-conditional", "artifact-type",
+   "Masking, interception, DNS poisoning and URL tampering substitute an object for the legitimate package. A substituted source archive can reconstruct to a different tree and fail comparison. A substituted binary, or content at a declared generated-extra path, is not authenticated. The position does not fix the artifact type, so the outcome is conditional."),
+ "AV-509": ("out-of-scope", "no-counterpart",
+   "Dependency-resolution abuse, including dependency confusion, makes the resolver select a different package. Verification is bound to the project identifier, so the genuine project's anchor is not contradicted."),
  "AV-503": ("partial", "detectable-by-presence",
    "Blocking an update leaves the consumer on a genuine older release, so there is no hash mismatch. The anchor history is public and append-only, so a newer anchored release is visible on chain even when the registry hides it. Detection requires an active check rather than a passive one."),
- "AV-504": ("detectable", "artifact-mismatch",
-   "Publishing a malicious version with registry credentials produces an artifact that does not match the anchored tree, unless the same attacker also holds the anchoring key, which is the named blind spot."),
- "AV-505": ("detectable", "artifact-mismatch",
-   "Swapping the artifact in the hosting system leaves the on-chain anchor untouched, so the substituted artifact fails comparison."),
+ "AV-504": ("detectable-conditional", "artifact-type",
+   "Publishing with registry credentials can produce a source archive that differs from the anchored tag tree, and that case can mismatch. A malicious binary, declared generated-extra content, or malicious code tagged and anchored first does not. The position does not fix which object was published, so the outcome is conditional. Compromise of the anchoring key remains the named blind spot and is out of scope."),
+ "AV-505": ("detectable-conditional", "artifact-type",
+   "Content replaced on the hosting system after an honest anchor can fail comparison when the verifier reconstructs a source archive. A replaced binary or declared generated-extra content is not authenticated. The position does not fix the artifact type, so the outcome is conditional."),
 }
 INTERNAL = {"AV-000", "AV-001", "AV-300", "AV-500"}
 
